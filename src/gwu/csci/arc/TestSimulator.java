@@ -1,5 +1,7 @@
 package gwu.csci.arc;
 
+import gwu.csci.arc.isa.LDR;
+
 public class TestSimulator {
 
 	/**
@@ -91,6 +93,7 @@ public class TestSimulator {
 		ic.writeMem(test_content, test_content.length, ad2);
 		cpu.writeXR(test_xr, id, test_xr.length);
 		cpu.writePC(ad1, ad1.length);
+		
 		LDR ldr = new LDR(cpu);
 		ldr.start();
 		

@@ -1,4 +1,6 @@
-package gwu.csci.arc;
+package gwu.csci.arc.isa;
+
+import gwu.csci.arc.CPU;
 
 public abstract class ISA {
 
@@ -7,7 +9,7 @@ public abstract class ISA {
 		// TODO Auto-generated constructor stub
 		isaCpu = cpu;
 	}
-	final int start() {
+	public final int start() {
 		if (ifNeedDecode()) {
 			decode();
 		}

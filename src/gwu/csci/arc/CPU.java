@@ -1,8 +1,7 @@
 package gwu.csci.arc;
-enum OPERATORS {
-	add,
-	subtract
-}
+
+import gwu.csco.arc.utility.OPERATORS;
+
 public class CPU {
 
 	//singleton
