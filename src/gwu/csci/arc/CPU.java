@@ -1,5 +1,8 @@
 package gwu.csci.arc;
-
+enum OPERATORS {
+	add,
+	subtract
+}
 public class CPU {
 
 	//singleton
@@ -21,6 +24,14 @@ public class CPU {
 	//the integrated circuit
 	private IntegratedCircuit ic;
 	
+	//result from the ALU
+	private char[] RES = new char[IntegratedCircuit.getLenWord()];
+	//first operand
+	private char[] OP1 = new char[IntegratedCircuit.getLenWord()];
+	//second operand
+	private char[] OP2 = new char[IntegratedCircuit.getLenWord()];
+	//
+	private char[] newPC = new char[IntegratedCircuit.getLenAddr()];
 	private CPU() {
 		// TODO Auto-generated constructor stub
 		System.out.println("I am the CPU. I am starting up!!");
@@ -41,6 +52,29 @@ public class CPU {
 		}
 	}
 	
+	//Getter and Setter
+	public char[] getRES() {
+		return RES;
+	}
+	public void setRES(char[] rES) {
+		RES = rES;
+	}
+	public char[] getEA() {
+		return ic.getEA();
+	}
+	public char[] getRfi() {
+		return ic.getRfi();
+	}
+	
+	public char[] getNewPC() {
+		return newPC;
+	}
+	public void setNewPC(char[] newPC) {
+		this.newPC = newPC;
+	}
+	public char[] getMAR() {
+		return ic.getMAR();
+	}
 	/**
 	 * write c of length len into id-th register
 	 * @param c the content to be written
@@ -231,7 +265,10 @@ public class CPU {
 			System.out.println("CPU: reading instruction register register succeed");
 		return 0;
 	}
-	
+	public int M2R() {
+		ic.M2R();
+		return 0;
+	}
 	//!******need revised******!
 	public int addition(char[] op1, char[] op2, char[] result) {
 		//return alu.addition(44, 55);
@@ -256,4 +293,58 @@ public class CPU {
 		return ic.calcEA();
 	}
 	
+	/**
+	 * ALU calculation process
+	 * @param p1 operand 1
+	 * @param p2 operand 2
+	 * @param opr operator
+	 * @return 0
+	 */
+	public int ALUcalc(OPERATORS opr) {
+		switch (opr) {
+		case add:
+			alu.addition(OP1, OP2, OP1.length, RES);
+			break;
+		case subtract:
+			alu.subtraction(OP1, OP2, OP1.length, RES);
+			break;
+
+		default:
+			break;
+		}
+		return 0;
+	}
+	
+	/**
+	 * put register in op1
+	 * put Immediate in op2
+	 * @return
+	 */
+	public int RICalc() {
+		readGPR(OP1, getRfi(), OP1.length);
+		char[] addr = ic.getAddr();
+		for (int i = 0; i < ic.getLenWord(); i++) {
+			if(i < (IntegratedCircuit.getLenWord()-IntegratedCircuit.getLenAddrIncode()) ) {
+				OP2[i] = '0';
+			}
+			else {
+				int j = i-(IntegratedCircuit.getLenWord()-IntegratedCircuit.getLenAddrIncode());
+				OP2[i] = addr[j];
+			}
+			
+		}
+		return 0;
+	}
+	//!!!!!!!!!!need reverse!!!!!!!!!!!!!
+	/**
+	 * update the pc
+	 * the new pc is stored in newPC
+	 * @return
+	 */
+	public int pcUpdate() {
+//		char[] plusOne = {'0','0','0','0','0','0','0','0','0','0','0','1'};
+//		addition(ic.getMAR(), plusOne, newPC);
+		writePC(newPC, IntegratedCircuit.getLenAddr());
+		return 0;
+	}
 }

@@ -17,7 +17,7 @@ public class ALU {
 //		int len = IntegratedCircuit.getLenAddr();
 		int p1 = Converter.addrConveterS2I(op1, len);
 		int p2 = Converter.addrConveterS2I(op2, len);
-		char[] r = Converter.addrConverterI2S(p1+p2);
+		char[] r = Converter.addrConverterI2S(p1+p2, len);
 		for (int i = 0; i < len; i++) {
 			result[i] = r[i];
 		}
@@ -35,7 +35,7 @@ public class ALU {
 //		int len = IntegratedCircuit.getLenAddr();
 		int p1 = Converter.addrConveterS2I(op1, len);
 		int p2 = Converter.addrConveterS2I(op2, len);
-		char[] r = Converter.addrConverterI2S(p1-p2);
+		char[] r = Converter.addrConverterI2S(p1-p2, len);
 		for (int i = 0; i < len; i++) {
 			result[i] = r[i];
 		}

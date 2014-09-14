@@ -55,6 +55,10 @@ public class IntegratedCircuit {
 	//the CPU
 	private CPU cpu;
 	
+	/**
+	 * constructor
+	 * @param cpu
+	 */
 	private IntegratedCircuit(CPU cpu) {
 		// TODO Auto-generated constructor stub
 		memory = Memory.getInstance();
@@ -115,7 +119,49 @@ public class IntegratedCircuit {
 	}
 	
 	
-	 
+	/**
+	 * get the length of the OPCODE in an instruction 
+	 * @return
+	 */
+	public static int getLenAddrIncode() {
+		return LEN_ADDR_INCODE;
+	}
+
+	public char[] getEA() {
+		return EA;
+	}
+	public char[] getRfi() {
+		return rfi;
+	}
+
+	public void setRfi(char[] rfi) {
+		this.rfi = rfi;
+	}
+
+	public char[] getXfi() {
+		return xfi;
+	}
+
+	public void setXfi(char[] xfi) {
+		this.xfi = xfi;
+	}
+
+	public char[] getAddr() {
+		return addr;
+	}
+
+	public void setAddr(char[] addr) {
+		this.addr = addr;
+	}
+
+	public char[] getMAR() {
+		return MAR;
+	}
+
+	public void setMAR(char[] mAR) {
+		MAR = mAR;
+	}
+
 	/**
 	 * 
 	 * @param c: store the content
@@ -224,6 +270,8 @@ public class IntegratedCircuit {
 		return 0;
 		
 	}
+	
+	
 	/**
 	 * Perform the decode stage
 	 * MAR <- R(RFI)
@@ -338,11 +386,23 @@ public class IntegratedCircuit {
 				//the address of the memory where the EA resides
 				char[] ad2 = new char[LEN_ADDR];
 				
+				//ad <- R(XFI)
 				cpu.readXR(ad, xfi, LEN_ADDR);
+				
+				//ad2 <- ADDR
+				for (int i = 0; i < LEN_ADDR; i++) {
+					if(i < LEN_ADDR - LEN_ADDR_INCODE) {
+						ad2[i] = '0';
+					}
+					else { 
+						ad2[i] =addr[i-(LEN_ADDR-LEN_ADDR_INCODE)]; 
+					}
+					
+				}
 				//add ad to ad2
 				//!!!!!!need revise!!!!!!!!!!
-				
-				memory.read(EA, LEN_ADDR, ad2);
+				cpu.addition(ad, ad2, EA);
+//				memory.read(EA, LEN_ADDR, ad2);
 //				for(int i = 0; i < LEN_ADDR; i++) {
 //					EA[i] = ad2[i];
 //				}
@@ -353,11 +413,6 @@ public class IntegratedCircuit {
 		return 0;
 	}
 	
-	public int pcUpdate() {
-		char[] plusOne = {'0','0','0','0','0','0','0','0','0','0','0','1'};
-		cpu.addition(MAR, plusOne, newPC);
-		cpu.writePC(newPC, LEN_ADDR);
-		return 0;
-	}
+	
 	
 }

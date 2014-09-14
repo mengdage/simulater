@@ -22,10 +22,10 @@ public class TestSimulator {
 		CPU cpu = CPU.getInstance();
 		IntegratedCircuit ic = IntegratedCircuit.getInstance(cpu);
 		Memory memory = Memory.getInstance();
-		//001010101010
-		char[] test_pc = {'0', '0', '1', '0', '1', '0', '1', '0', '1', '0', '1', '0'};
-		//000010000000
-		char[] test_xr = {'0', '0', '0', '0', '1', '0', '0', '0', '0', '0', '0', '0'};
+		//000001001010101010
+		char[] test_content = {'0','0','0','0','0','1', '0', '0', '1', '0', '1', '0', '1', '0', '1', '0', '1', '0'};
+		//000000000001
+		char[] test_xr = {'0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '1'};
 		//101010 10 10 1 0101011
 		char[] test_ins = {'1', '0', '1', '0','1', '0', '1', '0','1', '0', '1', '0','1', '0', '1', '0','1','1'};
 		//101010 10 00 1 0101011
@@ -34,8 +34,12 @@ public class TestSimulator {
 		char[] test_ins3 = {'1', '0', '1', '0','1', '0', '1', '0','1', '0', '0', '0','1', '0', '1', '0','1','1'};
 		//101010 10 00 0 0101011
 		char[] test_ins4 = {'1', '0', '1', '0','1', '0', '1', '0','0', '0', '0', '0','1', '0', '1', '0','1','1'};
+		//000001 10 10 1 0101101
+		char[]  test_ins_LDR = {'0', '0', '0', '0','0', '1', '1', '0','1', '0', '1', '0','1', '0', '1', '0','1','0'};
 		//100(10)
 		char[] ad1 = {'0','0','0','0','0','1', '1', '0','0', '1', '0', '0'};
+		//43(10)
+		char[] ad2 = {'0', '0','0', '0', '0', '0','1', '0', '1', '0','1','1'};
 		
 //		cpu.writePC(test_pc, Mainboard.getLenAddr());
 //		memory.write(test_ir, Mainboard.getLenInstruction(), 128);
@@ -74,11 +78,22 @@ public class TestSimulator {
 //		char[] result = new char[12];
 //		alu.subtraction(s1.toCharArray(), s2.toCharArray(), 12, result);
 //		System.out.println(result);
-		ic.writeMem(test_ins3, test_ins3.length, ad1);
+		
+		
+//		ic.writeMem(test_ins3, test_ins3.length, ad1);
+//		cpu.writeXR(test_xr, id, test_xr.length);
+//		cpu.writePC(ad1, ad1.length);
+//		cpu.decode();
+//		cpu.calcEA();
+		
+		//test for LDR
+		ic.writeMem(test_ins_LDR, test_ins_LDR.length, ad1);
+		ic.writeMem(test_content, test_content.length, ad2);
 		cpu.writeXR(test_xr, id, test_xr.length);
 		cpu.writePC(ad1, ad1.length);
-		cpu.decode();
-		cpu.calcEA();
+		LDR ldr = new LDR(cpu);
+		ldr.start();
+		
 		
 	}
 

@@ -10,8 +10,8 @@ public class Converter {
 	 * @param addr address
 	 * @return char[]
 	 */
-	public static char[] addrConverterI2S(int addr) {
-		int len = IntegratedCircuit.getLenAddr();
+	public static char[] addrConverterI2S(int addr, int len) {
+		//int len = IntegratedCircuit.getLenAddr();
 		//int len = 10;
 		char[] saddr = new char[len];
 		for (int i = 0; i < len; i++) {
