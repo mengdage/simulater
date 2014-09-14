@@ -74,6 +74,9 @@ public class CPU {
 	public char[] getMAR() {
 		return ic.getMAR();
 	}
+	public char[] getMBR() {
+		return ic.getMAR();
+	}
 	/**
 	 * write c of length len into id-th register
 	 * @param c the content to be written
