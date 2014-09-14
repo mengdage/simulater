@@ -8,6 +8,7 @@ enum REG_TYPE {
 }
 
 public class IntegratedCircuit {
+	private static IntegratedCircuit ic; //singleton
 	private static final int LEN_WORD = 18; // the length of the word
 	private static final int LEN_ADDR = 12; // the length of the address
 	private static final int LEN_INSTRUCTION = 18; //the length of an instruction
@@ -17,19 +18,7 @@ public class IntegratedCircuit {
 	private static final int LEN_I = 1; //the length of the I in an instruction
 	private static final int LEN_ADDR_INCODE= 7; //the length of the address in an instruction
 
-	public static int getLenWord() {
-		return LEN_WORD;
-	}
 
-
-	public static int getLenAddr() {
-		return LEN_ADDR;
-	}
-
-
-	public static int getLenInstruction() {
-		return LEN_INSTRUCTION;
-	}
 	/*used for communicating with the memory*/
 	private char[] MAR = new char[LEN_ADDR];
 	private char[] MBR = new char[LEN_WORD];
@@ -54,17 +43,22 @@ public class IntegratedCircuit {
 	//second operand
 	private char[] OP2 = new char[LEN_WORD];
 	/*------------------------*/
+	//the new PC
+	private char[] newPC = new char[LEN_ADDR];
 	
+	//the value read from the register file
+	private char[] valR = new char[LEN_WORD];
+//	private char[] valM = new char[LEN_WORD];
 	//the memory
 	private Memory memory;
 	
 	//the CPU
 	private CPU cpu;
 	
-	public IntegratedCircuit() {
+	private IntegratedCircuit(CPU cpu) {
 		// TODO Auto-generated constructor stub
 		memory = Memory.getInstance();
-		cpu = CPU.getInstance();
+		this.cpu = cpu;
 		
 		//initiliaztion
 		for (int i = 0; i < LEN_ADDR; i++) {
@@ -80,7 +74,48 @@ public class IntegratedCircuit {
 		}
 	}
 	
+	/**
+	 * Singleton: the only way to get an IntegratedCircuit instance
+	 * @return an instance
+	 */
+	public static IntegratedCircuit getInstance(CPU cpu) {
+		//the IntegratedCircuit class has not been instantiated yet
+		//new an object and return the object
+		if(ic == null) {
+			ic = new IntegratedCircuit(cpu);
+			return ic;
+		}
+		else {
+			//return the object which has already been instantiated
+			return ic;
+		}
+	}
+	/**
+	 * get the length of a word
+	 * @return length
+	 */
+	public static int getLenWord() {
+		return LEN_WORD;
+	}
+
+	/**
+	 * get the length of the address
+	 * @return length
+	 */
+	public static int getLenAddr() {
+		return LEN_ADDR;
+	}
+
+	/**
+	 * get the length of an instruction
+	 * @return length
+	 */
+	public static int getLenInstruction() {
+		return LEN_INSTRUCTION;
+	}
 	
+	
+	 
 	/**
 	 * 
 	 * @param c: store the content
@@ -91,17 +126,15 @@ public class IntegratedCircuit {
 	private int readReg(char[] c, int len, REG_TYPE rt) {
 		switch (rt) {
 		case GPR:
-			cpu.readGPR(c, rfi, len);
+			cpu.readGPR(c, rfi, len);break;
 		case XR:
-			cpu.readXR(c, xfi, len);
+			cpu.readXR(c, xfi, len);break;
 		case CC:
-			//cpu.readCC(, len)
+			//cpu.readCC(, len)break;
 		case PC:
-			
+			cpu.readPC(c, len);break;
 		case IR:
-			cpu.readIR(c, len);
-			
-			break;
+			cpu.readIR(c, len);break;
 
 		default:
 			break;
@@ -119,13 +152,19 @@ public class IntegratedCircuit {
 	private int writeReg(char[] c, int len, REG_TYPE rt) {
 		switch (rt) {
 		case GPR:
+			cpu.writeGPR(c, rfi, len);
+			break;
 			
 		case XR:
+			break;
 			
 		case CC:
 			//cpu.readCC(, len)
+			break;
+			
 		case PC:
 			
+			break;
 		case IR:
 			cpu.writeIR(c, len);
 			
@@ -141,14 +180,49 @@ public class IntegratedCircuit {
 	 * 
 	 * @param c: store the content
 	 * @param len: the length of content
+	 * @param addr: the address of the content
 	 * @return 0
 	 */
-	private int readMem(char[] c, int len) {
-		memory.read(c, len, EA);
+	public int readMem(char[] c, int len, char[] addr) {
+		
+		memory.read(c, len, addr);
+		
 		return 0;
 	}
-	private int writeMem() {
+	/**
+	 * 
+	 * @param c then content to be written
+	 * @param len the length of the content
+	 * @param addr the address of the memory to start writing
+	 * @return
+	 */
+	public int writeMem(char[] c, int len, char[] addr) {
+		memory.write(c, len, addr);
+		
 		return 0;
+	}
+	/**
+	 * Load a word from Memory to general purpouse register
+	 * the Memory address is EA
+	 * the register id is rfi
+	 * @return
+	 */
+	public int M2R() {
+		readMem(MBR, LEN_WORD, EA);
+		writeReg(MBR, LEN_WORD, REG_TYPE.GPR);
+		return 0;
+	}
+	/**
+	 * store a word from general purpouse register to Memory
+	 * the Memory address is EA
+	 * the register id is rfi
+	 * @return
+	 */
+	public int R2M() {
+		readReg(valR, LEN_WORD, REG_TYPE.GPR);
+		writeMem(valR, LEN_WORD, EA);
+		return 0;
+		
 	}
 	/**
 	 * Perform the decode stage
@@ -166,7 +240,7 @@ public class IntegratedCircuit {
 		char[] ir = new char[18];
 		int n;
 		readReg(MAR, LEN_ADDR, REG_TYPE.PC); // MAR <- R(RFI)
-		readMem(MBR, LEN_WORD); //MBR <- M(MAR)
+		readMem(MBR, LEN_WORD, MAR); //MBR <- M(MAR)
 		writeReg(MBR, LEN_WORD, REG_TYPE.IR); // IR <- R(MBR)
 		readReg(ir, LEN_INSTRUCTION, REG_TYPE.IR);
 		for(n = 0; n < LEN_INSTRUCTION; n++) {
@@ -225,18 +299,31 @@ public class IntegratedCircuit {
 			else { //IF XFI = 1, 2, 3
 				//EA <- R(XFI) + ADDR
 				char[] ad = new char[LEN_ADDR];
+				char[] ad2 = new char[LEN_ADDR];
 				cpu.readXR(ad, xfi, LEN_ADDR);
-				//add ad to addr
-				//!!!!!!need revise!!!!!!!!!!
-				for(int i = 0; i < LEN_ADDR; i++) {
-					EA[i] = ad[i];
+				//expand the 7-bit addr to 12-bit in ad2 
+				for (int i = 0; i < LEN_ADDR; i++) {
+					if(i < LEN_ADDR - LEN_ADDR_INCODE) {
+						ad2[i] = '0';
+					}
+					else { 
+						ad2[i] =addr[i-(LEN_ADDR-LEN_ADDR_INCODE)]; 
+					}
+					
 				}
+				//add ad to addr
+				cpu.addition(ad, ad2, EA);
+				//!!!!!!need revise!!!!!!!!!!
+//				for(int i = 0; i < LEN_ADDR; i++) {
+//					EA[i] = ad[i];
+//				}
 			}
 		}
 		else { //IF I = 1
 			if(xfi[0] == '0' && xfi[1] == '0') { //IF XFI = 0
 				//EA <- M(ADDR)
 				char[] ad = new char[LEN_ADDR];
+						
 				memory.read(ad, LEN_ADDR, addr);
 				for(int i = 0; i < LEN_ADDR; i++) {
 					EA[i] = ad[i];
@@ -245,19 +332,31 @@ public class IntegratedCircuit {
 			}
 			else { //IF XFI = 1, 2, 3
 				//EA <- M(R(XFI) + ADDR)
+				
+				//the content from index register 
 				char[] ad = new char[LEN_ADDR];
+				//the address of the memory where the EA resides
 				char[] ad2 = new char[LEN_ADDR];
+				
 				cpu.readXR(ad, xfi, LEN_ADDR);
 				//add ad to ad2
 				//!!!!!!need revise!!!!!!!!!!
-				memory.read(ad2, LEN_ADDR, ad);
-				for(int i = 0; i < LEN_ADDR; i++) {
-					EA[i] = ad2[i];
-				}
+				
+				memory.read(EA, LEN_ADDR, ad2);
+//				for(int i = 0; i < LEN_ADDR; i++) {
+//					EA[i] = ad2[i];
+//				}
 				
 			}
 		}
 		System.out.println(EA);
+		return 0;
+	}
+	
+	public int pcUpdate() {
+		char[] plusOne = {'0','0','0','0','0','0','0','0','0','0','0','1'};
+		cpu.addition(MAR, plusOne, newPC);
+		cpu.writePC(newPC, LEN_ADDR);
 		return 0;
 	}
 	

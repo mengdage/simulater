@@ -16,20 +16,27 @@ public class CPU {
 	//the instruction register, 18 bit, storing the content of the next instruction 
 	private InstructionRegister ir = new InstructionRegister();
 	
-	//
+	//the algorithm logic unit
 	private ALU alu = new ALU();
+	//the integrated circuit
+	private IntegratedCircuit ic;
 	
 	private CPU() {
 		// TODO Auto-generated constructor stub
 		System.out.println("I am the CPU. I am starting up!!");
+		alu = new ALU();
+		ic = IntegratedCircuit.getInstance(this);
 	}
 	//singleton: the only way to get a cpu object
 	public static CPU getInstance() {
+		//the CPU class has not been instantiated yet
+		//new an object and return the object
 		if(cpu == null) {
 			cpu = new CPU();
 			return cpu;
 		}
 		else {
+			//return the object which has already been instantiated
 			return cpu;
 		}
 	}
@@ -226,8 +233,27 @@ public class CPU {
 	}
 	
 	//!******need revised******!
-	public int addition(char[] op1, char[] op2) {
-		return alu.addition(44, 55);
+	public int addition(char[] op1, char[] op2, char[] result) {
+		//return alu.addition(44, 55);
+		alu.addition(op1, op2, op1.length, result);
+		return 0;
+	}
+	
+	/**
+	 * decode process
+	 * actually invoke the ic's decode method
+	 * @return
+	 */
+	public int decode() {
+		return ic.decode();
+	}
+	/**
+	 * EA calculation process
+	 * actually invoke the ic's calcEa method
+	 * @return
+	 */
+	public int calcEA() {
+		return ic.calcEA();
 	}
 	
 }

@@ -1,4 +1,7 @@
 package gwu.csci.arc;
+
+import gwu.csco.arc.utility.Converter;
+
 //need revise
 public class Memory {
 
@@ -23,10 +26,13 @@ public class Memory {
 	//Singleton: the only way to get a Memory object
 	public static Memory getInstance() {
 		if(memory == null){
+			//the Memory class has not been instantiated yet
+			//new an object and return the object
 			memory = new Memory();
 			return memory;
 		}
 		else {
+			//return the object which has already been instantiated
 			return memory;
 		}
 	}
@@ -39,10 +45,12 @@ public class Memory {
 	 * @param addr the address where to start writing
 	 * @return 0
 	 */
-	public int write(char[] c,int len, int addr ) {
-		System.out.println("Memory: Writing content into memory...");
+	public int write(char[] c,int len, char[] addr ) {
+		int intaddr;
+		intaddr = Converter.addrConveterS2I(addr, IntegratedCircuit.getLenAddr());
+		System.out.println("Memory: Writing content into memory at " + intaddr);
 		for(int i = 0; i < len; i++) {
-			content[addr+i] = c[i];
+			content[intaddr+i] = c[i];
 		}
 		System.out.println("Memory: Succeed!");
 		return 0;
@@ -56,15 +64,17 @@ public class Memory {
 	 * @param binAddr the address where to start reading
 	 * @return 0
 	 */
-	public int read(char[] c, int len, char[] binAddr) {
+	public int read(char[] c, int len, char[] addr) {
+		int intaddr;
+		intaddr = Converter.addrConveterS2I(addr, IntegratedCircuit.getLenAddr());
 		//!!!!!!!!!!!!need revise here!!!!!!!!!!!!
-		System.out.print("Memory: the address to read is: ");
-		System.out.println(binAddr);
-		System.out.println("Memory: change the address to 128");
-		int addr = 128; 
-		System.out.println("Memory: Reading content from memory...");
+//		System.out.print("Memory: the address to read is: ");
+//		System.out.println(addr);
+//		System.out.println("Memory: change the address to 128");
+//		int fakeaddr = 128; 
+//		System.out.println("Memory: Reading content from memory...");
 		for(int i = 0; i < len; i++) {
-			c[i] = content[addr + i];
+			c[i] = content[intaddr + i];
 		}
 		System.out.println("Memory: Succeed!");
 		return 0;
