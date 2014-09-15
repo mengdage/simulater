@@ -267,8 +267,30 @@ public class CPU {
 			System.out.println("CPU: reading instruction register register succeed");
 		return 0;
 	}
+	/**
+	 * call the M2R() method in IntegratedCircuit
+	 * @return
+	 */
 	public int M2R() {
 		ic.M2R();
+		return 0;
+	}
+	/**
+	 * call the R2M() method in IntegratedCircuit
+	 * @return
+	 */
+	public int R2M() {
+		ic.R2M();
+		return 0;
+	}
+	
+	public int A2R() {
+		ic.A2R();
+		return 0;
+	}
+	
+	public int A2X() {
+		ic.A2X();
 		return 0;
 	}
 	//!******need revised******!
@@ -322,7 +344,7 @@ public class CPU {
 	 * put Immediate in op2
 	 * @return
 	 */
-	public int RICalc() {
+	public int RIOperandPreparation() {
 		readGPR(OP1, getRfi(), OP1.length);
 		char[] addr = ic.getAddr();
 		for (int i = 0; i < ic.getLenWord(); i++) {

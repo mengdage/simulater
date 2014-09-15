@@ -3,7 +3,10 @@ package gwu.csci.arc.test;
 import gwu.csci.arc.CPU;
 import gwu.csci.arc.IntegratedCircuit;
 import gwu.csci.arc.Memory;
+import gwu.csci.arc.isa.LDA;
 import gwu.csci.arc.isa.LDR;
+import gwu.csci.arc.isa.LDX;
+import gwu.csci.arc.isa.STR;
 
 public class TestSimulator {
 
@@ -41,6 +44,16 @@ public class TestSimulator {
 		char[] test_ins4 = {'1', '0', '1', '0','1', '0', '1', '0','0', '0', '0', '0','1', '0', '1', '0','1','1'};
 		//000001 10 10 1 0101101
 		char[]  test_ins_LDR = {'0', '0', '0', '0','0', '1', '1', '0','1', '0', '1', '0','1', '0', '1', '0','1','0'};
+		//000010 10 10 1 0101101
+		char[]  test_ins_STR = {'0', '0', '0', '0','1', '0', '1', '0','1', '0', '1', '0','1', '0', '1', '0','1','0'};
+		//000011 10 00 0 0101101
+		char[]  test_ins_LDA = {'0', '0', '0', '0','1', '1', '1', '0','0', '0', '0', '0','1', '0', '1', '0','1','0'};
+		//000011 10 10 1 0101101
+		char[]  test_ins_LDA2 = {'0', '0', '0', '0','1', '1', '1', '0','1', '0', '1', '0','1', '0', '1', '0','1','0'};
+		//000011 10 00 0 0101101
+		char[]  test_ins_LDX = {'0', '0', '0', '0','1', '1', '1', '0','0', '0', '0', '0','1', '0', '1', '0','1','0'};
+		//000011 10 10 1 0101101
+		char[]  test_ins_LDX2 = {'0', '0', '0', '0','1', '1', '1', '0','1', '0', '1', '0','1', '0', '1', '0','1','0'};
 		//100(10)
 		char[] ad1 = {'0','0','0','0','0','1', '1', '0','0', '1', '0', '0'};
 		//43(10)
@@ -91,7 +104,7 @@ public class TestSimulator {
 //		cpu.decode();
 //		cpu.calcEA();
 		
-		//test for LDR
+//		//test for LDR
 //		ic.writeMem(test_ins_LDR, test_ins_LDR.length, ad1);
 //		ic.writeMem(test_content, test_content.length, ad2);
 //		cpu.writeXR(test_xr, id, test_xr.length);
@@ -99,9 +112,64 @@ public class TestSimulator {
 //		
 //		LDR ldr = new LDR(cpu);
 //		ldr.start();
+//		char[] pc = new char[12];
+//		cpu.readPC(pc, 12);
+//		System.out.println(pc);
 		
-		Initialization i = new Initialization();
-		i.toRun();
+		//test for STR
+//		ic.writeMem(test_ins_STR, test_ins_LDR.length, ad1);
+//		//ic.writeMem(test_content, test_content.length, ad2);
+//		cpu.writeGPR(test_ins, id, test_ins.length);
+//		cpu.writeXR(test_xr, id, test_xr.length);
+//		cpu.writePC(ad1, ad1.length);
+//		
+//		STR str = new STR(cpu);
+//		str.start();
+//		char[] pc = new char[12];
+//		cpu.readPC(pc, 12);
+//		System.out.println(pc);
+//		char[] mem = new char[18];
+//		ic.readMem(mem, mem.length, ad2);
+//		System.out.print("Memory address[43] - [60]:");
+//		System.out.println(mem);
+		
+//		//test for LDA 
+//		ic.writeMem(test_ins_LDA2, test_ins_LDR.length, ad1);
+//		ic.writeMem(test_content, test_content.length, ad2);
+////		cpu.writeGPR(test_ins, id, test_ins.length);
+//		cpu.writeXR(test_xr, id, test_xr.length);
+//		cpu.writePC(ad1, ad1.length);
+//		
+//		LDA lda = new LDA(cpu);
+//		lda.start();
+//		char[] pc = new char[12];
+//		cpu.readPC(pc, 12);
+//		System.out.println(pc);
+//		
+//		char[] c = new char[18];
+//		cpu.readGPR(c, id, 18);
+//		System.out.println(c);
+		
+		//test for LDX I =0
+		ic.writeMem(test_ins_LDA2, test_ins_LDR.length, ad1);
+		ic.writeMem(test_content, test_content.length, ad2);
+//		cpu.writeGPR(test_ins, id, test_ins.length);
+		cpu.writeXR(test_xr, id, test_xr.length);
+		cpu.writePC(ad1, ad1.length);
+		
+		LDX ldx = new LDX(cpu);
+		ldx.start();
+		char[] pc = new char[12];
+		cpu.readPC(pc, 12);
+		System.out.println(pc);
+		
+		char[] c = new char[18];
+		cpu.readGPR(c, id, 18);
+		System.out.println(c);
+		
+		
+//		Initialization i = new Initialization();
+//		i.toRun();
 		
 		
 	}

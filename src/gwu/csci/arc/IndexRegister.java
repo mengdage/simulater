@@ -36,8 +36,21 @@ public class IndexRegister {
 	}
 	//set the content of the register one X1
 	public int setX1(char[] x1, int len) {
-		for(int i = 0; i<len && i < LENGTH; i++) {
-			X1[i] = x1[i];
+
+		if (len < LENGTH) {
+			for (int i = 0; i < LENGTH; i++) {
+				if (i<(LENGTH-len)) {
+					X1[i] = '0';
+				}
+				else {
+					X1[i] = x1[i-(LENGTH-len)];
+				}
+			}
+		}
+		else {
+			for(int i = 0; i < LENGTH; i++) {
+				X1[i] = x1[i];
+			}
 		}
 		return 0;
 	}
@@ -50,8 +63,20 @@ public class IndexRegister {
 	}
 	//set the content of the register two X2
 	public int setX2(char[] x2, int len) {
-		for(int i = 0; i<len && i < LENGTH; i++) {
-			X2[i] = x2[i];
+		if (len < LENGTH) {
+			for (int i = 0; i < LENGTH; i++) {
+				if (i<(LENGTH-len)) {
+					X2[i] = '0';
+				}
+				else {
+					X2[i] = x2[i-(LENGTH-len)];
+				}
+			}
+		}
+		else {
+			for(int i = 0; i < LENGTH; i++) {
+				X2[i] = x2[i];
+			}
 		}
 		return 0;
 	}
@@ -64,9 +89,22 @@ public class IndexRegister {
 	}
 	//set the content of the register three X3
 	public int setX3(char[] x3, int len) {
-		for(int i = 0; i<len && i < LENGTH; i++) {
-			X3[i] = x3[i];
+		if (len < LENGTH) {
+			for (int i = 0; i < LENGTH; i++) {
+				if (i<(LENGTH-len)) {
+					X1[i] = '0';
+				}
+				else {
+					X3[i] = x3[i-(LENGTH-len)];
+				}
+			}
 		}
+		else {
+			for(int i = 0; i < LENGTH; i++) {
+				X3[i] = x3[i];
+			}
+		}
+		
 		return 0;
 	}
 

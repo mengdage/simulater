@@ -260,7 +260,7 @@ public class IntegratedCircuit {
 	 * Load a word from Memory to general purpouse register
 	 * the Memory address is EA
 	 * the register id is rfi
-	 * @return
+	 * @return 0
 	 */
 	public int M2R() {
 		readMem(MBR, LEN_WORD, EA);
@@ -271,7 +271,7 @@ public class IntegratedCircuit {
 	 * store a word from general purpouse register to Memory
 	 * the Memory address is EA
 	 * the register id is rfi
-	 * @return
+	 * @return 0
 	 */
 	public int R2M() {
 		readReg(valR, LEN_WORD, REG_TYPE.GPR);
@@ -279,7 +279,39 @@ public class IntegratedCircuit {
 		return 0;
 		
 	}
+	/**
+	 * load the register with addr or M(addr)
+	 * the register id is rfi
+	 * @return
+	 */
+	public int A2R() {
+		if (I[0] == '0') {
+			writeReg(EA, EA.length, REG_TYPE.GPR);
+		}
+		else {
+			readMem(MBR, LEN_WORD, EA);
+			writeReg(MBR, LEN_WORD, REG_TYPE.GPR);
+		}
+		
+		return 0;
+	}
 	
+	/**
+	 * load the register with addr or M(addr)
+	 * the register id is rfi
+	 * @return
+	 */
+	public int A2X() {
+		if (I[0] == '0') {
+			writeReg(EA, EA.length, REG_TYPE.XR);
+		}
+		else {
+			readMem(MBR, LEN_WORD, EA);
+			writeReg(MBR, LEN_WORD, REG_TYPE.XR);
+		}
+		
+		return 0;
+	}
 	
 	/**
 	 * Perform the decode stage
