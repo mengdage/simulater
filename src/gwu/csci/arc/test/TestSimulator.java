@@ -42,17 +42,17 @@ public class TestSimulator {
 		char[] test_ins3 = {'1', '0', '1', '0','1', '0', '1', '0','1', '0', '0', '0','1', '0', '1', '0','1','1'};
 		//101010 10 00 0 0101011
 		char[] test_ins4 = {'1', '0', '1', '0','1', '0', '1', '0','0', '0', '0', '0','1', '0', '1', '0','1','1'};
-		//000001 10 10 1 0101101
+		//000001 10 10 1 0101010
 		char[]  test_ins_LDR = {'0', '0', '0', '0','0', '1', '1', '0','1', '0', '1', '0','1', '0', '1', '0','1','0'};
-		//000010 10 10 1 0101101
+		//000010 10 10 1 0101010
 		char[]  test_ins_STR = {'0', '0', '0', '0','1', '0', '1', '0','1', '0', '1', '0','1', '0', '1', '0','1','0'};
-		//000011 10 00 0 0101101
+		//000011 10 00 0 0101010
 		char[]  test_ins_LDA = {'0', '0', '0', '0','1', '1', '1', '0','0', '0', '0', '0','1', '0', '1', '0','1','0'};
-		//000011 10 10 1 0101101
+		//000011 10 10 1 0101010
 		char[]  test_ins_LDA2 = {'0', '0', '0', '0','1', '1', '1', '0','1', '0', '1', '0','1', '0', '1', '0','1','0'};
-		//000011 10 00 0 0101101
-		char[]  test_ins_LDX = {'0', '0', '0', '0','1', '1', '1', '0','0', '0', '0', '0','1', '0', '1', '0','1','0'};
-		//000011 10 10 1 0101101
+		//000011 10 10 0 0101010
+		char[]  test_ins_LDX = {'0', '0', '0', '0','1', '1', '1', '0','1', '0', '0', '0','1', '0', '1', '0','1','0'};
+		//000011 10 10 1 0101010
 		char[]  test_ins_LDX2 = {'0', '0', '0', '0','1', '1', '1', '0','1', '0', '1', '0','1', '0', '1', '0','1','0'};
 		//100(10)
 		char[] ad1 = {'0','0','0','0','0','1', '1', '0','0', '1', '0', '0'};
@@ -151,7 +151,7 @@ public class TestSimulator {
 //		System.out.println(c);
 		
 		//test for LDX I =0
-		ic.writeMem(test_ins_LDA2, test_ins_LDR.length, ad1);
+		ic.writeMem(test_ins_LDX2, test_ins_LDR.length, ad1);
 		ic.writeMem(test_content, test_content.length, ad2);
 //		cpu.writeGPR(test_ins, id, test_ins.length);
 		cpu.writeXR(test_xr, id, test_xr.length);
@@ -159,12 +159,13 @@ public class TestSimulator {
 		
 		LDX ldx = new LDX(cpu);
 		ldx.start();
+		
 		char[] pc = new char[12];
 		cpu.readPC(pc, 12);
 		System.out.println(pc);
 		
-		char[] c = new char[18];
-		cpu.readGPR(c, id, 18);
+		char[] c = new char[12];
+		cpu.readXR(c, id, 12);
 		System.out.println(c);
 		
 		

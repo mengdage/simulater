@@ -37,6 +37,9 @@ public class IndexRegister {
 	//set the content of the register one X1
 	public int setX1(char[] x1, int len) {
 
+		if (len>LENGTH) {
+			len = LENGTH;
+		}
 		if (len < LENGTH) {
 			for (int i = 0; i < LENGTH; i++) {
 				if (i<(LENGTH-len)) {
