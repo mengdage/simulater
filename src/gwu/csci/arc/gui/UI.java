@@ -1,29 +1,42 @@
 package gwu.csci.arc.gui;
 
+import gwu.csci.arc.CPU;
+
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
 import java.awt.FlowLayout;
+
 import javax.swing.JTextField;
 import javax.swing.JLabel;
+
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+
 import javax.swing.JButton;
 import javax.swing.JSeparator;
 import javax.swing.JEditorPane;
 import javax.swing.JTextArea;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+
 import java.awt.Color;
+
 import javax.swing.JSlider;
+
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class UI extends JFrame {
+	
+	CPU cpu = CPU.getInstance();
 
 	private JPanel contentPane;
 	private JLabel lblNewLabel_2;
@@ -145,10 +158,13 @@ public class UI extends JFrame {
 		SetTxt_R0 = new JTextField();
 		SetTxt_R0.addKeyListener(new KeyAdapter() {
 			@Override
-			public void keyReleased(KeyEvent e) {
+			public void keyPressed(KeyEvent e) {
+				
 				String Current = SetTxt_R0.getText();
-				int key = e.getKeyCode();
-				if ((key >= 48) && (key <= 57)) SetTxt_R0.setText(Current + e.toString());
+				if (Current.length() >= 18)
+				{
+					
+				}
 			}
 		});
 		GridBagConstraints gbc_SetTxt_R0 = new GridBagConstraints();
@@ -161,6 +177,18 @@ public class UI extends JFrame {
 		
 		
 		SbmBtn_R0 = new JButton("Submit");
+		SbmBtn_R0.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				char[] Current = SetTxt_R0.getText().toCharArray();
+				char[] id = {'0', '0'};
+				
+				cpu.writeGPR(Current, id, Current.length);
+				
+				cpu.readGPR(Current, id, Current.length);
+				DspTxt_R0.setText(new String(Current));
+			}
+		});
 		GridBagConstraints gbc_SbmBtn_R0 = new GridBagConstraints();
 		gbc_SbmBtn_R0.anchor = GridBagConstraints.WEST;
 		gbc_SbmBtn_R0.insets = new Insets(0, 0, 5, 5);
@@ -215,6 +243,18 @@ public class UI extends JFrame {
 		SetTxt_R1.setColumns(5);
 		
 		SbmBtn_R1 = new JButton("Submit");
+		SbmBtn_R1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				char[] Current = SetTxt_R1.getText().toCharArray();
+				char[] id = {'0', '1'};
+				
+				cpu.writeGPR(Current, id, Current.length);
+				
+				cpu.readGPR(Current, id, Current.length);
+				DspTxt_R1.setText(new String(Current));
+			}
+		});
 		GridBagConstraints gbc_SbmBtn_R1 = new GridBagConstraints();
 		gbc_SbmBtn_R1.anchor = GridBagConstraints.WEST;
 		gbc_SbmBtn_R1.insets = new Insets(0, 0, 5, 5);
@@ -240,6 +280,18 @@ public class UI extends JFrame {
 		SetTxt_R2.setColumns(5);
 		
 		SbmBtn_R2 = new JButton("Submit");
+		SbmBtn_R2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				char[] Current = SetTxt_R2.getText().toCharArray();
+				char[] id = {'1', '0'};
+				
+				cpu.writeGPR(Current, id, Current.length);
+				
+				cpu.readGPR(Current, id, Current.length);
+				DspTxt_R2.setText(new String(Current));
+			}
+		});
 		GridBagConstraints gbc_SbmBtn_R2 = new GridBagConstraints();
 		gbc_SbmBtn_R2.anchor = GridBagConstraints.WEST;
 		gbc_SbmBtn_R2.insets = new Insets(0, 0, 5, 5);
@@ -265,6 +317,18 @@ public class UI extends JFrame {
 		SetTxt_R3.setColumns(5);
 		
 		SbmBtn_R3 = new JButton("Submit");
+		SbmBtn_R3.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				char[] Current = SetTxt_R3.getText().toCharArray();
+				char[] id = {'1', '1'};
+				
+				cpu.writeGPR(Current, id, Current.length);
+				
+				cpu.readGPR(Current, id, Current.length);
+				DspTxt_R3.setText(new String(Current));
+			}
+		});
 		GridBagConstraints gbc_SbmBtn_R3 = new GridBagConstraints();
 		gbc_SbmBtn_R3.anchor = GridBagConstraints.WEST;
 		gbc_SbmBtn_R3.insets = new Insets(0, 0, 5, 5);
@@ -316,6 +380,14 @@ public class UI extends JFrame {
 		SetTxt_PC.setColumns(10);
 		
 		SbmBtn_SglStp = new JButton("Single Step");
+		SbmBtn_SglStp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				String X1, X2, X3, MAR, MBR;
+				
+				X1 = cpu.readXR(c, id, len)
+			}
+		});
 		GridBagConstraints gbc_SbmBtn_SglStp = new GridBagConstraints();
 		gbc_SbmBtn_SglStp.fill = GridBagConstraints.HORIZONTAL;
 		gbc_SbmBtn_SglStp.insets = new Insets(0, 0, 5, 0);
