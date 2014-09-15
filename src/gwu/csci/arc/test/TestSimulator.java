@@ -151,10 +151,14 @@ public class TestSimulator {
 //		System.out.println(c);
 		
 		//test for LDX I =0
+		//write code to ad1(100)
 		ic.writeMem(test_ins_LDX2, test_ins_LDR.length, ad1);
+		//write code to ad2(43)
 		ic.writeMem(test_content, test_content.length, ad2);
 //		cpu.writeGPR(test_ins, id, test_ins.length);
+		//write 0001 to xr 1
 		cpu.writeXR(test_xr, id, test_xr.length);
+		//set pc to 100
 		cpu.writePC(ad1, ad1.length);
 		
 		LDX ldx = new LDX(cpu);

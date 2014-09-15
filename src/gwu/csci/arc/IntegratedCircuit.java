@@ -260,29 +260,50 @@ public class IntegratedCircuit {
 	/**
 	 * Load a word from Memory to general purpouse register
 	 * the Memory address is EA
+	 * or the Memory address is M(EA)
 	 * the register id is rfi
+	 * For LDR
 	 * @return 0
 	 */
 	public int M2R() {
-		readMem(MBR, LEN_WORD, EA);
-		writeReg(MBR, LEN_WORD, REG_TYPE.GPR);
+		if(I[0] == '0') {
+			//read a word of memory at EA into MBR
+			readMem(MBR, LEN_WORD, EA);
+			//write MRB into GPR
+			writeReg(MBR, LEN_WORD, REG_TYPE.GPR);
+		}
+		else {
+			//read the actual address from memory at EA into MBR
+			readMem(MAR, LEN_ADDR, EA);
+			//read a word from memory at MAR into MBR
+			readMem(MBR, LEN_WORD, MAR);
+			writeReg(MBR, LEN_WORD, REG_TYPE.GPR);
+			
+		}
 		return 0;
 	}
 	/**
-	 * store a word from general purpouse register to Memory
+	 * store a word from general purpose register to Memory
 	 * the Memory address is EA
+	 * or the Memory address is M(EA)
 	 * the register id is rfi
+	 * For STR
 	 * @return 0
 	 */
 	public int R2M() {
 		if(I[0] == '0') {
+			//read a word of GPR into valR
 			readReg(valR, LEN_WORD, REG_TYPE.GPR);
+			//write a word into memory at EA
 			writeMem(valR, LEN_WORD, EA);
 		}
 		else {
+			//read a word of GPR into valR
 			readReg(valR, LEN_WORD, REG_TYPE.GPR);
-			readMem(MBR, LEN_ADDR, EA);
-			writeMem(valR, LEN_WORD, EA);
+			//read the actual address from memory at EA into MAR
+			readMem(MAR, LEN_ADDR, EA);
+			//write the valR into memory at MAR
+			writeMem(valR, LEN_WORD, MAR);
 		}
 		return 0;
 		
@@ -290,15 +311,19 @@ public class IntegratedCircuit {
 	/**
 	 * load the register with addr or M(addr)
 	 * the register id is rfi
+	 * For LDA
 	 * @return
 	 */
 	public int A2R() {
 		if (I[0] == '0') {
+			//write the EA into general purpose register
 			writeReg(EA, EA.length, REG_TYPE.GPR);
 		}
 		else {
-			readMem(MBR, LEN_WORD, EA);
-			writeReg(MBR, LEN_WORD, REG_TYPE.GPR);
+			//read the actual address from memory at EA into MAR
+			readMem(MAR, LEN_ADDR, EA);
+			//write the MAR into general purpose register
+			writeReg(MAR, LEN_ADDR, REG_TYPE.GPR);
 		}
 		
 		return 0;
@@ -307,29 +332,42 @@ public class IntegratedCircuit {
 	/**
 	 * load the register with addr or M(addr)
 	 * the register id is rfi
+	 * for LDX
 	 * @return
 	 */
 	public int A2X() {
 		if (I[0] == '0') {
+			//write the EA into index register
 			writeReg(EA, EA.length, REG_TYPE.XR);
 		}
 		else {
-			readMem(MBR, LEN_WORD, EA);
-			writeReg(MBR, LEN_WORD, REG_TYPE.XR);
+			//read the actual address from memory at EA into MAR
+			readMem(MAR, LEN_ADDR, EA);
+			//write the MAR into index register
+			writeReg(MAR, LEN_ADDR, REG_TYPE.XR);
 		}
 		
 		return 0;
 	}
-	
+	/**
+	 * Store Index Register to Memory
+	 * For STX
+	 * @return
+	 */
 	public int X2M() {
 		if(I[0] == '0') {
+			//read the index address from index register into valR
 			cpu.readXR(valR, xfi, valR.length);
+			//write the content valR into memory at EA
 			writeMem(valR, valR.length, EA);
 		}
 		else{
+			//read the index address from index register into valR
 			cpu.readXR(valR, xfi, valR.length);
-			readMem(MBR, MBR.length, MBR);
-			writeMem(valR, valR.length, EA);
+			//read the actual address from memory at EA into MAR
+			readMem(MAR, LEN_ADDR, EA);
+			//write the content valR into memory at EA
+			writeMem(valR, valR.length, MAR);
 		}
 		return 0;
 		
