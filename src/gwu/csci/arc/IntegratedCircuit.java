@@ -211,6 +211,7 @@ public class IntegratedCircuit {
 			break;
 			
 		case XR:
+			cpu.writeXR(c, xfi, len);
 			break;
 			
 		case CC:
@@ -274,8 +275,15 @@ public class IntegratedCircuit {
 	 * @return 0
 	 */
 	public int R2M() {
-		readReg(valR, LEN_WORD, REG_TYPE.GPR);
-		writeMem(valR, LEN_WORD, EA);
+		if(I[0] == '0') {
+			readReg(valR, LEN_WORD, REG_TYPE.GPR);
+			writeMem(valR, LEN_WORD, EA);
+		}
+		else {
+			readReg(valR, LEN_WORD, REG_TYPE.GPR);
+			readMem(MBR, LEN_ADDR, EA);
+			writeMem(valR, LEN_WORD, EA);
+		}
 		return 0;
 		
 	}
@@ -311,6 +319,20 @@ public class IntegratedCircuit {
 		}
 		
 		return 0;
+	}
+	
+	public int X2M() {
+		if(I[0] == '0') {
+			cpu.readXR(valR, xfi, valR.length);
+			writeMem(valR, valR.length, EA);
+		}
+		else{
+			cpu.readXR(valR, xfi, valR.length);
+			readMem(MBR, MBR.length, MBR);
+			writeMem(valR, valR.length, EA);
+		}
+		return 0;
+		
 	}
 	
 	/**

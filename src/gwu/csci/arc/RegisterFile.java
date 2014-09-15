@@ -51,6 +51,11 @@ public class RegisterFile {
 				}
 			}
 		}
+		else {
+			for(int i = 0; i<len && i < LENGTH; i++) {
+				R0[i] = r0[i];
+			}
+		}
 		return 0;
 	}
 	//get the content of the register one R1
