@@ -160,7 +160,7 @@ public class CPU {
 					System.out.println("CPU: writing index register 1 succeed");
 			}
 			else { //11(2) = 3(10) register
-				if(xr.getX3(c, len) == 0)
+				if(xr.setX3(c, len) == 0)
 					System.out.println("CPU: writing index register 3 succeed");
 			}
 		}

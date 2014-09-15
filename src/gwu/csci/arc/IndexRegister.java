@@ -2,7 +2,7 @@ package gwu.csci.arc;
 
 public class IndexRegister {
 	//every register is of length LENGTH
-	private static final int LENGTH = 18;
+	private static final int LENGTH = 12;
 	
 	//the three index registers
 	private char[] X1 = new char[LENGTH];

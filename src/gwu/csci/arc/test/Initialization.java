@@ -45,6 +45,7 @@ public class Initialization {
 		cpu.writeXR(test_xr1, id_1, test_xr1.length);
 		cpu.writeXR(test_xr2, id_2, test_xr2.length);
 		cpu.writeXR(test_xr3, id_3, test_xr3.length);
+		
 		ic.setMAR(ad1);
 		ic.setMBR(test_content);
 	}
