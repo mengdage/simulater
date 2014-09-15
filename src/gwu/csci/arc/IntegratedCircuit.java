@@ -161,6 +161,15 @@ public class IntegratedCircuit {
 	public void setMAR(char[] mAR) {
 		MAR = mAR;
 	}
+	
+
+	public char[] getMBR() {
+		return MBR;
+	}
+
+	public void setMBR(char[] mBR) {
+		MBR = mBR;
+	}
 
 	/**
 	 * 

@@ -1,5 +1,8 @@
-package gwu.csci.arc;
+package gwu.csci.arc.test;
 
+import gwu.csci.arc.CPU;
+import gwu.csci.arc.IntegratedCircuit;
+import gwu.csci.arc.Memory;
 import gwu.csci.arc.isa.LDR;
 
 public class TestSimulator {
@@ -89,13 +92,16 @@ public class TestSimulator {
 //		cpu.calcEA();
 		
 		//test for LDR
-		ic.writeMem(test_ins_LDR, test_ins_LDR.length, ad1);
-		ic.writeMem(test_content, test_content.length, ad2);
-		cpu.writeXR(test_xr, id, test_xr.length);
-		cpu.writePC(ad1, ad1.length);
+//		ic.writeMem(test_ins_LDR, test_ins_LDR.length, ad1);
+//		ic.writeMem(test_content, test_content.length, ad2);
+//		cpu.writeXR(test_xr, id, test_xr.length);
+//		cpu.writePC(ad1, ad1.length);
+//		
+//		LDR ldr = new LDR(cpu);
+//		ldr.start();
 		
-		LDR ldr = new LDR(cpu);
-		ldr.start();
+		Initialization i = new Initialization();
+		i.toRun();
 		
 		
 	}
