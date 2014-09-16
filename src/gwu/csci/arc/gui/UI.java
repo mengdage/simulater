@@ -50,6 +50,7 @@ public class UI extends JFrame {
 	char[] Instruction = new char[18];
 	char[] Opcode = new char[6];
 	char[] address = new char[12];
+	char[] address_mem = new char[12];
 	boolean flag = false;
 	String ins = "";
 
@@ -450,7 +451,11 @@ public class UI extends JFrame {
 				
 				
 				if (flag == false) DspTxt_Cns.setText(DspTxt_Cns.getText() + "Fail: Instruction Error!\n\n");
-				else DspTxt_Cns.setText(DspTxt_Cns.getText() + "Instruction Submitted: " + ins + " " + new String(address) + "!\n\n");
+				else
+				{ 
+					instruction_run();
+					DspTxt_Cns.setText(DspTxt_Cns.getText() + "Instruction Submitted: " + new String(address_mem) + " " + ins + " " + new String(address) + "!\n\n");
+				}
 			}
 		});
 		
@@ -543,12 +548,7 @@ public class UI extends JFrame {
 				//LDX ldx = new LDX(cpu);
 				//ldx.start();
 				
-				if (flag == true)
-				{
-					instruction_run();
-				}
-				
-				else
+				if (flag == false)
 				{
 					cpu.readPC(pc, pc.length);
 					cpu.readMem(Instruction, Instruction.length, pc);
@@ -942,7 +942,7 @@ public class UI extends JFrame {
 			stx.start();
 		}
 		
-		cpu.writeIns(Opcode, Opcode.length, address);
+		cpu.writeIns(Opcode, Opcode.length, address_mem);
 		DspTxt_Cns.setText(DspTxt_Cns.getText() + "Success: " + ins + " " + new String(address) + ".\n\n");
 	}
 
