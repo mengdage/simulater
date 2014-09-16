@@ -46,7 +46,10 @@ public class UI extends JFrame {
 	CPU cpu = CPU.getInstance();
 	IndexRegister xr;
 	
-	// for instruction opcode recognition uses
+	// for instruction opcode & address recognition uses
+	char[] Instruction = new char[18];
+	char[] Opcode = new char[6];
+	char[] address = new char[12];
 	boolean flag = false;
 	String ins = "";
 
@@ -436,95 +439,18 @@ public class UI extends JFrame {
 		SbmBtn_Ins.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				char[] Instruction = new char[18];
-				char[] Opcode = new char[6];
-				
 				for (int i = 0; i < 18; i++) Instruction[i] = '0';
 				Instruction = SetTxt_Ins.getText().toCharArray();
 				
-				// get opcode from instruction
-				for (int i = 0; i < 6; i++) Opcode[i] = Instruction[i];
-				
-				// if opcode starts w/ 1
-				if (Opcode[0] == '1')
-				{
-					// and ends w/ 1
-					if (Opcode[5] == '1')
-					{
-						// and in-betweens are 0
-						for (int i = 1; i < 5; i++)
-						{
-							if (Opcode[i] != '0') flag = true;
-							else
-							{
-								flag = false;
-								break;
-							}
-						}
-						
-						if (flag = true) ins = "LDX";
-					}
-					
-					// and ends w/ 10
-					if ((Opcode[4] == '1') && (Opcode[5] == '0'))
-					{
-						for (int i = 1; i < 4; i++)
-						{
-							// and in-betweens are 0
-							if (Opcode[i] == '0') flag = true;
-							else
-							{
-								flag = false;
-								break;
-							}
-						}
-						
-						if (flag = true) ins = "STX";
-					}
-				}
-				
-				// if opcode starts w/ four 0
-				boolean mark = true;
-				
-				for (int i = 0; i < 4; i++)
-				{
-					if (Opcode[i] != '0')
-					{
-						mark = false;
-						break;
-					}
-				}
-				
-				if (mark == true)
-				{
-					// and ends w/ 01, 10, 11
-					if ((Opcode[4] == '0') && (Opcode[5] == '1'))
-					{
-						flag = true;
-						ins = "LDR";
-					}
-					
-					if ((Opcode[4] == '1') && (Opcode[5] == '0'))
-					{
-						flag = true;
-						ins = "STR";
-					}
-					
-					if ((Opcode[4] == '1') && (Opcode[5] == '1'))
-					{
-						flag = true;
-						ins = "LDA";
-					}
-				}
-				
-				if (flag == false) DspTxt_Cns.setText(DspTxt_Cns.getText() + "Fail: Instruction Error!\n");
-				else DspTxt_Cns.setText(DspTxt_Cns.getText() + "Instruction Submitted: " + ins + "!\n");
+				opcode_check();
 				
 				// get address if no instruction error
 				if (flag == true)
-				{
-					
-				}
+					for (int i = 6; i < 18; i++) address[i-6] = Instruction[i];
+				
+				
+				if (flag == false) DspTxt_Cns.setText(DspTxt_Cns.getText() + "Fail: Instruction Error!\n\n");
+				else DspTxt_Cns.setText(DspTxt_Cns.getText() + "Instruction Submitted: " + ins + " " + new String(address) + "!\n\n");
 			}
 		});
 		
@@ -619,55 +545,20 @@ public class UI extends JFrame {
 				
 				if (flag == true)
 				{
-					if (ins == "LDR")
-					{
-						LDR ldr = new LDR(cpu);
-						DspTxt_Cns.setText(DspTxt_Cns.getText() + "Begin to run " + ins + ".\n");
-						ldr.start();
-						
-						DspTxt_Cns.setText(DspTxt_Cns.getText() + "Success: " + ins + ".\n");
-					}
-					
-					if (ins == "STR")
-					{
-						STR str = new STR(cpu);
-						DspTxt_Cns.setText(DspTxt_Cns.getText() + "Begin to run " + ins + ".\n");
-						str.start();
-						
-						DspTxt_Cns.setText(DspTxt_Cns.getText() + "Success: " + ins + ".\n");
-					}
-					
-					if (ins == "LDA")
-					{
-						LDA lda = new LDA(cpu);
-						DspTxt_Cns.setText(DspTxt_Cns.getText() + "Begin to run " + ins + ".\n");
-						lda.start();
-						
-						DspTxt_Cns.setText(DspTxt_Cns.getText() + "Success: " + ins + ".\n");
-					}
-					
-					if (ins == "LDX")
-					{
-						LDX ldx = new LDX(cpu);
-						DspTxt_Cns.setText(DspTxt_Cns.getText() + "Begin to run " + ins + ".\n");
-						ldx.start();
-						
-						DspTxt_Cns.setText(DspTxt_Cns.getText() + "Success: " + ins + ".\n");
-					}
-					
-					if (ins == "STX")
-					{
-						STX stx = new STX(cpu);
-						DspTxt_Cns.setText(DspTxt_Cns.getText() + "Begin to run " + ins + ".\n");
-						stx.start();
-						
-						DspTxt_Cns.setText(DspTxt_Cns.getText() + "Success: " + ins + ".\n");
-					}
+					instruction_run();
 				}
+				
 				else
 				{
+					cpu.readPC(pc, pc.length);
+					cpu.readMem(Instruction, Instruction.length, pc);
+					opcode_check();
 					
+					if (flag == false) DspTxt_Cns.setText(DspTxt_Cns.getText() + "Fail: Instruction Error!\n\n");
+					else instruction_run();
 				}
+				
+				//status update
 				
 				// R0 operation
 				id = new char[] {'0', '0'};
@@ -931,6 +822,128 @@ public class UI extends JFrame {
 		gbc_DspTxt_MBR.gridx = 4;
 		gbc_DspTxt_MBR.gridy = 14;
 		contentPane.add(DspTxt_MBR, gbc_DspTxt_MBR);
+	}
+	
+	// get the first six digits of an instruction
+	// and check if it is an opcode
+	private void opcode_check()
+	{
+		// get opcode from instruction
+		for (int i = 0; i < 6; i++) Opcode[i] = Instruction[i];
+		
+		// if opcode starts w/ 1
+		if (Opcode[0] == '1')
+		{
+			// and ends w/ 1
+			if (Opcode[5] == '1')
+			{
+				// and in-betweens are 0
+				for (int i = 1; i < 5; i++)
+				{
+					if (Opcode[i] != '0') flag = true;
+					else
+					{
+						flag = false;
+						break;
+					}
+				}
+				
+				if (flag = true) ins = "LDX";
+			}
+			
+			// and ends w/ 10
+			if ((Opcode[4] == '1') && (Opcode[5] == '0'))
+			{
+				for (int i = 1; i < 4; i++)
+				{
+					// and in-betweens are 0
+					if (Opcode[i] == '0') flag = true;
+					else
+					{
+						flag = false;
+						break;
+					}
+				}
+				
+				if (flag = true) ins = "STX";
+			}
+		}
+		
+		// if opcode starts w/ four 0
+		boolean mark = true;
+		
+		for (int i = 0; i < 4; i++)
+		{
+			if (Opcode[i] != '0')
+			{
+				mark = false;
+				break;
+			}
+		}
+		
+		if (mark == true)
+		{
+			// and ends w/ 01, 10, 11
+			if ((Opcode[4] == '0') && (Opcode[5] == '1'))
+			{
+				flag = true;
+				ins = "LDR";
+			}
+			
+			if ((Opcode[4] == '1') && (Opcode[5] == '0'))
+			{
+				flag = true;
+				ins = "STR";
+			}
+			
+			if ((Opcode[4] == '1') && (Opcode[5] == '1'))
+			{
+				flag = true;
+				ins = "LDA";
+			}
+		}
+	}
+	
+	// run instruction, write in memory, and display result
+	private void instruction_run()
+	{
+		if (ins == "LDR")
+		{
+			LDR ldr = new LDR(cpu);
+			DspTxt_Cns.setText(DspTxt_Cns.getText() + "Begin to run " + ins + ".\n");
+			ldr.start();
+		}
+		
+		if (ins == "STR")
+		{
+			STR str = new STR(cpu);
+			DspTxt_Cns.setText(DspTxt_Cns.getText() + "Begin to run " + ins + ".\n");
+			str.start();
+		}
+		
+		if (ins == "LDA")
+		{
+			LDA lda = new LDA(cpu);
+			DspTxt_Cns.setText(DspTxt_Cns.getText() + "Begin to run " + ins + ".\n");
+			lda.start();
+		}
+		
+		if (ins == "LDX")
+		{
+			LDX ldx = new LDX(cpu);
+			DspTxt_Cns.setText(DspTxt_Cns.getText() + "Begin to run " + ins + ".\n");
+			ldx.start();
+		}
+		
+		if (ins == "STX")
+		{
+			STX stx = new STX(cpu);
+			DspTxt_Cns.setText(DspTxt_Cns.getText() + "Begin to run " + ins + ".\n");
+			stx.start();
+		}
+		
+		cpu.writeIns(Opcode, Opcode.length, address);
+		DspTxt_Cns.setText(DspTxt_Cns.getText() + "Success: " + ins + " " + new String(address) + ".\n\n");
 	}
 
 }
