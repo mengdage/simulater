@@ -1,6 +1,6 @@
 package gwu.csci.arc;
 
-import gwu.csco.arc.utility.Converter;
+import gwu.csci.arc.utility.Converter;
 
 public class ALU {
 	private char[] cc = new char[4];

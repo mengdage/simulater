@@ -1,4 +1,4 @@
-package gwu.csco.arc.utility;
+package gwu.csci.arc.utility;
 
 public class Converter {
 	//this is a utility class which contains some useful function

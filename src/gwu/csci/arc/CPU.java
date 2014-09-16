@@ -1,6 +1,6 @@
 package gwu.csci.arc;
 
-import gwu.csco.arc.utility.OPERATORS;
+import gwu.csci.arc.utility.OPERATORS;
 
 public class CPU {
 

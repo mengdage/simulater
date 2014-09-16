@@ -1,6 +1,6 @@
 package gwu.csci.arc;
 import gwu.csci.arc.isa.ISA;
-import gwu.csco.arc.utility.Converter;
+import gwu.csci.arc.utility.Converter;
 
 enum REG_TYPE {
 	GPR,
