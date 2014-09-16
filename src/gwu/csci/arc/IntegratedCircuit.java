@@ -284,7 +284,8 @@ public class IntegratedCircuit {
 		for (int i = 0; i < ins_addr.length; i++) {
 			ins_addr[i] = ins_pointer[i];
 		}
-		Converter.addrConverterI2S(len, ins_addr);
+//		Converter.addrConverterI2S(len, ins_addr);
+		//increase the ins_pointer to the next place available to write instructions
 		cpu.addition(ins_pointer, ISA.oneInstranceLength, ins_pointer);
 		return 0;
 	}
