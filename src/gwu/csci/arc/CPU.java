@@ -150,6 +150,32 @@ public class CPU {
 	}
 
 	/**
+	 * actually invoke the ic's readMem metohd
+	 * @param c: store the content
+	 * @param len: the length of content
+	 * @param addr: the address of the content
+	 * @return 0
+	 */
+	public int readMem(char[] c, int len, char[] addr) {
+		
+		ic.readMem(c, len, addr);
+		
+		return 0;
+	}
+	
+	/**
+	 * actually invoke the ic's writeMem metohd
+	 * @param c then content to be written
+	 * @param len the length of the content
+	 * @param addr the address of the memory to start writing
+	 * @return
+	 */
+	public int writeMem(char[] c, int len, char[] addr) {
+		ic.writeMem(c, len, addr);
+		
+		return 0;
+	}
+	/**
 	 * write c of length len into id-th index register
 	 * @param c the content to be written
 	 * @param id the ID of the register used
