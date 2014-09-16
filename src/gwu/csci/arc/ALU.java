@@ -1,6 +1,6 @@
 package gwu.csci.arc;
 
-import gwu.csco.arc.utility.Converter;
+import gwu.csci.arc.utility.Converter;
 
 public class ALU {
 	private char[] cc = new char[4];
@@ -17,10 +17,7 @@ public class ALU {
 //		int len = IntegratedCircuit.getLenAddr();
 		int p1 = Converter.addrConveterS2I(op1, len);
 		int p2 = Converter.addrConveterS2I(op2, len);
-		char[] r = Converter.addrConverterI2S(p1+p2, len);
-		for (int i = 0; i < len; i++) {
-			result[i] = r[i];
-		}
+		Converter.addrConverterI2S(p1+p2, result);
 		return 0;
 	}
 	
@@ -35,10 +32,8 @@ public class ALU {
 //		int len = IntegratedCircuit.getLenAddr();
 		int p1 = Converter.addrConveterS2I(op1, len);
 		int p2 = Converter.addrConveterS2I(op2, len);
-		char[] r = Converter.addrConverterI2S(p1-p2, len);
-		for (int i = 0; i < len; i++) {
-			result[i] = r[i];
-		}
+		Converter.addrConverterI2S(p1-p2, result);
+		
 		return 0;
 	}
 }

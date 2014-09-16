@@ -1,4 +1,4 @@
-package gwu.csco.arc.utility;
+package gwu.csci.arc.utility;
 
 public enum OPERATORS {
 	add,

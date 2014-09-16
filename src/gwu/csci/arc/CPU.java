@@ -1,6 +1,6 @@
 package gwu.csci.arc;
 
-import gwu.csco.arc.utility.OPERATORS;
+import gwu.csci.arc.utility.OPERATORS;
 
 public class CPU {
 
@@ -351,7 +351,7 @@ public class CPU {
 	public int RIOperandPreparation() {
 		readGPR(OP1, getRfi(), OP1.length);
 		char[] addr = ic.getAddr();
-		for (int i = 0; i < ic.getLenWord(); i++) {
+		for (int i = 0; i < IntegratedCircuit.getLenWord(); i++) {
 			if(i < (IntegratedCircuit.getLenWord()-IntegratedCircuit.getLenAddrIncode()) ) {
 				OP2[i] = '0';
 			}

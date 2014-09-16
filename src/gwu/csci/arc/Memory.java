@@ -1,6 +1,6 @@
 package gwu.csci.arc;
 
-import gwu.csco.arc.utility.Converter;
+import gwu.csci.arc.utility.Converter;
 
 //need revise
 public class Memory {
