@@ -1,6 +1,9 @@
 package gwu.csci.arc.gui;
 
 import gwu.csci.arc.CPU;
+import gwu.csci.arc.IndexRegister;
+import gwu.csci.arc.isa.LDX;
+import gwu.csci.arc.test.Initialization;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -37,6 +40,7 @@ import java.awt.event.ActionEvent;
 public class UI extends JFrame {
 	
 	CPU cpu = CPU.getInstance();
+	IndexRegister xr;
 
 	private JPanel contentPane;
 	private JLabel lblNewLabel_2;
@@ -87,11 +91,19 @@ public class UI extends JFrame {
 	private JScrollPane scrollPane_1;
 	private JTextArea SetTxt_Ins;
 	private JScrollPane scrollPane_2;
+	private JButton SbmBtn_PC;
 
+	
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		Initialization init = new Initialization();
+		
+	//	init.toRun();
+		
+		
+		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -108,6 +120,7 @@ public class UI extends JFrame {
 	 * Create the frame.
 	 */
 	public UI() {
+		
 		setTitle("Simulator");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -154,19 +167,19 @@ public class UI extends JFrame {
 		gbc_lblNewLabel_1.gridx = 0;
 		gbc_lblNewLabel_1.gridy = 1;
 		contentPane.add(lblNewLabel_1, gbc_lblNewLabel_1);
-		
+				
 		SetTxt_R0 = new JTextField();
 		SetTxt_R0.addKeyListener(new KeyAdapter() {
 			@Override
-			public void keyPressed(KeyEvent e) {
-				
+			public void keyTyped(KeyEvent e) {
+		
 				String Current = SetTxt_R0.getText();
-				if (Current.length() >= 18)
-				{
-					
-				}
+				
+				if (Current.length() == 18) e.setKeyChar((char) 00);
+				if ((e.getKeyChar() != '0') && (e.getKeyChar() != '1')) e.setKeyChar((char) 00);
 			}
 		});
+		
 		GridBagConstraints gbc_SetTxt_R0 = new GridBagConstraints();
 		gbc_SetTxt_R0.insets = new Insets(0, 0, 5, 5);
 		gbc_SetTxt_R0.fill = GridBagConstraints.HORIZONTAL;
@@ -180,13 +193,15 @@ public class UI extends JFrame {
 		SbmBtn_R0.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				char[] Current = SetTxt_R0.getText().toCharArray();
+				char[] Current = new char[18];
+				char[] Current_dsp = new char[18];
+				Current = SetTxt_R0.getText().toCharArray();
 				char[] id = {'0', '0'};
 				
 				cpu.writeGPR(Current, id, Current.length);
 				
-				cpu.readGPR(Current, id, Current.length);
-				DspTxt_R0.setText(new String(Current));
+				cpu.readGPR(Current_dsp, id, Current_dsp.length);
+				DspTxt_R0.setText(new String(Current_dsp));
 			}
 		});
 		GridBagConstraints gbc_SbmBtn_R0 = new GridBagConstraints();
@@ -234,6 +249,16 @@ public class UI extends JFrame {
 		contentPane.add(lblNewLabel_2, gbc_lblNewLabel_2);
 		
 		SetTxt_R1 = new JTextField();
+		SetTxt_R1.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				
+				String Current = SetTxt_R1.getText();
+				
+				if (Current.length() == 18) e.setKeyChar((char) 00);
+				if ((e.getKeyChar() != '0') && (e.getKeyChar() != '1')) e.setKeyChar((char) 00);
+			}
+		});
 		GridBagConstraints gbc_SetTxt_R1 = new GridBagConstraints();
 		gbc_SetTxt_R1.insets = new Insets(0, 0, 5, 5);
 		gbc_SetTxt_R1.fill = GridBagConstraints.HORIZONTAL;
@@ -246,13 +271,16 @@ public class UI extends JFrame {
 		SbmBtn_R1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				char[] Current = SetTxt_R1.getText().toCharArray();
+				char[] Current = new char[18];
+				char[] Current_dsp = new char[18];
+				Current = SetTxt_R1.getText().toCharArray();
 				char[] id = {'0', '1'};
 				
 				cpu.writeGPR(Current, id, Current.length);
 				
-				cpu.readGPR(Current, id, Current.length);
-				DspTxt_R1.setText(new String(Current));
+				cpu.readGPR(Current_dsp, id, Current_dsp.length);
+				System.out.println("R1: " + new String(Current_dsp));
+				DspTxt_R1.setText(new String(Current_dsp));
 			}
 		});
 		GridBagConstraints gbc_SbmBtn_R1 = new GridBagConstraints();
@@ -271,6 +299,16 @@ public class UI extends JFrame {
 		contentPane.add(lblNewLabel, gbc_lblNewLabel);
 		
 		SetTxt_R2 = new JTextField();
+		SetTxt_R2.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				
+				String Current = SetTxt_R2.getText();
+				
+				if (Current.length() == 18) e.setKeyChar((char) 00);
+				if ((e.getKeyChar() != '0') && (e.getKeyChar() != '1')) e.setKeyChar((char) 00);
+			}
+		});
 		GridBagConstraints gbc_SetTxt_R2 = new GridBagConstraints();
 		gbc_SetTxt_R2.insets = new Insets(0, 0, 5, 5);
 		gbc_SetTxt_R2.fill = GridBagConstraints.HORIZONTAL;
@@ -283,13 +321,15 @@ public class UI extends JFrame {
 		SbmBtn_R2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				char[] Current = SetTxt_R2.getText().toCharArray();
+				char[] Current = new char[18];
+				char[] Current_dsp = new char[18];
+				Current = SetTxt_R2.getText().toCharArray();
 				char[] id = {'1', '0'};
 				
 				cpu.writeGPR(Current, id, Current.length);
 				
-				cpu.readGPR(Current, id, Current.length);
-				DspTxt_R2.setText(new String(Current));
+				cpu.readGPR(Current_dsp, id, Current_dsp.length);
+				DspTxt_R2.setText(new String(Current_dsp));
 			}
 		});
 		GridBagConstraints gbc_SbmBtn_R2 = new GridBagConstraints();
@@ -308,6 +348,16 @@ public class UI extends JFrame {
 		contentPane.add(lblR, gbc_lblR);
 		
 		SetTxt_R3 = new JTextField();
+		SetTxt_R3.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				
+				String Current = SetTxt_R3.getText();
+				
+				if (Current.length() == 18) e.setKeyChar((char) 00);
+				if ((e.getKeyChar() != '0') && (e.getKeyChar() != '1')) e.setKeyChar((char) 00);
+			}
+		});
 		GridBagConstraints gbc_SetTxt_R3 = new GridBagConstraints();
 		gbc_SetTxt_R3.insets = new Insets(0, 0, 5, 5);
 		gbc_SetTxt_R3.fill = GridBagConstraints.HORIZONTAL;
@@ -320,13 +370,15 @@ public class UI extends JFrame {
 		SbmBtn_R3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				char[] Current = SetTxt_R3.getText().toCharArray();
+				char[] Current = new char[18];
+				char[] Current_dsp = new char[18];
+				Current = SetTxt_R3.getText().toCharArray();
 				char[] id = {'1', '1'};
 				
 				cpu.writeGPR(Current, id, Current.length);
 				
-				cpu.readGPR(Current, id, Current.length);
-				DspTxt_R3.setText(new String(Current));
+				cpu.readGPR(Current_dsp, id, Current_dsp.length);
+				DspTxt_R3.setText(new String(Current_dsp));
 			}
 		});
 		GridBagConstraints gbc_SbmBtn_R3 = new GridBagConstraints();
@@ -345,6 +397,16 @@ public class UI extends JFrame {
 		contentPane.add(lblAddressInput, gbc_lblAddressInput);
 		
 		SetTxt_Addr = new JTextField();
+		SetTxt_Addr.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				
+				String Current = SetTxt_Addr.getText();
+				
+				if (Current.length() == 18) e.setKeyChar((char) 00);
+				if ((e.getKeyChar() != '0') && (e.getKeyChar() != '1')) e.setKeyChar((char) 00);
+			}
+		});
 		GridBagConstraints gbc_SetTxt_Addr = new GridBagConstraints();
 		gbc_SetTxt_Addr.gridwidth = 3;
 		gbc_SetTxt_Addr.insets = new Insets(0, 0, 5, 5);
@@ -355,6 +417,13 @@ public class UI extends JFrame {
 		SetTxt_Addr.setColumns(10);
 		
 		SbmBtn_Ins = new JButton("Submit");
+		SbmBtn_Ins.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				char[] Current = SetTxt_Ins.getText().toCharArray();
+				
+			}
+		});
 		GridBagConstraints gbc_SbmBtn_Ins = new GridBagConstraints();
 		gbc_SbmBtn_Ins.anchor = GridBagConstraints.NORTHEAST;
 		gbc_SbmBtn_Ins.insets = new Insets(0, 0, 5, 0);
@@ -371,6 +440,16 @@ public class UI extends JFrame {
 		contentPane.add(lblPc, gbc_lblPc);
 		
 		SetTxt_PC = new JTextField();
+		SetTxt_PC.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				
+				String Current = SetTxt_PC.getText();
+				
+				if (Current.length() == 12) e.setKeyChar((char) 00);
+				if ((e.getKeyChar() != '0') && (e.getKeyChar() != '1')) e.setKeyChar((char) 00);
+			}
+		});
 		GridBagConstraints gbc_SetTxt_PC = new GridBagConstraints();
 		gbc_SetTxt_PC.insets = new Insets(0, 0, 5, 5);
 		gbc_SetTxt_PC.fill = GridBagConstraints.HORIZONTAL;
@@ -379,21 +458,99 @@ public class UI extends JFrame {
 		contentPane.add(SetTxt_PC, gbc_SetTxt_PC);
 		SetTxt_PC.setColumns(10);
 		
+		SbmBtn_PC = new JButton("Submit");
+		SbmBtn_PC.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				char[] Current = new char[12];
+				char[] Current_dsp = new char[12];
+				Current = SetTxt_PC.getText().toCharArray();
+				
+				cpu.writePC(Current, Current.length);
+				
+				cpu.readPC(Current_dsp, Current_dsp.length);
+				DspTxt_PC.setText(new String(Current_dsp));
+			}
+		});
+		GridBagConstraints gbc_SbmBtn_PC = new GridBagConstraints();
+		gbc_SbmBtn_PC.anchor = GridBagConstraints.EAST;
+		gbc_SbmBtn_PC.insets = new Insets(0, 0, 5, 5);
+		gbc_SbmBtn_PC.gridx = 8;
+		gbc_SbmBtn_PC.gridy = 7;
+		contentPane.add(SbmBtn_PC, gbc_SbmBtn_PC);
+		
 		SbmBtn_SglStp = new JButton("Single Step");
 		SbmBtn_SglStp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				String X1, X2, X3, MAR, MBR;
+				char[] Current = new char[18];
+				char[] pc = new char[12];
+				char[] X1 = new char[12], X2 = new char[12], X3 = new char[12], MAR = new char[12], MBR = new char[18];
+				char[] id;
 				
-				X1 = cpu.readXR(c, id, len)
+				LDX ldx = new LDX(cpu);
+				ldx.start();
+				
+				// R0 operation
+				id = new char[] {'0', '0'};
+				
+				cpu.readGPR(Current, id, Current.length);
+				DspTxt_R0.setText(new String(Current));
+				
+				// R1 operation
+				id = new char[] {'0', '1'};
+				
+				cpu.readGPR(Current, id, Current.length);
+				DspTxt_R1.setText(new String(Current));
+				
+				// R2 operation
+				id = new char[] {'1', '0'};
+				
+				cpu.readGPR(Current, id, Current.length);
+				DspTxt_R2.setText(new String(Current));
+				
+				// R3 operation
+				id = new char[] {'1', '1'};
+				
+				cpu.readGPR(Current, id, Current.length);
+				DspTxt_R3.setText(new String(Current));
+				
+				// PC operation
+				cpu.readPC(pc, pc.length);
+				DspTxt_PC.setText(new String(pc));
+				
+				// X1 operation
+				id = new char[] {'0', '1'};
+				
+				cpu.readXR(X1, id, xr.getLength());
+				DspTxt_X1.setText(new String(X1));
+				
+				// X2 operation
+				id = new char[] {'1', '0'};
+				
+				cpu.readXR(X2, id, xr.getLength());
+				DspTxt_X2.setText(new String(X2));
+				
+				// X3 operation
+				id = new char[] {'1', '1'};
+				
+				cpu.readXR(X3, id, xr.getLength());
+				DspTxt_X3.setText(new String(X3));
+				
+				// MAR operation
+				MAR = cpu.getMAR();
+				DspTxt_MAR.setText(new String(MAR));
+				
+				// MBR operation
+				MBR = cpu.getMBR();
+				DspTxt_MBR.setText(new String(MBR));
 			}
 		});
 		GridBagConstraints gbc_SbmBtn_SglStp = new GridBagConstraints();
 		gbc_SbmBtn_SglStp.fill = GridBagConstraints.HORIZONTAL;
 		gbc_SbmBtn_SglStp.insets = new Insets(0, 0, 5, 0);
-		gbc_SbmBtn_SglStp.anchor = GridBagConstraints.SOUTH;
 		gbc_SbmBtn_SglStp.gridx = 9;
-		gbc_SbmBtn_SglStp.gridy = 7;
+		gbc_SbmBtn_SglStp.gridy = 8;
 		contentPane.add(SbmBtn_SglStp, gbc_SbmBtn_SglStp);
 		
 		lblValue_1 = new JLabel("Value:");
