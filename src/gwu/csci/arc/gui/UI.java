@@ -2,7 +2,11 @@ package gwu.csci.arc.gui;
 
 import gwu.csci.arc.CPU;
 import gwu.csci.arc.IndexRegister;
+import gwu.csci.arc.isa.LDA;
+import gwu.csci.arc.isa.LDR;
 import gwu.csci.arc.isa.LDX;
+import gwu.csci.arc.isa.STR;
+import gwu.csci.arc.isa.STX;
 import gwu.csci.arc.test.Initialization;
 
 import java.awt.BorderLayout;
@@ -41,6 +45,10 @@ public class UI extends JFrame {
 	
 	CPU cpu = CPU.getInstance();
 	IndexRegister xr;
+	
+	// for instruction opcode recognition uses
+	boolean flag = false;
+	String ins = "";
 
 	private JPanel contentPane;
 	private JLabel lblNewLabel_2;
@@ -98,11 +106,9 @@ public class UI extends JFrame {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		
 		Initialization init = new Initialization();
-		
-	//	init.toRun();
-		
-		
+		init.toRun();
 		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -131,7 +137,7 @@ public class UI extends JFrame {
 		GridBagLayout gbl_contentPane = new GridBagLayout();
 		gbl_contentPane.columnWidths = new int[]{22, 116, 75, 31, 61, 114, 53, 110, 34, 162, 148, 85, 0};
 		gbl_contentPane.rowHeights = new int[]{20, 20, 20, 20, 34, 0, 0, 0, 44, 0, 34, 34, 34, 34, 34, 0};
-		gbl_contentPane.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_contentPane.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
 		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		contentPane.setLayout(gbl_contentPane);
 		
@@ -175,6 +181,7 @@ public class UI extends JFrame {
 		
 				String Current = SetTxt_R0.getText();
 				
+				// restrict input size and format for R0
 				if (Current.length() == 18) e.setKeyChar((char) 00);
 				if ((e.getKeyChar() != '0') && (e.getKeyChar() != '1')) e.setKeyChar((char) 00);
 			}
@@ -194,6 +201,7 @@ public class UI extends JFrame {
 		SbmBtn_R0.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
+				// overwrite R0
 				char[] Current = new char[18];
 				char[] Current_dsp = new char[18];
 				Current = SetTxt_R0.getText().toCharArray();
@@ -223,9 +231,20 @@ public class UI extends JFrame {
 		contentPane.add(scrollPane_1, gbc_scrollPane_1);
 		
 		SetTxt_Mem = new JTextArea();
+		SetTxt_Mem.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				
+				String Current = SetTxt_Mem.getText();
+				
+				// restrict input size and format for memory input
+				if (Current.length() == 18) e.setKeyChar((char) 00);
+				if ((e.getKeyChar() != '0') && (e.getKeyChar() != '1')) e.setKeyChar((char) 00);
+			}
+		});
 		SetTxt_Mem.setWrapStyleWord(true);
 		SetTxt_Mem.setLineWrap(true);
-		scrollPane_1.setColumnHeaderView(SetTxt_Mem);
+		scrollPane_1.setViewportView(SetTxt_Mem);
 		
 		scrollPane_2 = new JScrollPane();
 		GridBagConstraints gbc_scrollPane_2 = new GridBagConstraints();
@@ -238,8 +257,16 @@ public class UI extends JFrame {
 		contentPane.add(scrollPane_2, gbc_scrollPane_2);
 		
 		SetTxt_Ins = new JTextArea();
+		SetTxt_Ins.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				
+				if ((e.getKeyChar() != '0') && (e.getKeyChar() != '1')) e.setKeyChar((char) 00);
+			}
+		});
+		SetTxt_Ins.setText("000000000000000000");
 		SetTxt_Ins.setLineWrap(true);
-		scrollPane_2.setColumnHeaderView(SetTxt_Ins);
+		scrollPane_2.setViewportView(SetTxt_Ins);
 		
 		lblNewLabel_2 = new JLabel("R1:");
 		GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
@@ -256,6 +283,7 @@ public class UI extends JFrame {
 				
 				String Current = SetTxt_R1.getText();
 				
+				// restrict input size and format for R1
 				if (Current.length() == 18) e.setKeyChar((char) 00);
 				if ((e.getKeyChar() != '0') && (e.getKeyChar() != '1')) e.setKeyChar((char) 00);
 			}
@@ -273,6 +301,7 @@ public class UI extends JFrame {
 		SbmBtn_R1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
+				// overwrite R1
 				char[] Current = new char[18];
 				char[] Current_dsp = new char[18];
 				Current = SetTxt_R1.getText().toCharArray();
@@ -306,6 +335,7 @@ public class UI extends JFrame {
 				
 				String Current = SetTxt_R2.getText();
 				
+				// restrict input size and format for R2
 				if (Current.length() == 18) e.setKeyChar((char) 00);
 				if ((e.getKeyChar() != '0') && (e.getKeyChar() != '1')) e.setKeyChar((char) 00);
 			}
@@ -323,6 +353,7 @@ public class UI extends JFrame {
 		SbmBtn_R2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
+				// overwrite R2
 				char[] Current = new char[18];
 				char[] Current_dsp = new char[18];
 				Current = SetTxt_R2.getText().toCharArray();
@@ -356,6 +387,7 @@ public class UI extends JFrame {
 				
 				String Current = SetTxt_R3.getText();
 				
+				// restrict input size and format for R3
 				if (Current.length() == 18) e.setKeyChar((char) 00);
 				if ((e.getKeyChar() != '0') && (e.getKeyChar() != '1')) e.setKeyChar((char) 00);
 			}
@@ -373,6 +405,7 @@ public class UI extends JFrame {
 		SbmBtn_R3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
+				// overwrite R3
 				char[] Current = new char[18];
 				char[] Current_dsp = new char[18];
 				Current = SetTxt_R3.getText().toCharArray();
@@ -406,10 +439,92 @@ public class UI extends JFrame {
 				char[] Instruction = new char[18];
 				char[] Opcode = new char[6];
 				
-				
+				for (int i = 0; i < 18; i++) Instruction[i] = '0';
 				Instruction = SetTxt_Ins.getText().toCharArray();
 				
+				// get opcode from instruction
 				for (int i = 0; i < 6; i++) Opcode[i] = Instruction[i];
+				
+				// if opcode starts w/ 1
+				if (Opcode[0] == '1')
+				{
+					// and ends w/ 1
+					if (Opcode[5] == '1')
+					{
+						// and in-betweens are 0
+						for (int i = 1; i < 5; i++)
+						{
+							if (Opcode[i] != '0') flag = true;
+							else
+							{
+								flag = false;
+								break;
+							}
+						}
+						
+						if (flag = true) ins = "LDX";
+					}
+					
+					// and ends w/ 10
+					if ((Opcode[4] == '1') && (Opcode[5] == '0'))
+					{
+						for (int i = 1; i < 4; i++)
+						{
+							// and in-betweens are 0
+							if (Opcode[i] == '0') flag = true;
+							else
+							{
+								flag = false;
+								break;
+							}
+						}
+						
+						if (flag = true) ins = "STX";
+					}
+				}
+				
+				// if opcode starts w/ four 0
+				boolean mark = true;
+				
+				for (int i = 0; i < 4; i++)
+				{
+					if (Opcode[i] != '0')
+					{
+						mark = false;
+						break;
+					}
+				}
+				
+				if (mark == true)
+				{
+					// and ends w/ 01, 10, 11
+					if ((Opcode[4] == '0') && (Opcode[5] == '1'))
+					{
+						flag = true;
+						ins = "LDR";
+					}
+					
+					if ((Opcode[4] == '1') && (Opcode[5] == '0'))
+					{
+						flag = true;
+						ins = "STR";
+					}
+					
+					if ((Opcode[4] == '1') && (Opcode[5] == '1'))
+					{
+						flag = true;
+						ins = "LDA";
+					}
+				}
+				
+				if (flag == false) DspTxt_Cns.setText(DspTxt_Cns.getText() + "Fail: Instruction Error!\n");
+				else DspTxt_Cns.setText(DspTxt_Cns.getText() + "Instruction Submitted: " + ins + "!\n");
+				
+				// get address if no instruction error
+				if (flag == true)
+				{
+					
+				}
 			}
 		});
 		
@@ -420,7 +535,8 @@ public class UI extends JFrame {
 				
 				String Current = SetTxt_Addr.getText();
 				
-				if (Current.length() == 18) e.setKeyChar((char) 00);
+				// restrict input size and format for address 
+				if (Current.length() == 12) e.setKeyChar((char) 00);
 				if ((e.getKeyChar() != '0') && (e.getKeyChar() != '1')) e.setKeyChar((char) 00);
 			}
 		});
@@ -446,6 +562,7 @@ public class UI extends JFrame {
 				
 				String Current = SetTxt_PC.getText();
 				
+				// restrict input size and format for PC
 				if (Current.length() == 12) e.setKeyChar((char) 00);
 				if ((e.getKeyChar() != '0') && (e.getKeyChar() != '1')) e.setKeyChar((char) 00);
 			}
@@ -470,6 +587,7 @@ public class UI extends JFrame {
 		SbmBtn_PC.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
+				// overwrite PC
 				char[] Current = new char[12];
 				char[] Current_dsp = new char[12];
 				Current = SetTxt_PC.getText().toCharArray();
@@ -496,8 +614,60 @@ public class UI extends JFrame {
 				char[] X1 = new char[12], X2 = new char[12], X3 = new char[12], MAR = new char[12], MBR = new char[18];
 				char[] id;
 				
-				LDX ldx = new LDX(cpu);
-				ldx.start();
+				//LDX ldx = new LDX(cpu);
+				//ldx.start();
+				
+				if (flag == true)
+				{
+					if (ins == "LDR")
+					{
+						LDR ldr = new LDR(cpu);
+						DspTxt_Cns.setText(DspTxt_Cns.getText() + "Begin to run " + ins + ".\n");
+						ldr.start();
+						
+						DspTxt_Cns.setText(DspTxt_Cns.getText() + "Success: " + ins + ".\n");
+					}
+					
+					if (ins == "STR")
+					{
+						STR str = new STR(cpu);
+						DspTxt_Cns.setText(DspTxt_Cns.getText() + "Begin to run " + ins + ".\n");
+						str.start();
+						
+						DspTxt_Cns.setText(DspTxt_Cns.getText() + "Success: " + ins + ".\n");
+					}
+					
+					if (ins == "LDA")
+					{
+						LDA lda = new LDA(cpu);
+						DspTxt_Cns.setText(DspTxt_Cns.getText() + "Begin to run " + ins + ".\n");
+						lda.start();
+						
+						DspTxt_Cns.setText(DspTxt_Cns.getText() + "Success: " + ins + ".\n");
+					}
+					
+					if (ins == "LDX")
+					{
+						LDX ldx = new LDX(cpu);
+						DspTxt_Cns.setText(DspTxt_Cns.getText() + "Begin to run " + ins + ".\n");
+						ldx.start();
+						
+						DspTxt_Cns.setText(DspTxt_Cns.getText() + "Success: " + ins + ".\n");
+					}
+					
+					if (ins == "STX")
+					{
+						STX stx = new STX(cpu);
+						DspTxt_Cns.setText(DspTxt_Cns.getText() + "Begin to run " + ins + ".\n");
+						stx.start();
+						
+						DspTxt_Cns.setText(DspTxt_Cns.getText() + "Success: " + ins + ".\n");
+					}
+				}
+				else
+				{
+					
+				}
 				
 				// R0 operation
 				id = new char[] {'0', '0'};
@@ -630,7 +800,7 @@ public class UI extends JFrame {
 		
 		DspTxt_Cns = new JTextArea();
 		DspTxt_Cns.setEditable(false);
-		scrollPane.setColumnHeaderView(DspTxt_Cns);
+		scrollPane.setViewportView(DspTxt_Cns);
 		DspTxt_Cns.setWrapStyleWord(true);
 		DspTxt_Cns.setLineWrap(true);
 		
