@@ -8,14 +8,16 @@ public class Converter {
 	/**
 	 * convert an int to char[]
 	 * @param addr address
-	 * @return char[]
+	 * @param output the calculated binary address
+	 * @return 0
 	 */
-	public static char[] addrConverterI2S(int addr, int len) {
+	public static int addrConverterI2S(int addr, char[] output) {
 		//int len = IntegratedCircuit.getLenAddr();
 		//int len = 10;
-		char[] saddr = new char[len];
+		int len = output.length;
+		
 		for (int i = 0; i < len; i++) {
-			saddr[i] = '0';
+			output[i] = '0';
 			
 		}
 		if(addr > 1024) {
@@ -23,14 +25,14 @@ public class Converter {
 		}
 		for (int i = 0; ((addr/2)>0 || addr == 1) && i < len; i++) {
 			if (addr % 2 == 0) {
-				saddr[len -1 -i] = '0';
+				output[len -1 -i] = '0';
 			}
 			else {
-				saddr[len - 1 - i] = '1';
+				output[len - 1 - i] = '1';
 			}
 			addr = (addr/2);
 		}
-		return saddr;
+		return 0;
 	}
 	/**
 	 * address converter convert an char[] to int

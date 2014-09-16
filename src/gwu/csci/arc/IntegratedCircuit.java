@@ -1,4 +1,6 @@
 package gwu.csci.arc;
+import gwu.csco.arc.utility.Converter;
+
 import javax.management.MBeanAttributeInfo;
 
 enum REG_TYPE {
@@ -36,6 +38,9 @@ public class IntegratedCircuit {
 	
 	//the effective address
 	private char[] EA = new char[LEN_ADDR];
+	//the two operand address used to calculate EA
+	private char[] ad = new char[LEN_ADDR];
+	private char[] ad2 = new char[LEN_ADDR];
 	
 	/*used for ALU calculation*/
 	//result from the ALU
@@ -50,8 +55,13 @@ public class IntegratedCircuit {
 	
 	//the value read from the register file
 	private char[] valR = new char[LEN_WORD];
+	//the value read from the index file
 	private char[] valX = new char[LEN_ADDR];
+//	the value read from the instruaction register
+	private char[] valIR = new char[18];
 //	private char[] valM = new char[LEN_WORD];
+	//the pointer to the Memory address when writing instructions
+	private char[] ins_pointer = new char[LEN_ADDR];
 	//the memory
 	private Memory memory;
 	
@@ -260,6 +270,15 @@ public class IntegratedCircuit {
 		
 		return 0;
 	}
+	
+	public int writeIns(char[] ins, int len, char[] ins_addr) {
+		memory.write(ins, len, ins_pointer);
+		for (int i = 0; i < ins_addr.length; i++) {
+			ins_addr[i] = ins_pointer[i];
+		}
+		Converter.addrConverterI2S(len, ins_addr);
+		return 0;
+	}
 	/**
 	 * Load a word from Memory to general purpouse register
 	 * the Memory address is EA
@@ -379,6 +398,7 @@ public class IntegratedCircuit {
 		
 	}
 	
+	
 	/**
 	 * Perform the decode stage
 	 * MAR <- R(RFI)
@@ -392,31 +412,31 @@ public class IntegratedCircuit {
 	 * @return 0
 	 */
 	public int decode() {
-		char[] ir = new char[18];
+		
 		int n;
 		readReg(MAR, LEN_ADDR, REG_TYPE.PC); // MAR <- R(RFI)
 		readMem(MBR, LEN_WORD, MAR); //MBR <- M(MAR)
 		writeReg(MBR, LEN_WORD, REG_TYPE.IR); // IR <- R(MBR)
-		readReg(ir, LEN_INSTRUCTION, REG_TYPE.IR);
+		readReg(valIR, LEN_INSTRUCTION, REG_TYPE.IR);
 		for(n = 0; n < LEN_INSTRUCTION; n++) {
 			if(n<LEN_OPCODE) { //OPCODE <- IR0-5
-				opcode[n] = ir[n];
+				opcode[n] = valIR[n];
 			}
 			else if(n<LEN_OPCODE+LEN_RFI) {
 				//RFI <- IR6-7
-				rfi[n-LEN_OPCODE] = ir[n];
+				rfi[n-LEN_OPCODE] = valIR[n];
 			}
 			else if(n<LEN_OPCODE + LEN_RFI + LEN_XFI) {
 				//XFI <- IR8-9
-				xfi[n - LEN_OPCODE - LEN_RFI] = ir[n];
+				xfi[n - LEN_OPCODE - LEN_RFI] = valIR[n];
 			}
 			else if(n<LEN_OPCODE + LEN_RFI + LEN_XFI + LEN_I) {
 				//I <- IR10
-				I[n - LEN_OPCODE - LEN_RFI- LEN_XFI] = ir[n];
+				I[n - LEN_OPCODE - LEN_RFI- LEN_XFI] = valIR[n];
 			}
 			else if(n<LEN_OPCODE + LEN_RFI + LEN_XFI + LEN_I + LEN_ADDR_INCODE) {
 				//ADDR <- IR11-17
-				addr[n - LEN_OPCODE - LEN_RFI- LEN_XFI - LEN_I] = ir[n];
+				addr[n - LEN_OPCODE - LEN_RFI- LEN_XFI - LEN_I] = valIR[n];
 			}
 		}
 		
@@ -453,8 +473,7 @@ public class IntegratedCircuit {
 			}
 			else { //IF XFI = 1, 2, 3
 				//EA <- R(XFI) + ADDR
-				char[] ad = new char[LEN_ADDR];
-				char[] ad2 = new char[LEN_ADDR];
+				
 				cpu.readXR(ad, xfi, LEN_ADDR);
 				//expand the 7-bit addr to 12-bit in ad2 
 				for (int i = 0; i < LEN_ADDR; i++) {
@@ -479,19 +498,12 @@ public class IntegratedCircuit {
 		else { //IF I = 1
 			if(xfi[0] == '0' && xfi[1] == '0') { //IF XFI = 0
 				//EA <- M(ADDR)
-				char[] ad = new char[LEN_ADDR];
-						
 				memory.read(EA, LEN_ADDR, addr);
 				readMem(EA, EA.length, EA);
 				
 			}
 			else { //IF XFI = 1, 2, 3
 				//EA <- M(R(XFI) + ADDR)
-				
-				//the content from index register 
-				char[] ad = new char[LEN_ADDR];
-				//the address of the memory where the EA resides
-				char[] ad2 = new char[LEN_ADDR];
 				
 				//ad <- R(XFI)
 				cpu.readXR(ad, xfi, LEN_ADDR);

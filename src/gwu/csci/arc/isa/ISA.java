@@ -1,13 +1,19 @@
 package gwu.csci.arc.isa;
 
 import gwu.csci.arc.CPU;
+import gwu.csci.arc.IntegratedCircuit;
+import gwu.csco.arc.utility.Converter;
 
 public abstract class ISA {
 
+	
+	public static final char[] oneInstranceLength= new char[IntegratedCircuit.getLenAddr()];
+	public char[] isaPC = new char[12];
 	public CPU isaCpu;
 	public ISA(CPU cpu) {
 		// TODO Auto-generated constructor stub
 		isaCpu = cpu;
+		Converter.addrConverterI2S(IntegratedCircuit.getLenInstruction(), oneInstranceLength);
 	}
 	public final int start() {
 		if (ifNeedDecode()) {

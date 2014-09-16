@@ -5,7 +5,7 @@ import gwu.csco.arc.utility.Converter;
 import gwu.csco.arc.utility.OPERATORS;
 
 public class LDR extends ISA{
-
+	
 	public LDR(CPU cpu) {
 		super(cpu);
 		// TODO Auto-generated constructor stub
@@ -28,11 +28,8 @@ public class LDR extends ISA{
 		isaCpu.M2R();
 		
 		//increase the PC by 18 which is the length of an Instruction
-		int insLen = 18;
-		char[] plusOne = Converter.addrConverterI2S(18, 12);
-		char[] PC = new char[12];
-		isaCpu.readPC(PC, PC.length);
-		isaCpu.addition(PC, plusOne, isaCpu.getNewPC());
+		isaCpu.readPC(isaPC, isaPC.length);
+		isaCpu.addition(isaPC, oneInstranceLength, isaCpu.getNewPC());
 		return 0;
 	}
 
