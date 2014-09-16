@@ -76,7 +76,7 @@ public class RegisterFile {
 	 * @return
 	 */
 	public int setR1(char[] r1, int len) {
-		return setR(r1, R2, len);
+		return setR(r1, R1, len);
 	}
 	
 	/**
