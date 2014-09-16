@@ -50,6 +50,7 @@ public class IntegratedCircuit {
 	
 	//the value read from the register file
 	private char[] valR = new char[LEN_WORD];
+	private char[] valX = new char[LEN_ADDR];
 //	private char[] valM = new char[LEN_WORD];
 	//the memory
 	private Memory memory;
@@ -367,11 +368,11 @@ public class IntegratedCircuit {
 		}
 		else{
 			//read the index address from index register into valR
-			cpu.readXR(valR, xfi, valR.length);
+			cpu.readXR(valX, xfi, valX.length);
 			//read the actual address from memory at EA into MAR
 			readMem(MAR, LEN_ADDR, EA);
 			//write the content valR into memory at EA
-			writeMem(valR, valR.length, MAR);
+			writeMem(valX, valX.length, MAR);
 		}
 		return 0;
 		

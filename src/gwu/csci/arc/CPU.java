@@ -293,6 +293,10 @@ public class CPU {
 		ic.A2X();
 		return 0;
 	}
+	public int X2M() {
+		ic.X2M();
+		return 0;
+	}
 	//!******need revised******!
 	public int addition(char[] op1, char[] op2, char[] result) {
 		//return alu.addition(44, 55);

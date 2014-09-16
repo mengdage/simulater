@@ -60,6 +60,10 @@ public class TestSimulator {
 		char[]  test_ins_LDX = {'0', '0', '0', '0','1', '1', '1', '0','1', '0', '0', '0','1', '0', '1', '0','1','0'};
 		//000011 10 10 1 0101010
 		char[]  test_ins_LDX2 = {'0', '0', '0', '0','1', '1', '1', '0','1', '0', '1', '0','1', '0', '1', '0','1','0'};
+		//000011 10 10 0 0101010
+		char[]  test_ins_STX = {'0', '0', '0', '0','1', '1', '1', '0','1', '0', '0', '0','1', '0', '1', '0','1','0'};
+		//000011 10 10 1 0101010
+		char[]  test_ins_STX2 = {'0', '0', '0', '0','1', '1', '1', '0','1', '0', '1', '0','1', '0', '1', '0','1','0'};
 		//100(10)
 		char[] ad_100 = {'0','0','0','0','0','1', '1', '0','0', '1', '0', '0'};
 		//43(10)
@@ -118,31 +122,31 @@ public class TestSimulator {
 //		cpu.decode();
 //		cpu.calcEA();
 		
-		//test for LDR I=1
-		//000001 10 10 1 0101010 100
-		ic.writeMem(test_ins_LDR, test_ins_LDR.length, ad_100);
-		//000001001010(74) 101010 addr: 43
-		ic.writeMem(test_content, test_content.length, ad_43);
-		//000011001010(202) 101010 addr: 74
-		ic.writeMem(test_content2, test_content.length, ad_74);
-		//000011001010(202) 101010 addr: 202
-		ic.writeMem(test_content2, test_content.length, ad_202);
-		//000000000001 in X2
-		cpu.writeXR(test_xr, id, test_xr.length);
-		//100
-		cpu.writePC(ad_100, ad_100.length);
-		
-		LDR ldr = new LDR(cpu);
-		ldr.start();
-		char[] pc = new char[12];
-		cpu.readPC(pc, 12);
-		System.out.print("PC: ");
-		System.out.println(pc);
-		char[] gpr = new char[18];
-		cpu.readGPR(gpr, id, 18);
-		System.out.print("GPR: ");
-		System.out.println(gpr);
-		//-----------------------------------------------------
+//		//test for LDR I=1
+//		//000001 10 10 1 0101010 100
+//		ic.writeMem(test_ins_LDR, test_ins_LDR.length, ad_100);
+//		//000001001010(74) 101010 addr: 43
+//		ic.writeMem(test_content, test_content.length, ad_43);
+//		//000011001010(202) 101010 addr: 74
+//		ic.writeMem(test_content2, test_content.length, ad_74);
+//		//000011001010(202) 101010 addr: 202
+//		ic.writeMem(test_content2, test_content.length, ad_202);
+//		//000000000001 in X2
+//		cpu.writeXR(test_xr, id, test_xr.length);
+//		//100
+//		cpu.writePC(ad_100, ad_100.length);
+//		
+//		LDR ldr = new LDR(cpu);
+//		ldr.start();
+//		char[] pc = new char[12];
+//		cpu.readPC(pc, 12);
+//		System.out.print("PC: ");
+//		System.out.println(pc);
+//		char[] gpr = new char[18];
+//		cpu.readGPR(gpr, id, 18);
+//		System.out.print("GPR: ");
+//		System.out.println(gpr);
+//		//-----------------------------------------------------
 		
 //		//test for LDR I=0
 //		//000001 10 10 0 0101010 100
@@ -323,6 +327,32 @@ public class TestSimulator {
 //		System.out.print("XR: ");
 //		System.out.println(c);
 //		//-----------------------------------------------------
+		
+		//test for STX I =0
+		//000011 10 10 0 0101010 100
+		ic.writeMem(test_ins_LDX, test_ins_LDR.length, ad_100);
+		
+		//000001001010(74) 101010 addr: 43
+		//the content to be read into index register
+		//ic.writeMem(test_content2, test_content.length, ad_43);
+		//write 0001 to X2
+		cpu.writeXR(test_xr, id, test_xr.length);
+		//set pc to 100
+		cpu.writePC(ad_100, ad_100.length);
+		
+		LDX ldx = new LDX(cpu);
+		ldx.start();
+		
+		char[] pc = new char[12];
+		cpu.readPC(pc, 12);
+		System.out.print("PC: ");
+		System.out.println(pc);
+		
+		char[] c = new char[12];
+		cpu.readXR(c, id, 12);
+		System.out.print("XR: ");
+		System.out.println(c);
+		//-----------------------------------------------------
 		
 		
 //		Initialization i = new Initialization();
