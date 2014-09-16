@@ -78,6 +78,7 @@ public class IntegratedCircuit {
 		for (int i = 0; i < LEN_ADDR; i++) {
 			EA[i] = '0';
 			MAR[i] = '0';
+			ins_pointer[i] = '0';
 		}
 		for (int i = 0; i < LEN_WORD; i++) {
 			MBR[i] = '0';
@@ -86,6 +87,9 @@ public class IntegratedCircuit {
 			OP2[i] = '0';
 			
 		}
+		
+		//start memory address at 16
+		ins_pointer[LEN_ADDR - 1 - 4] = '1';
 	}
 	
 	/**
