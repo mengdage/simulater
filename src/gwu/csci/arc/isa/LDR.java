@@ -1,8 +1,6 @@
 package gwu.csci.arc.isa;
 
 import gwu.csci.arc.CPU;
-import gwu.csco.arc.utility.Converter;
-import gwu.csco.arc.utility.OPERATORS;
 
 public class LDR extends ISA{
 	

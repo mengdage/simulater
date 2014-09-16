@@ -1,7 +1,5 @@
 package gwu.csco.arc.utility;
 
-import gwu.csci.arc.IntegratedCircuit;
-
 public class Converter {
 	//this is a utility class which contains some useful function
 	

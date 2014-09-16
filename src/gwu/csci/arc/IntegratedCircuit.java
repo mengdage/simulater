@@ -2,8 +2,6 @@ package gwu.csci.arc;
 import gwu.csci.arc.isa.ISA;
 import gwu.csco.arc.utility.Converter;
 
-import javax.management.MBeanAttributeInfo;
-
 enum REG_TYPE {
 	GPR,
 	XR,
@@ -51,8 +49,6 @@ public class IntegratedCircuit {
 	//second operand
 	private char[] OP2 = new char[LEN_WORD];
 	/*------------------------*/
-	//the new PC
-	private char[] newPC = new char[LEN_ADDR];
 	
 	//the value read from the register file
 	private char[] valR = new char[LEN_WORD];

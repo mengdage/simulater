@@ -1,8 +1,7 @@
 package gwu.csci.arc.isa;
 
 import gwu.csci.arc.CPU;
-import gwu.csci.arc.IntegratedCircuit;
-import gwu.csco.arc.utility.Converter;
+
 
 public class STX extends ISA{
 
