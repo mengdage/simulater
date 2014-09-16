@@ -317,6 +317,34 @@ public class TestSimulator {
 //		System.out.println(c);
 //		//-----------------------------------------------------
 		
+//		//test for STX I =1
+//		//000011 10 10 1 0101010 100
+//		ic.writeMem(test_ins_STX2, test_ins_STX.length, ad_100);
+//		
+//		//000001001010(74) 101010 addr: 43
+//		//the content to be read into index register
+//		ic.writeMem(test_content, test_content.length, ad_43);
+//		//000001101010 101010 addr:74 
+//		ic.writeMem(test_content2, test_content.length, ad_74);
+//		//write 0001 to X2
+//		cpu.writeXR(test_xr, id, test_xr.length);
+//		//set pc to 100
+//		cpu.writePC(ad_100, ad_100.length);
+//		
+//		STX stx = new STX(cpu);
+//		stx.start();
+//		
+//		char[] pc = new char[12];
+//		cpu.readPC(pc, 12);
+//		System.out.print("PC: ");
+//		System.out.println(pc);
+//		
+//		char[] c = new char[12];
+//		ic.readMem(c, c.length, ad_202);
+//		System.out.print("XR: ");
+//		System.out.println(c);
+//		//-----------------------------------------------------
+		
 		//test for STX I =0
 		//000011 10 10 0 0101010 100
 		ic.writeMem(test_ins_STX, test_ins_STX.length, ad_100);
@@ -324,8 +352,8 @@ public class TestSimulator {
 		//000001001010(74) 101010 addr: 43
 		//the content to be read into index register
 		ic.writeMem(test_content, test_content.length, ad_43);
-		//000001101010 101010 addr:74 
-		ic.writeMem(test_content2, test_content.length, ad_74);
+//		//000001101010 101010 addr:74 
+//		ic.writeMem(test_content2, test_content.length, ad_74);
 		//write 0001 to X2
 		cpu.writeXR(test_xr, id, test_xr.length);
 		//set pc to 100
@@ -340,8 +368,8 @@ public class TestSimulator {
 		System.out.println(pc);
 		
 		char[] c = new char[12];
-		ic.readMem(c, c.length, ad_202);
-		System.out.print("XR: ");
+		ic.readMem(c, c.length, ad_43);
+		System.out.print("Memory address[43] - [60]:");
 		System.out.println(c);
 		//-----------------------------------------------------
 		
