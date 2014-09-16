@@ -371,6 +371,7 @@ public class IntegratedCircuit {
 			cpu.readXR(valX, xfi, valX.length);
 			//read the actual address from memory at EA into MAR
 			readMem(MAR, LEN_ADDR, EA);
+			readMem(MAR, MAR.length, MAR);
 			//write the content valR into memory at EA
 			writeMem(valX, valX.length, MAR);
 		}

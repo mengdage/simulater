@@ -7,20 +7,9 @@ import gwu.csci.arc.isa.LDA;
 import gwu.csci.arc.isa.LDR;
 import gwu.csci.arc.isa.LDX;
 import gwu.csci.arc.isa.STR;
+import gwu.csci.arc.isa.STX;
 
 public class TestSimulator {
-
-	/**
-	 * Load a file specified by filepath, and return the content
-	 * of the content in String type
-	 * @param filepath
-	 * @return Content
-	 */
-	private static String loadFileContent(String filepath) {
-		String content = new String();
-		//balabalabala
-		return content;
-	}
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -330,18 +319,20 @@ public class TestSimulator {
 		
 		//test for STX I =0
 		//000011 10 10 0 0101010 100
-		ic.writeMem(test_ins_LDX, test_ins_LDR.length, ad_100);
+		ic.writeMem(test_ins_STX, test_ins_STX.length, ad_100);
 		
 		//000001001010(74) 101010 addr: 43
 		//the content to be read into index register
-		//ic.writeMem(test_content2, test_content.length, ad_43);
+		ic.writeMem(test_content, test_content.length, ad_43);
+		//000001101010 101010 addr:74 
+		ic.writeMem(test_content2, test_content.length, ad_74);
 		//write 0001 to X2
 		cpu.writeXR(test_xr, id, test_xr.length);
 		//set pc to 100
 		cpu.writePC(ad_100, ad_100.length);
 		
-		LDX ldx = new LDX(cpu);
-		ldx.start();
+		STX stx = new STX(cpu);
+		stx.start();
 		
 		char[] pc = new char[12];
 		cpu.readPC(pc, 12);
@@ -349,7 +340,7 @@ public class TestSimulator {
 		System.out.println(pc);
 		
 		char[] c = new char[12];
-		cpu.readXR(c, id, 12);
+		ic.readMem(c, c.length, ad_202);
 		System.out.print("XR: ");
 		System.out.println(c);
 		//-----------------------------------------------------
