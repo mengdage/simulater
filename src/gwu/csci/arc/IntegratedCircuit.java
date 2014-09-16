@@ -1,4 +1,5 @@
 package gwu.csci.arc;
+import gwu.csci.arc.isa.ISA;
 import gwu.csco.arc.utility.Converter;
 
 import javax.management.MBeanAttributeInfo;
@@ -277,6 +278,7 @@ public class IntegratedCircuit {
 			ins_addr[i] = ins_pointer[i];
 		}
 		Converter.addrConverterI2S(len, ins_addr);
+		cpu.addition(ins_pointer, ISA.oneInstranceLength, ins_pointer);
 		return 0;
 	}
 	/**
