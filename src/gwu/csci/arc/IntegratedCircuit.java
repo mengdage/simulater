@@ -272,6 +272,13 @@ public class IntegratedCircuit {
 		return 0;
 	}
 	
+	/**
+	 * write an instruction into memory
+	 * @param ins the instruction
+	 * @param len the length of the instruction
+	 * @param ins_addr the address where the instruction is
+	 * @return 0
+	 */
 	public int writeIns(char[] ins, int len, char[] ins_addr) {
 		memory.write(ins, len, ins_pointer);
 		for (int i = 0; i < ins_addr.length; i++) {

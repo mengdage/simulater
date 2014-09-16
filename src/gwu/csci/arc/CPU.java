@@ -78,6 +78,17 @@ public class CPU {
 		return ic.getMBR();
 	}
 	/**
+	 * write an instruction into memory
+	 * @param ins the instruction
+	 * @param len the length of the instruction
+	 * @param ins_addr the address where the instruction is
+	 * @return 0
+	 */
+	public int writeIns(char[] ins, int len, char[] ins_addr) {
+		ic.writeIns(ins, len, ins_addr);
+		return 0;
+	}
+	/**
 	 * write c of length len into id-th register
 	 * @param c the content to be written
 	 * @param id the ID of the register used
