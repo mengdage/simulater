@@ -72,7 +72,7 @@ public class Memory {
 //		System.out.println(addr);
 //		System.out.println("Memory: change the address to 128");
 //		int fakeaddr = 128; 
-//		System.out.println("Memory: Reading content from memory...");
+		System.out.println("Memory: Reading content from memory at: " + intaddr);
 		for(int i = 0; i < len; i++) {
 			c[i] = content[intaddr + i];
 		}

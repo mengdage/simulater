@@ -1,4 +1,6 @@
 package gwu.csci.arc;
+import javax.management.MBeanAttributeInfo;
+
 enum REG_TYPE {
 	GPR,
 	XR,
@@ -338,11 +340,13 @@ public class IntegratedCircuit {
 	public int A2X() {
 		if (I[0] == '0') {
 			//write the EA into index register
-			writeReg(EA, EA.length, REG_TYPE.XR);
+			readMem(MAR, MAR.length, EA);
+			writeReg(MAR, MAR.length, REG_TYPE.XR);
 		}
 		else {
 			//read the actual address from memory at EA into MAR
 			readMem(MAR, LEN_ADDR, EA);
+			readMem(MAR, MAR.length, MAR);
 			//write the MAR into index register
 			writeReg(MAR, LEN_ADDR, REG_TYPE.XR);
 		}
@@ -462,6 +466,8 @@ public class IntegratedCircuit {
 				}
 				//add ad to addr
 				cpu.addition(ad, ad2, EA);
+				
+				
 				//!!!!!!need revise!!!!!!!!!!
 //				for(int i = 0; i < LEN_ADDR; i++) {
 //					EA[i] = ad[i];
@@ -473,10 +479,8 @@ public class IntegratedCircuit {
 				//EA <- M(ADDR)
 				char[] ad = new char[LEN_ADDR];
 						
-				memory.read(ad, LEN_ADDR, addr);
-				for(int i = 0; i < LEN_ADDR; i++) {
-					EA[i] = ad[i];
-				}
+				memory.read(EA, LEN_ADDR, addr);
+				readMem(EA, EA.length, EA);
 				
 			}
 			else { //IF XFI = 1, 2, 3
@@ -503,6 +507,7 @@ public class IntegratedCircuit {
 				//add ad to ad2
 				//!!!!!!need revise!!!!!!!!!!
 				cpu.addition(ad, ad2, EA);
+				readMem(EA, EA.length, EA);
 //				memory.read(EA, LEN_ADDR, ad2);
 //				for(int i = 0; i < LEN_ADDR; i++) {
 //					EA[i] = ad2[i];
@@ -510,6 +515,7 @@ public class IntegratedCircuit {
 				
 			}
 		}
+		System.out.print("EA: ");
 		System.out.println(EA);
 		return 0;
 	}

@@ -264,7 +264,7 @@ public class CPU {
 	 */
 	public int readIR(char[] c, int len) {
 		if(ir.getIR(c, len) == 0) 
-			System.out.println("CPU: reading instruction register register succeed");
+			System.out.println("CPU: reading instruction register succeed");
 		return 0;
 	}
 	/**

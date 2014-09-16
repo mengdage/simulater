@@ -13,13 +13,13 @@ public class STR extends ISA{
 		// TODO Auto-generated constructor stub
 	}
 
-	@Override
-	int ALUcalc() {
-		// TODO Auto-generated method stub
-		isaCpu.RIOperandPreparation();
-		isaCpu.ALUcalc(OPERATORS.add);
-		return 0;
-	}
+//	@Override
+//	int ALUcalc() {
+//		// TODO Auto-generated method stub
+//		isaCpu.RIOperandPreparation();
+//		isaCpu.ALUcalc(OPERATORS.add);
+//		return 0;
+//	}
 
 	@Override
 	int execute() {
@@ -29,7 +29,9 @@ public class STR extends ISA{
 		//increase the PC by 18 which is the length of an Instruction
 		int insLen = IntegratedCircuit.getLenInstruction();
 		char[] plusOne = Converter.addrConverterI2S(insLen, 12);
-		isaCpu.addition(isaCpu.getMAR(), plusOne, isaCpu.getNewPC());
+		char[] PC = new char[12];
+		isaCpu.readPC(PC, PC.length);
+		isaCpu.addition(PC, plusOne, isaCpu.getNewPC());
 		return 0;
 	}
 
