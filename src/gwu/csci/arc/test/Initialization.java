@@ -74,15 +74,15 @@ public class Initialization {
 	}
 	public void preRun_LDR() {
 		//prepare the environment 
-		//001001001010(1098) 101010 addr: 43w
-		//if I=0 this would be the content to be read into GPR
+		//write 001001001010(1098) 101010 into address: 1066
+		//if I=0 this(001001001010101010) would be the content to be read into GPR
 		ic.writeMem(test_content, test_content.length, ad_1066);
-		//001011001010(1226) 101010 addr: 202
+		//write 001011001010(1226) 101010  into address: 1098
 		ic.writeMem(test_content2, test_content.length, ad_1098);
-		//001011001010(202) 101010 addr: 202
-		//if I=1 this would be the content to be read into GPR
+		//write 001011001010(202) 101010 into address: 1226
+		//if I=1 this(001011001010101010) would be the content to be read into GPR
 		ic.writeMem(test_content2, test_content.length, ad_1226);
-		//0001
+		//write 001000000000 into X2
 		cpu.writeXR(test_xr, id, test_xr.length);
 		
 		//output
@@ -98,17 +98,17 @@ public class Initialization {
 	public void preRun_STR() {
 
 		//prepare the environment
-		//001001001010101010 addr: 43
-		//If I = 0
+		//write 001001001010101010 into address: 43
+		//If I = 0, this(001001001010) would be memory address
 		ic.writeMem(test_content, test_content.length, ad_1066);
-		//001011001010101010 addr: 1098
-		//If I = 1
+		//write 001011001010101010 into address: 1098
+		//If I = 1, this(001011001010) would be memory address
 		ic.writeMem(test_content2, test_content2.length, ad_1098);
 		//101010 10 10 1 0101011
 		//the content to be read into memory
 		cpu.writeGPR(test_ins, id, test_ins.length);
 
-		////000000000001 in X2
+		//write 001000000000 into X2
 		cpu.writeXR(test_xr, id, test_xr.length);
 		
 		//output
@@ -126,13 +126,13 @@ public class Initialization {
 	}
 	public void preRun_LDA() {
 
-		//001001001010(1098) 101010 addr: 43
+		//001001001010(1098) 101010 address: 1066
+		//if I=0, this(001001001010101010) would be the content to be read into GPR
 		ic.writeMem(test_content, test_content.length, ad_1066);
-		//001011001010(1226) 101010 addr: 74
-		//the content to be read into GPR
+		//001011001010(1226) 101010 address: 1098
+		//if I=0, this(001011001010101010) would be the content to be read into GPR
 		ic.writeMem(test_content2, test_content.length, ad_1098);
-		
-		//cpu.writeGPR(test_ins, id, test_ins.length);
+		//write 001000000000 into X2
 		cpu.writeXR(test_xr, id, test_xr.length);
 		
 		//output
@@ -148,15 +148,15 @@ public class Initialization {
 	}
 	public void preRun_LDX() {
 
-		////001001001010(74) 101010 addr: 43
+		//write 001001001010(1066) 101010 into address: 1066
+		//If I=0, it(001001001010) would be the content to be read into index register
 		ic.writeMem(test_content, test_content.length, ad_1066);
-		//001011001010(202) 101010 addr: 74
+		//001011001010(202) 101010 address: 1098
 		ic.writeMem(test_content2, test_content.length, ad_1098);
-		//001011001010 101010 addr:202
-		//the content to be read into index register
+		//001011001010 101010 address:1226
+		//If I=1, it(001011001010) would be the content to be read into index register
 		ic.writeMem(test_content2, test_content.length, ad_1226);
-		
-		//write 0001 to X2
+		//write 001000000000 into X2
 		cpu.writeXR(test_xr, id, test_xr.length);
 		
 		//output
@@ -172,12 +172,13 @@ public class Initialization {
 		//-----------------------------------------------------
 	}
 	public void preRun_STX() {		
-		//000001001010(74) 101010 addr: 43
-		//the content to be read into index register		
+		//write 000001001010(74) 101010 into address: 1066
+		//If I=0, this(000001001010) would be the memory address		
 		ic.writeMem(test_content, test_content.length, ad_1066);
-		//000001101010 101010 addr:74 
+		//write 000001101010 101010 into address: 1098
+		//If I=0, this(000001101010) would be the memory address
 		ic.writeMem(test_content2, test_content.length, ad_1098);
-		//write 0001 to X2
+		//write 001000000000 into X2
 		cpu.writeXR(test_xr, id, test_xr.length);
 
 		

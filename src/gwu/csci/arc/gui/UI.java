@@ -40,6 +40,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JCheckBox;
 
 public class UI extends JFrame {
 	
@@ -106,6 +107,7 @@ public class UI extends JFrame {
 	private JTextArea SetTxt_Ins;
 	private JScrollPane scrollPane_2;
 	private JButton SbmBtn_PC;
+	private JCheckBox chckbxPrepreparation;
 
 	
 	/**
@@ -531,6 +533,24 @@ public class UI extends JFrame {
 				DspTxt_PC.setText(new String(Current_dsp));
 			}
 		});
+		
+		chckbxPrepreparation = new JCheckBox("Prepreparation");
+		chckbxPrepreparation.setSelected(true);
+		chckbxPrepreparation.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(ifInitial == false) {
+					ifInitial = true;
+				}
+				else {
+					ifInitial = false;
+				}
+			}
+		});
+		GridBagConstraints gbc_chckbxPrepreparation = new GridBagConstraints();
+		gbc_chckbxPrepreparation.insets = new Insets(0, 0, 5, 5);
+		gbc_chckbxPrepreparation.gridx = 10;
+		gbc_chckbxPrepreparation.gridy = 6;
+		contentPane.add(chckbxPrepreparation, gbc_chckbxPrepreparation);
 		GridBagConstraints gbc_SbmBtn_PC = new GridBagConstraints();
 		gbc_SbmBtn_PC.anchor = GridBagConstraints.EAST;
 		gbc_SbmBtn_PC.insets = new Insets(0, 0, 5, 5);
