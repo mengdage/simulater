@@ -7,6 +7,7 @@ import gwu.csci.arc.isa.LDA;
 
 public class Initialization {
 
+	//PartTwo
 	CPU cpu;
 	Memory memory;
 	IntegratedCircuit ic;
