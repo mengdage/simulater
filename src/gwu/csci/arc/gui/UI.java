@@ -267,7 +267,8 @@ public class UI extends JFrame {
 		SetTxt_Ins.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
-				
+				String Current = SetTxt_Ins.getText();
+				if (Current.length() == 18) e.setKeyChar((char) 00);
 				if ((e.getKeyChar() != '0') && (e.getKeyChar() != '1')) e.setKeyChar((char) 00);
 			}
 		});
