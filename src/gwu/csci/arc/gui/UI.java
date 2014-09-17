@@ -868,7 +868,7 @@ public class UI extends JFrame {
 				// and in-betweens are 0
 				for (int i = 1; i < 5; i++)
 				{
-					if (Opcode[i] != '0') flag = true;
+					if (Opcode[i] == '0') flag = true;
 					else
 					{
 						flag = false;
@@ -876,7 +876,7 @@ public class UI extends JFrame {
 					}
 				}
 				
-				if (flag = true) ins = "LDX";
+				if (flag == true) ins = "LDX";
 			}
 			
 			// and ends w/ 10
@@ -893,7 +893,7 @@ public class UI extends JFrame {
 					}
 				}
 				
-				if (flag = true) ins = "STX";
+				if (flag == true) ins = "STX";
 			}
 		}
 		
