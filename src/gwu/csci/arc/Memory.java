@@ -5,7 +5,7 @@ import gwu.csci.arc.utility.Converter;
 //need revise
 public class Memory {
 
-	private static final int LENGTH = 1024;
+	private static final int LENGTH = 2048;
 	//Singleton
 	private static Memory memory;
 	

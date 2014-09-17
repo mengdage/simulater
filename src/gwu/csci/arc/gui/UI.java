@@ -45,6 +45,8 @@ public class UI extends JFrame {
 	
 	CPU cpu = CPU.getInstance();
 	IndexRegister xr;
+	Initialization init = new Initialization();
+	static boolean ifInitial = true;
 	
 	// for instruction opcode & address recognition uses
 	char[] Instruction = new char[18];
@@ -111,8 +113,7 @@ public class UI extends JFrame {
 	 */
 	public static void main(String[] args) {
 		
-		Initialization init = new Initialization();
-		init.toRun();
+		
 		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -453,8 +454,9 @@ public class UI extends JFrame {
 				if (flag == false) DspTxt_Cns.setText(DspTxt_Cns.getText() + "Fail: Instruction Error!\n\n");
 				else
 				{ 
-					instruction_run();
-					DspTxt_Cns.setText(DspTxt_Cns.getText() + "Instruction Submitted: " + new String(address_mem) + " " + ins + " " + new String(address) + "!\n\n");
+					cpu.writeIns(Instruction, Instruction.length, address_mem);
+					//instruction_run();
+					DspTxt_Cns.setText(DspTxt_Cns.getText() + "Instruction Submitted.\n"+"The Instruction ("+ ins +" "+ new String(address)+ ") is written into Memory at: " + new String(address_mem) + ".\n");
 				}
 			}
 		});
@@ -547,16 +549,21 @@ public class UI extends JFrame {
 				
 				//LDX ldx = new LDX(cpu);
 				//ldx.start();
+				//init.toRun();
+
 				
-				if (flag == false)
-				{
-					cpu.readPC(pc, pc.length);
-					cpu.readMem(Instruction, Instruction.length, pc);
-					opcode_check();
+				
+				cpu.readPC(pc, pc.length);
+				cpu.readMem(Instruction, Instruction.length, pc);
+				opcode_check();
 					
-					if (flag == false) DspTxt_Cns.setText(DspTxt_Cns.getText() + "Fail: Instruction Error!\n\n");
-					else instruction_run();
+				if (flag == false) { 
+					DspTxt_Cns.setText(DspTxt_Cns.getText() + "Fail: Unrecognized Instuction!\n");
 				}
+				else { 
+					instruction_run();
+				}
+				
 				
 				//status update
 				
@@ -909,27 +916,36 @@ public class UI extends JFrame {
 	{
 		if (ins == "LDR")
 		{
+			if(ifInitial) {
+				init.preRun_LDR();
+			}
 			LDR ldr = new LDR(cpu);
 			DspTxt_Cns.setText(DspTxt_Cns.getText() + "Begin to run " + ins + ".\n");
 			ldr.start();
 		}
-		
-		if (ins == "STR")
+		else if (ins == "STR")
 		{
+			if(ifInitial) {
+				init.preRun_STR();
+			}
 			STR str = new STR(cpu);
 			DspTxt_Cns.setText(DspTxt_Cns.getText() + "Begin to run " + ins + ".\n");
 			str.start();
 		}
-		
-		if (ins == "LDA")
+		else if (ins == "LDA")
 		{
+			if(ifInitial) {
+				init.preRun_LDA();
+			}
 			LDA lda = new LDA(cpu);
 			DspTxt_Cns.setText(DspTxt_Cns.getText() + "Begin to run " + ins + ".\n");
 			lda.start();
 		}
-		
-		if (ins == "LDX")
+		else if (ins == "LDX")
 		{
+			if(ifInitial) {
+				init.preRun_LDX();
+			}
 			LDX ldx = new LDX(cpu);
 			DspTxt_Cns.setText(DspTxt_Cns.getText() + "Begin to run " + ins + ".\n");
 			ldx.start();
@@ -937,12 +953,15 @@ public class UI extends JFrame {
 		
 		if (ins == "STX")
 		{
+			if(ifInitial) {
+				init.preRun_STX();
+			}
 			STX stx = new STX(cpu);
 			DspTxt_Cns.setText(DspTxt_Cns.getText() + "Begin to run " + ins + ".\n");
 			stx.start();
 		}
 		
-		cpu.writeIns(Opcode, Opcode.length, address_mem);
+		//cpu.writeIns(Opcode, Opcode.length, address_mem);
 		DspTxt_Cns.setText(DspTxt_Cns.getText() + "Success: " + ins + " " + new String(address) + ".\n\n");
 	}
 

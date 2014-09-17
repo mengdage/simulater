@@ -391,9 +391,9 @@ public class IntegratedCircuit {
 	public int X2M() {
 		if(I[0] == '0') {
 			//read the index address from index register into valR
-			cpu.readXR(valR, xfi, valR.length);
+			cpu.readXR(valX, xfi, valR.length);
 			//write the content valR into memory at EA
-			writeMem(valR, valR.length, EA);
+			writeMem(valX, valR.length, EA);
 		}
 		else{
 			//read the index address from index register into valR

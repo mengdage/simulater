@@ -18,9 +18,6 @@ public class Converter {
 			output[i] = '0';
 			
 		}
-		if(addr > 1024) {
-			System.out.println("the address exceed the boundary");
-		}
 		for (int i = 0; ((addr/2)>0 || addr == 1) && i < len; i++) {
 			if (addr % 2 == 0) {
 				output[len -1 -i] = '0';

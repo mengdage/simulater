@@ -7,13 +7,14 @@ import gwu.csci.arc.utility.Converter;
 public abstract class ISA {
 
 	
-	public static final char[] oneInstranceLength= new char[IntegratedCircuit.getLenAddr()];
+	//public static final char[] oneInstranceLength= new char[IntegratedCircuit.getLenAddr()];
+	public static final char[] oneInstranceLength= {'0','0','0','0','0','0','0','1', '0', '0', '1','0'};
 	public char[] isaPC = new char[12];
 	public CPU isaCpu;
 	public ISA(CPU cpu) {
 		// TODO Auto-generated constructor stub
 		isaCpu = cpu;
-		Converter.addrConverterI2S(IntegratedCircuit.getLenInstruction(), oneInstranceLength);
+		//Converter.addrConverterI2S(IntegratedCircuit.getLenInstruction(), oneInstranceLength);
 	}
 	public final int start() {
 		if (ifNeedDecode()) {
