@@ -8,15 +8,6 @@ public class LDR extends ISA{
 		super(cpu);
 		// TODO Auto-generated constructor stub
 	}
-
-//	@Override
-//	int ALUcalc() {
-//		// TODO Auto-generated method stub
-//		isaCpu.RIOperandPreparation();
-//		isaCpu.ALUcalc(OPERATORS.add);
-//		return 0;
-//	}
-
 	
 	@Override
 	int execute() {
@@ -30,13 +21,5 @@ public class LDR extends ISA{
 		isaCpu.addition(isaPC, oneInstranceLength, isaCpu.getNewPC());
 		return 0;
 	}
-
-	@Override
-	int pcUpdate() {
-		// TODO Auto-generated method stub
-		isaCpu.pcUpdate();
-		return 0;
-	}
-	
 
 }

@@ -5,7 +5,9 @@ import gwu.csci.arc.utility.Converter;
 //need revise
 public class Memory {
 
-	private static final int LENGTH = 2048;
+	//1 sByte = 6 sBits
+	//the total memory is 4096 sBytes
+	private static final int LENGTH = 4096*6;
 	//Singleton
 	private static Memory memory;
 	
@@ -46,37 +48,53 @@ public class Memory {
 	 * @return 0
 	 */
 	public int write(char[] c,int len, char[] addr ) {
+		return write(c, 0, len, addr);
+	}
+	
+	/**
+	 * write c with length len into memory starting form addr
+	 * @param c the content to be written
+	 * @param startPos the start position of c
+	 * @param len the length of the content
+	 * @param addr the address where to start writing
+	 * @return 0
+	 */
+	public int write(char[] c,int startPos, int len, char[] addr ) {
 		int intaddr;
-		intaddr = Converter.addrConveterS2I(addr, IntegratedCircuit.getLenAddr());
-		System.out.println("Memory: Writing content into memory at " + intaddr);
+		intaddr = 6*Converter.addrConveterS2I(addr, IntegratedCircuit.getLenAddr());
+		System.out.println("Memory: Writing content into memory at " + intaddr/6 +" ("+intaddr+")");
 		for(int i = 0; i < len; i++) {
-			content[intaddr+i] = c[i];
+			content[intaddr+i] = c[startPos+i];
 		}
-		System.out.println("Memory: Succeed!");
 		return 0;
 	}
 
 	/**
 	 * read content with length len from memory starting form addr into c
-	 * !******need revise******! 
 	 * @param c store the content read
 	 * @param len the length of the content
 	 * @param binAddr the address where to start reading
 	 * @return 0
 	 */
 	public int read(char[] c, int len, char[] addr) {
+		return read(c, 0, len, addr);
+	}
+	
+	/**
+	 * read content with length len from memory starting form addr into c
+	 * @param c store the content read
+	 * @param startPos the start position of c
+	 * @param len the length of the content
+	 * @param binAddr the address where to start reading
+	 * @return 0
+	 */
+	public int read(char[] c,int startPos, int len, char[] addr) {
 		int intaddr;
-		intaddr = Converter.addrConveterS2I(addr, IntegratedCircuit.getLenAddr());
-		//!!!!!!!!!!!!need revise here!!!!!!!!!!!!
-//		System.out.print("Memory: the address to read is: ");
-//		System.out.println(addr);
-//		System.out.println("Memory: change the address to 128");
-//		int fakeaddr = 128; 
-		System.out.println("Memory: Reading content from memory at: " + intaddr);
+		intaddr = 6*Converter.addrConveterS2I(addr, IntegratedCircuit.getLenAddr());
+		System.out.println("Memory: Reading content from memory at: " + intaddr/6 +" ("+intaddr+")");
 		for(int i = 0; i < len; i++) {
-			c[i] = content[intaddr + i];
+			c[startPos+i] = content[intaddr + i];
 		}
-		System.out.println("Memory: Succeed!");
 		return 0;
 	}
 }

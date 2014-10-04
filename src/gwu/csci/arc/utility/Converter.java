@@ -36,10 +36,14 @@ public class Converter {
 	 * @return int
 	 */
 	public static int addrConveterS2I(char[] addr, int len) {
+		return addrConveterS2I(addr, 0, len);
+	}
+	
+	public static int addrConveterS2I(char[] addr, int startPos, int len) {
 		int result = 0;
 		int j = 0;
 		for (int i = 0; i < len; i++) {
-			if (addr[len - 1- i] == '0') {
+			if (addr[len+startPos - 1- i] == '0') {
 				if(j == 0) {
 					j = 1;
 				}

@@ -57,7 +57,10 @@ public abstract class ISA {
 	}
 	abstract int execute();
 	
-	abstract int pcUpdate(); 
+	int pcUpdate() {
+		isaCpu.pcUpdate();
+		return 0;
+	}
 	
 	//the condition method for each each stage
 	/**

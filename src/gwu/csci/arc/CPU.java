@@ -22,6 +22,8 @@ public class CPU {
 	private ALU alu = new ALU();
 	//the integrated circuit
 	private IntegratedCircuit ic;
+	//the cache
+	private Cache cache;
 	
 	//result from the ALU
 	private char[] RES = new char[IntegratedCircuit.getLenWord()];
@@ -29,13 +31,14 @@ public class CPU {
 	private char[] OP1 = new char[IntegratedCircuit.getLenWord()];
 	//second operand
 	private char[] OP2 = new char[IntegratedCircuit.getLenWord()];
-	//
+	//the value that will be write into PC
 	private char[] newPC = new char[IntegratedCircuit.getLenAddr()];
 	private CPU() {
 		// TODO Auto-generated constructor stub
 		System.out.println("I am the CPU. I am starting up!!");
 		alu = new ALU();
 		ic = IntegratedCircuit.getInstance(this);
+		cache = Cache.getInstance(ic);
 	}
 	//singleton: the only way to get a cpu object
 	public static CPU getInstance() {
@@ -68,8 +71,10 @@ public class CPU {
 	public char[] getNewPC() {
 		return newPC;
 	}
-	public void setNewPC(char[] newPC) {
-		this.newPC = newPC;
+	public void setNewPC(char[] newPC, int len) {
+		for (int i = 0; i < len; i++) {
+			this.newPC[i] = newPC[i];
+		}
 	}
 	public char[] getMAR() {
 		return ic.getMAR();
@@ -158,7 +163,8 @@ public class CPU {
 	 */
 	public int readMem(char[] c, int len, char[] addr) {
 		
-		ic.readMem(c, len, addr);
+		//ic.readMem(c, len, addr);
+		cache.read(c, len, addr);
 		
 		return 0;
 	}
@@ -171,7 +177,8 @@ public class CPU {
 	 * @return
 	 */
 	public int writeMem(char[] c, int len, char[] addr) {
-		ic.writeMem(c, len, addr);
+		//ic.writeMem(c, len, addr);
+		cache.write(c, len, addr);
 		
 		return 0;
 	}
@@ -317,27 +324,93 @@ public class CPU {
 	 * @return
 	 */
 	public int R2M() {
-		ic.R2M();
-		return 0;
+		return ic.R2M();
+		
 	}
-	
+	/**
+	 * call the A2R() method in IntegratedCircuit
+	 * @return
+	 */
 	public int A2R() {
-		ic.A2R();
-		return 0;
+		return ic.A2R();
+		
+	}
+	/**
+	 * call the A2X() method in IntegratedCircuit
+	 * @return
+	 */
+	public int A2X() {
+		return ic.A2X();
+		
+	}
+	/**
+	 * call the X2M() method in IntegratedCircuit
+	 * @return
+	 */
+	public int X2M() {
+		return ic.X2M();
+		
+	}
+	/**
+	 * call the ic_jz() method in IntegratedCircuit
+	 * @return
+	 */
+	public int cpu_jz() {
+		return ic.ic_jz();
+		
+	}
+	/**
+	 * call the ic_jne() method in IntegratedCircuit
+	 * @return
+	 */
+	public int cpu_jne() {
+		return ic.ic_jne();
 	}
 	
-	public int A2X() {
-		ic.A2X();
-		return 0;
+	/**
+	 * call the ic_jcc() method in IntegratedCircuit
+	 * @return
+	 */
+	public int cpu_jcc() {
+		return ic.ic_jcc();
 	}
-	public int X2M() {
-		ic.X2M();
-		return 0;
+	/**
+	 * call the ic_jmp() method in IntegratedCircuit
+	 * @return
+	 */
+	public int cpu_jmp() {
+		return ic.ic_jmp();
+	}
+	
+	/**
+	 * call the ic_jsr() method in IntegratedCircuit
+	 * @return
+	 */
+	public int cpu_jsr() {
+		return ic.ic_jsr();
+	}
+	/**
+	 * call the ic_rfs method in IntegratedCircuit
+	 * @return
+	 */
+	public int cpu_rfs() {
+		return ic.ic_rfs();
+	}
+	public int cpu_sob() {
+		return ic.ic_sob();
+	}
+	public int cpu_jge() {
+		return ic.ic_rfs();
 	}
 	//!******need revised******!
 	public int addition(char[] op1, char[] op2, char[] result) {
 		//return alu.addition(44, 55);
 		alu.addition(op1, op2, op1.length, result);
+		return 0;
+	}
+	public int subtraction(char[] op1, char[] op2, char[] result) {
+		//return alu.addition(44, 55);
+		alu.subtraction(op1, op2, op1.length, result);
 		return 0;
 	}
 	
@@ -357,6 +430,8 @@ public class CPU {
 	public int calcEA() {
 		return ic.calcEA();
 	}
+	
+	
 	
 	/**
 	 * ALU calculation process

@@ -29,11 +29,4 @@ public class STR extends ISA{
 		return 0;
 	}
 
-	@Override
-	int pcUpdate() {
-		// TODO Auto-generated method stub
-		isaCpu.pcUpdate();
-		return 0;
-	}
-
 }

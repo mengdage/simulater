@@ -18,11 +18,4 @@ public class LDX extends ISA{
 		isaCpu.addition(isaPC, oneInstranceLength, isaCpu.getNewPC());
 		return 0;
 	}
-
-	@Override
-	int pcUpdate() {
-		// TODO Auto-generated method stub
-		isaCpu.pcUpdate();
-		return 0;
-	}
 }

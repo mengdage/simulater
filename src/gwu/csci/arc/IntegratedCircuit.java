@@ -20,6 +20,7 @@ public class IntegratedCircuit {
 	private static final int LEN_XFI = 2; //the length of the XFI in an instruction
 	private static final int LEN_I = 1; //the length of the I in an instruction
 	private static final int LEN_ADDR_INCODE= 7; //the length of the address in an instruction
+	private static final int LEN_SBYTE = 6; //one sByte = six sBit
 
 
 	/*used for communicating with the memory*/
@@ -54,8 +55,11 @@ public class IntegratedCircuit {
 	private char[] valR = new char[LEN_WORD];
 	//the value read from the index file
 	private char[] valX = new char[LEN_ADDR];
-//	the value read from the instruaction register
+	//the value read from the instruaction register
 	private char[] valIR = new char[18];
+	
+	//the value read from the cc
+	private char[] valC = new char[1];
 //	private char[] valM = new char[LEN_WORD];
 	//the pointer to the Memory address when writing instructions
 	private char[] ins_pointer = new char[LEN_ADDR];
@@ -139,6 +143,10 @@ public class IntegratedCircuit {
 	 */
 	public static int getLenAddrIncode() {
 		return LEN_ADDR_INCODE;
+	}
+	
+	public static int getLenSByte() {
+		return LEN_SBYTE;
 	}
 
 	public char[] getEA() {
@@ -247,7 +255,7 @@ public class IntegratedCircuit {
 		
 	}
 	/**
-	 * 
+	 * read from the Memory without a start position
 	 * @param c: store the content
 	 * @param len: the length of content
 	 * @param addr: the address of the content
@@ -255,19 +263,43 @@ public class IntegratedCircuit {
 	 */
 	public int readMem(char[] c, int len, char[] addr) {
 		
-		memory.read(c, len, addr);
+		return readMem(c, 0, len, addr);
+	}
+	
+	/**
+	 * read from the Memory with a start position
+	 * @param c: store the content
+	 * @param startPos the start position of c
+	 * @param len: the length of content
+	 * @param addr: the address of the content
+	 * @return 0
+	 */
+	public int readMem(char[] c,int startPos, int len, char[] addr) {
+		
+		memory.read(c, startPos,len, addr);
 		
 		return 0;
 	}
 	/**
-	 * 
+	 * write to the Memory without a start position
 	 * @param c then content to be written
 	 * @param len the length of the content
 	 * @param addr the address of the memory to start writing
 	 * @return
 	 */
 	public int writeMem(char[] c, int len, char[] addr) {
-		memory.write(c, len, addr);
+		return writeMem(c, 0, len, addr);
+	}
+	/**
+	 * write to the Memory with a start position
+	 * @param c then content to be written
+	 * @param startPos the start position of c
+	 * @param len the length of the content
+	 * @param addr the address of the memory to start writing
+	 * @return
+	 */
+	public int writeMem(char[] c, int startPos,int len, char[] addr) {
+		memory.write(c, startPos, len, addr);
 		
 		return 0;
 	}
@@ -408,7 +440,199 @@ public class IntegratedCircuit {
 		
 	}
 	
+	/**
+	 * If gpr is 0
+	 * If gpr is not 0
+	 * For JZ
+	 * @return
+	 */
+	public int ic_jz() {
+		//test if c(r) is zero
+		readReg(valR, valR.length, REG_TYPE.GPR);
+		int flag = 0;
+		for(int i = 0; i < valR.length; i++) {
+			if(valR[i] != '0') {
+				flag = 1;
+			}
+		}
+		
+		if(flag == 0) { //c(r) is zero, change the PC
+			if(I[0] == '0') {
+				cpu.writePC(EA, EA.length);
+			} else {
+				readMem(MAR, MAR.length, EA);
+				cpu.setNewPC(MAR, MAR.length);
+			}
+			return 0;
+		} else {
+			return 1;
+		}
+	}
 	
+	/**
+	 * If gpr is 0
+	 * If gpr is not 0
+	 * For JNE
+	 * @return
+	 */
+	public int ic_jne() {
+		//test if c(r) is zero
+		readReg(valR, valR.length, REG_TYPE.GPR);
+		int flag = 0;
+		for(int i = 0; i < valR.length; i++) {
+			if(valR[i] != '0') {
+				flag = 1;
+			}
+		}
+		
+		if(flag == 1) { //c(r) is not zero, change the PC
+			if(I[0] == '0') {
+				cpu.writePC(EA, EA.length);
+			} else {
+				readMem(MAR, MAR.length, EA);
+				cpu.setNewPC(MAR, MAR.length);
+			}
+			return 0;
+		} else {
+			return 1;
+		}
+	}
+	/**
+	 * If c is
+	 * If c is not 0
+	 * For JCC
+	 * @return 0 if c is set and newPC is update; 1 otherwise
+	 */
+	public int ic_jcc() {
+		/**********!!!!!!!!!!*************/
+		readReg(valC, valC.length, REG_TYPE.CC);
+		if(valC[0] == '1') {
+			if (I[0] =='0') {
+				cpu.writePC(EA, EA.length);
+			} else {
+				readMem(MAR, MAR.length, EA);
+				cpu.setNewPC(MAR, MAR.length);
+			}
+			return 0;
+		}
+		return 1;
+	}
+	/**
+	 * unconditional jump 
+	 * for jmp
+	 * @return
+	 */
+	public int ic_jmp() {
+		if(I[0] == '0') {
+			cpu.writePC(EA, EA.length);
+			
+		} else {
+			readMem(MAR, MAR.length, EA);
+			cpu.setNewPC(MAR, MAR.length);
+			
+		}
+		return 0;
+	}
+	/**
+	 * Jump and Save Return Address
+	 * @return
+	 */
+	public int ic_jsr() {
+		cpu.readPC(valR, LEN_ADDR);
+		cpu.addition(ISA.oneInstranceLength,valR, cpu.getNewPC());
+		rfi[1] = '1';
+		rfi[0] = '1';
+		writeReg(cpu.getNewPC(), LEN_ADDR, REG_TYPE.GPR);
+		
+		if(I[0] == '0') {
+			cpu.writePC(EA, EA.length);
+			
+		} else {
+			readMem(MAR, MAR.length, EA);
+			cpu.setNewPC(MAR, MAR.length);
+			
+		}
+		return 0;
+	}
+	/**
+	 * 
+	 * @return
+	 */
+	public int ic_rfs() {
+		rfi[1] = '0';
+		rfi[0] = '0';
+		writeReg(addr, addr.length, REG_TYPE.GPR);
+		rfi[1] = '1';
+		rfi[0] = '1';
+		readReg(valR, valR.length, REG_TYPE.GPR);
+		cpu.setNewPC(valR, valR.length);
+		return 0;
+	}
+	/**
+	 * Subtract one and Branch
+	 * @return 0 if c(r)>=0 and newPC is update; 1 otherwise
+	 */
+	public int ic_sob() {
+		readReg(valR, valR.length, REG_TYPE.GPR);
+		int r = Converter.addrConveterS2I(valR, valR.length);
+		Converter.addrConverterI2S(r-1, valR);
+		//c(r) <- c(r)-1
+		writeReg(valR, valR.length, REG_TYPE.GPR);
+		if(r > 0) {
+			if(I[0] == '0') {
+				cpu.writePC(EA, EA.length);
+			} else {
+				readMem(MAR, MAR.length, EA);
+				cpu.setNewPC(MAR, MAR.length);
+			}
+			return 0;
+		} else {
+			return 1;
+		}
+	}
+	/**
+	 * 
+	 * @return 0 if c(r)>=0 and newPC is update; 1 otherwise
+	 */
+	public int ic_jge(){
+		//test if c(r) is zero
+		readReg(valR, valR.length, REG_TYPE.GPR);
+		
+		if(valR[0] == '0') { //c(r) is greater than or equal to zero, change the PC
+			if(I[0] == '0') {
+				cpu.writePC(EA, EA.length);
+			} else {
+				readMem(MAR, MAR.length, EA);
+				cpu.setNewPC(MAR, MAR.length);
+			}
+			return 0;
+		} else {
+			return 1;
+		}
+	}
+	/**
+	 * Add memory to register
+	 * @return 0 succeed
+	 */
+	public int ic_amr() {
+		readMem(MBR, MBR.length, EA);
+		readReg(valR, valR.length, REG_TYPE.GPR);
+		cpu.addition(valR, MBR, valR);
+		writeReg(valR, valR.length, REG_TYPE.GPR);
+		return 0;
+	}
+	
+	/**
+	 * subtract memory from register 
+	 * @return 0 succeed
+	 */
+	public int ic_smr() {
+		readMem(MBR, MBR.length, EA);
+		readReg(valR, valR.length, REG_TYPE.GPR);
+		cpu.subtraction(valR, MBR, valR);
+		writeReg(valR, valR.length, REG_TYPE.GPR);
+		return 0;
+	}
 	/**
 	 * Perform the decode stage
 	 * MAR <- R(RFI)
