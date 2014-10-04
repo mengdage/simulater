@@ -13,7 +13,7 @@ public class SIR extends ISA{
 		// TODO Auto-generated method stub
 		isaCpu.cpu_sir();
 		isaCpu.readPC(isaPC, isaPC.length);
-		isaCpu.addition(isaPC, oneInstranceLength, isaCpu.getNewPC());
+		isaCpu.addition(isaPC, oneInstranceLengthInSByte, isaCpu.getNewPC());
 		return 0;
 	}
 }

@@ -17,6 +17,7 @@ public class Cache {
 	//the cache memory
 	private char[][] content = new char[NUM_SET][LEN_LIN];
 	
+	
 	//the set id
 	private int setId;
 	//the block offset
@@ -67,36 +68,54 @@ public class Cache {
 	/**
 	 * read from cache
 	 * @param c store the content read from cache
+	 * @param startPos the position where to start 
 	 * @param len the length of the content
 	 * @param addr the address of the memory
 	 * @return 0: success
 	 */
-	public int read(char[] c, int len, char[] addr) {
-		
-		prepare(c, len, addr);
+	public int read(char[] c, int startPos, int len, char[] addr) {
+		prepare(addr);
 		int offsetPos = LEN_VALID+LEN_DIRTY+LEN_TAG+offset*IntegratedCircuit.getLenSByte();
-		System.out.println("read from set "+setId+" blockoffset " + offsetPos);
+		System.out.println("read from set "+setId+" blockoffset " + offset);
 		//return the requested content
-		for (int i = 0; i < len; i++) {
-			c[i] = content[setId][offsetPos+i];
+		for (int i = 0; i < len; i++) { 
+			c[startPos+i] = content[setId][offsetPos+i];
 			
 		}
+		
+		
+		
+		
 		return 0;
 	}
-	public int write(char[] c, int len, char[] addr) {
+	/**
+	 * read from cache
+	 * @param c store the content read from cache
+	 * @param startPos the position where to start 
+	 * @param len the length of the content
+	 * @param addr the address of the memory
+	 * @return 0: success
+	 */
+	public int write(char[] c, int startPos, int len, char[] addr) {
 		
-		prepare(c, len, addr);
+		prepare(addr);
 		int offsetPos = LEN_VALID+LEN_DIRTY+LEN_TAG+offset*IntegratedCircuit.getLenSByte();
-		//write content into the cache block
-		System.out.println("Cache: write "+new String(c)+ " into set "+setId+" blockoffset " + offsetPos);
-		for (int i = 0; i < len; i++) {
-			content[setId][offsetPos+i] = c[i];
+		System.out.println("write to set "+setId+" blockoffset " + offset);
+		//return the requested content
+		for (int i = 0; i < len; i++) { 
+			content[setId][offsetPos+i] = c[startPos+i]; 
 			
 		}
 		content[setId][1]='1';
 		return 0;
 	}
-	private int prepare(char[] c, int len, char[] addr) {
+	/**
+	 * Check if the target content is in the cache. If not, load 
+	 * content into cache from memory
+	 * @param addr
+	 * @return
+	 */
+	private int prepare(char[] addr) {
 		addrDecode(addr);
 		int tagPos = LEN_VALID+LEN_DIRTY;
 		int blockPos = LEN_VALID+LEN_DIRTY+LEN_TAG;
@@ -135,7 +154,7 @@ public class Cache {
 				}
 				System.out.println("Cache: load memory("+ new String(memtoBlockAddr)+") to cache block at line: "+setId);
 				//load the content from Memory to Cache
-				ic.readMem(content[setId], blockPos, len, memtoBlockAddr);
+				ic.readMem(content[setId], blockPos, LEN_BLOCK, memtoBlockAddr);
 				//reset Tag
 				copyChars(content[setId], tagPos, addr, 0, LEN_TAG);
 			} else{
@@ -153,7 +172,7 @@ public class Cache {
 			}
 			System.out.println("Cache: load memory("+ new String(memtoBlockAddr)+") to cache block at line: "+setId);
 			//load the content from Memory to Cache
-			ic.readMem(content[setId], blockPos, len, memtoBlockAddr);
+			ic.readMem(content[setId], blockPos, LEN_BLOCK, memtoBlockAddr);
 			//set Tag
 			copyChars(content[setId], tagPos, addr, 0, LEN_TAG);
 			//set valid bit
@@ -197,9 +216,9 @@ public class Cache {
 	
 	/**
 	 * 
-	 * @param c1 
+	 * @param c1 to
 	 * @param startPos1 the start position of c1
-	 * @param c2
+	 * @param c2 from 
 	 * @param startPos2 the start position of c2
 	 * @param len the length to be compared
 	 * @return true if equal or false

@@ -21,6 +21,8 @@ public class IntegratedCircuit {
 	private static final int LEN_I = 1; //the length of the I in an instruction
 	private static final int LEN_ADDR_INCODE= 7; //the length of the address in an instruction
 	private static final int LEN_SBYTE = 6; //one sByte = six sBit
+	//6 in binary
+	private static final char[] ONE_12 = {'0','0','0','0','0','0','0','0', '0', '0', '0','1'}; //one sByte = six sBit
 
 
 	/*used for communicating with the memory*/
@@ -147,6 +149,9 @@ public class IntegratedCircuit {
 	
 	public static int getLenSByte() {
 		return LEN_SBYTE;
+	}
+	public static char[] getOne() {
+		return ONE_12;
 	}
 
 	public char[] getEA() {
@@ -318,7 +323,7 @@ public class IntegratedCircuit {
 		}
 //		Converter.addrConverterI2S(len, ins_addr);
 		//increase the ins_pointer to the next place available to write instructions
-		cpu.addition(ins_pointer, ISA.oneInstranceLength, ins_pointer);
+		cpu.addition(ins_pointer, ISA.oneInstranceLengthInSByte, ins_pointer);
 		return 0;
 	}
 	/**
@@ -539,7 +544,7 @@ public class IntegratedCircuit {
 	 */
 	public int ic_jsr() {
 		cpu.readPC(valR, LEN_ADDR);
-		cpu.addition(ISA.oneInstranceLength,valR, cpu.getNewPC());
+		cpu.addition(ISA.oneInstranceLengthInSByte,valR, cpu.getNewPC());
 		rfi[1] = '1';
 		rfi[0] = '1';
 		writeReg(cpu.getNewPC(), LEN_ADDR, REG_TYPE.GPR);

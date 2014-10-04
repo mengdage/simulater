@@ -12,7 +12,7 @@ public class AMR extends ISA{
 		// TODO Auto-generated method stub
 		isaCpu.cpu_amr();
 		isaCpu.readPC(isaPC, isaPC.length);
-		isaCpu.addition(isaPC, oneInstranceLength, isaCpu.getNewPC());
+		isaCpu.addition(isaPC, oneInstranceLengthInSByte, isaCpu.getNewPC());
 		return 0;
 	}
 	

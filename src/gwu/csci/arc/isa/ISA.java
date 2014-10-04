@@ -8,7 +8,8 @@ public abstract class ISA {
 
 	
 	//public static final char[] oneInstranceLength= new char[IntegratedCircuit.getLenAddr()];
-	public static final char[] oneInstranceLength= {'0','0','0','0','0','0','0','1', '0', '0', '1','0'};
+	public static final char[] oneInstranceLengthInSBite= {'0','0','0','0','0','0','0','1', '0', '0', '1','0'};
+	public static final char[] oneInstranceLengthInSByte = {'0','0','0','0','0','0','0','0', '0', '0', '1','1'};
 	public char[] isaPC = new char[12];
 	public CPU isaCpu;
 	public ISA(CPU cpu) {

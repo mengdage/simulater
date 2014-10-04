@@ -1,5 +1,6 @@
 package gwu.csci.arc;
 
+import gwu.csci.arc.isa.ISA;
 import gwu.csci.arc.utility.OPERATORS;
 
 public class CPU {
@@ -33,6 +34,10 @@ public class CPU {
 	private char[] OP2 = new char[IntegratedCircuit.getLenWord()];
 	//the value that will be write into PC
 	private char[] newPC = new char[IntegratedCircuit.getLenAddr()];
+	
+	//the address used when read or write cache
+	private char[] addressCache = new char[IntegratedCircuit.getLenAddr()];
+	
 	private CPU() {
 		// TODO Auto-generated constructor stub
 		System.out.println("I am the CPU. I am starting up!!");
@@ -155,16 +160,23 @@ public class CPU {
 	}
 
 	/**
-	 * actually invoke the ic's readMem metohd
+	 * actually invoke the ic's readMem method
 	 * @param c: store the content
 	 * @param len: the length of content
 	 * @param addr: the address of the content
 	 * @return 0
 	 */
 	public int readMem(char[] c, int len, char[] addr) {
-		
-		//ic.readMem(c, len, addr);
-		cache.read(c, len, addr);
+		for (int i = 0; i < addr.length; i++) {
+			addressCache[i] = addr[i];
+		}
+		int numByte = len /IntegratedCircuit.getLenSByte();
+		for(int i =0; i<numByte; i++){
+			cache.read(c, i*IntegratedCircuit.getLenSByte(), IntegratedCircuit.getLenSByte(), addressCache);
+			if(i+1 < numByte) {
+				addition(IntegratedCircuit.getOne(), addressCache, addressCache);
+			}
+		}
 		
 		return 0;
 	}
@@ -177,8 +189,16 @@ public class CPU {
 	 * @return
 	 */
 	public int writeMem(char[] c, int len, char[] addr) {
-		//ic.writeMem(c, len, addr);
-		cache.write(c, len, addr);
+		for (int i = 0; i < addr.length; i++) {
+			addressCache[i] = addr[i];
+		}
+		int numByte = len /IntegratedCircuit.getLenSByte();
+		for(int i =0; i<numByte; i++){
+			cache.write(c, i*IntegratedCircuit.getLenSByte(), IntegratedCircuit.getLenSByte(), addressCache);
+			if(i+1 < numByte) {
+				addition(IntegratedCircuit.getOne(), addressCache, addressCache);
+			}
+		}
 		
 		return 0;
 	}

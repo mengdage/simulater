@@ -15,7 +15,7 @@ public class JZ extends ISA{
 		// TODO Auto-generated method stub
 		if(isaCpu.cpu_jz() != 0) {
 			isaCpu.readPC(isaPC, isaPC.length);
-			isaCpu.addition(isaPC, oneInstranceLength, isaCpu.getNewPC());
+			isaCpu.addition(isaPC, oneInstranceLengthInSByte, isaCpu.getNewPC());
 		}
 		
 		return 0;
