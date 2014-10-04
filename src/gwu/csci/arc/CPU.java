@@ -396,21 +396,65 @@ public class CPU {
 	public int cpu_rfs() {
 		return ic.ic_rfs();
 	}
+	/**
+	 * call the ic_sob method in IntegratedCircuit
+	 * @return
+	 */
 	public int cpu_sob() {
 		return ic.ic_sob();
 	}
+	/**
+	 * call the ic_jge method in IntegratedCircuit
+	 * @return
+	 */
 	public int cpu_jge() {
 		return ic.ic_rfs();
 	}
-	//!******need revised******!
+	/**
+	 * call the ic_amr method in IntegratedCircuit
+	 * @return
+	 */
+	public int cpu_amr() {
+		return ic.ic_amr();
+	}
+	/**
+	 * call the ic_smr method in IntegratedCircuit
+	 * @return
+	 */
+	public int cpu_smr() {
+		return ic.ic_smr();
+	}
+	
+	/**
+	 * call the ic_air method in IntegratedCircuit
+	 * @return
+	 */
+	public int cpu_air() {
+		return ic.ic_air();
+	}
+	
+	/**
+	 * call the ic_sir method in IntegratedCircuit
+	 * @return
+	 */
+	public int cpu_sir() {
+		return ic.ic_sir();
+	}
+	
+	/**
+	 * do addition
+	 * @param op1 
+	 * @param op2
+	 * @param result
+	 * @return
+	 */
 	public int addition(char[] op1, char[] op2, char[] result) {
-		//return alu.addition(44, 55);
-		alu.addition(op1, op2, op1.length, result);
+		alu.addition(op1, op2, result);
 		return 0;
 	}
 	public int subtraction(char[] op1, char[] op2, char[] result) {
 		//return alu.addition(44, 55);
-		alu.subtraction(op1, op2, op1.length, result);
+		alu.subtraction(op1, op2, result);
 		return 0;
 	}
 	
@@ -443,10 +487,10 @@ public class CPU {
 	public int ALUcalc(OPERATORS opr) {
 		switch (opr) {
 		case add:
-			alu.addition(OP1, OP2, OP1.length, RES);
+			alu.addition(OP1, OP2, RES);
 			break;
 		case subtract:
-			alu.subtraction(OP1, OP2, OP1.length, RES);
+			alu.subtraction(OP1, OP2, RES);
 			break;
 
 		default:

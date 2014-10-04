@@ -574,8 +574,8 @@ public class IntegratedCircuit {
 	 */
 	public int ic_sob() {
 		readReg(valR, valR.length, REG_TYPE.GPR);
-		int r = Converter.addrConveterS2I(valR, valR.length);
-		Converter.addrConverterI2S(r-1, valR);
+		int r = Converter.conveterS2I(valR, valR.length);
+		Converter.converterI2S(r-1, valR);
 		//c(r) <- c(r)-1
 		writeReg(valR, valR.length, REG_TYPE.GPR);
 		if(r > 0) {
@@ -633,6 +633,27 @@ public class IntegratedCircuit {
 		writeReg(valR, valR.length, REG_TYPE.GPR);
 		return 0;
 	}
+	/**
+	 * add immediate to register
+	 * @return
+	 */
+	public int ic_air() {
+		readReg(valR, valR.length, REG_TYPE.GPR);
+		cpu.addition(valR, EA, valR);
+		writeReg(valR, valR.length, REG_TYPE.GPR);
+		return 0;
+	}
+	/**
+	 * subtract immediate to register
+	 * @return
+	 */
+	public int ic_sir() {
+		readReg(valR, valR.length, REG_TYPE.GPR);
+		cpu.subtraction(valR, EA, valR);
+		writeReg(valR, valR.length, REG_TYPE.GPR);
+		return 0;
+	}
+	
 	/**
 	 * Perform the decode stage
 	 * MAR <- R(RFI)

@@ -172,8 +172,8 @@ public class Cache {
 			System.err.println("Cache: the add is not 12 bits");
 			return 1;
 		}
-		setId = Converter.addrConveterS2I(addr, 4, 4);
-		offset = Converter.addrConveterS2I(addr, 8, 4);
+		setId = Converter.conveterS2I(addr, 4, 4);
+		offset = Converter.conveterS2I(addr, 8, 4);
 		return 0;
 	}
 	/**

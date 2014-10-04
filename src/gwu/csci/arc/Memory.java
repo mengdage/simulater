@@ -61,7 +61,7 @@ public class Memory {
 	 */
 	public int write(char[] c,int startPos, int len, char[] addr ) {
 		int intaddr;
-		intaddr = 6*Converter.addrConveterS2I(addr, IntegratedCircuit.getLenAddr());
+		intaddr = 6*Converter.conveterS2I(addr, IntegratedCircuit.getLenAddr());
 		System.out.println("Memory: Writing content into memory at " + intaddr/6 +" ("+intaddr+")");
 		for(int i = 0; i < len; i++) {
 			content[intaddr+i] = c[startPos+i];
@@ -90,7 +90,7 @@ public class Memory {
 	 */
 	public int read(char[] c,int startPos, int len, char[] addr) {
 		int intaddr;
-		intaddr = 6*Converter.addrConveterS2I(addr, IntegratedCircuit.getLenAddr());
+		intaddr = 6*Converter.conveterS2I(addr, IntegratedCircuit.getLenAddr());
 		System.out.println("Memory: Reading content from memory at: " + intaddr/6 +" ("+intaddr+")");
 		for(int i = 0; i < len; i++) {
 			c[startPos+i] = content[intaddr + i];

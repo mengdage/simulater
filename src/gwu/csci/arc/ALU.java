@@ -12,12 +12,12 @@ public class ALU {
 	 * @param result
 	 * @return 
 	 */
-	public int addition(char[] op1, char[] op2, int len, char result[]) {
+	public int addition(char[] op1, char[] op2, char result[]) {
 		//char[] result = new char[IntegratedCircuit.getLenWord()];
 //		int len = IntegratedCircuit.getLenAddr();
-		int p1 = Converter.addrConveterS2I(op1, len);
-		int p2 = Converter.addrConveterS2I(op2, len);
-		Converter.addrConverterI2S(p1+p2, result);
+		int p1 = Converter.conveterS2I(op1, op1.length);
+		int p2 = Converter.conveterS2I(op2, op2.length);
+		Converter.converterI2S(p1+p2, result);
 		return 0;
 	}
 	
@@ -28,11 +28,11 @@ public class ALU {
 	 * @param result
 	 * @return
 	 */
-	public int subtraction(char[] op1, char[] op2, int len, char result[]) {
+	public int subtraction(char[] op1, char[] op2, char result[]) {
 //		int len = IntegratedCircuit.getLenAddr();
-		int p1 = Converter.addrConveterS2I(op1, len);
-		int p2 = Converter.addrConveterS2I(op2, len);
-		Converter.addrConverterI2S(p1-p2, result);
+		int p1 = Converter.conveterS2I(op1, op1.length);
+		int p2 = Converter.conveterS2I(op2, op2.length);
+		Converter.converterI2S(p1-p2, result);
 		
 		return 0;
 	}
