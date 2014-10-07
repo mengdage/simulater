@@ -137,7 +137,7 @@ public class UI extends JFrame {
 		setTitle("Simulator");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1100, 540);
+		setBounds(0, 0, 1100, 540);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -986,4 +986,15 @@ public class UI extends JFrame {
 		DspTxt_Cns.setText(DspTxt_Cns.getText() + "Success: " + ins + " " + new String(address) + ".\n\n");
 	}
 
+	public void print2console(String content)
+	{
+		String Current = DspTxt_Cns.getText() + "\n";
+		DspTxt_Cns.setText(Current + content);
+	}
+	
+	public void print2console(int content)
+	{
+		String Current = DspTxt_Cns.getText() + "\n";
+		DspTxt_Cns.setText(Current + content);
+	}
 }
