@@ -40,9 +40,12 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+
 import javax.swing.JCheckBox;
 
 public class UI extends JFrame {
+	
+	static UI frame;
 	
 	CPU cpu = CPU.getInstance();
 	IndexRegister xr;
@@ -123,7 +126,8 @@ public class UI extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					UI frame = new UI();
+					//UI frame = new UI();
+					frame = new UI();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -288,7 +292,6 @@ public class UI extends JFrame {
 		scrollPane_3 = new JScrollPane();
 		GridBagConstraints gbc_scrollPane_3 = new GridBagConstraints();
 		gbc_scrollPane_3.gridwidth = 2;
-		gbc_scrollPane_3.insets = new Insets(0, 0, 0, 5);
 		gbc_scrollPane_3.fill = GridBagConstraints.BOTH;
 		gbc_scrollPane_3.gridheight = 14;
 		gbc_scrollPane_3.gridx = 11;
@@ -659,6 +662,7 @@ public class UI extends JFrame {
 				DspTxt_PC.setText(new String(Current_dsp));
 			}
 		});
+		
 		GridBagConstraints gbc_SbmBtn_PC = new GridBagConstraints();
 		gbc_SbmBtn_PC.anchor = GridBagConstraints.EAST;
 		gbc_SbmBtn_PC.insets = new Insets(0, 0, 5, 5);
@@ -1002,28 +1006,38 @@ public class UI extends JFrame {
 		//cpu.writeIns(Opcode, Opcode.length, address_mem);
 		DspTxt_Cns.setText(DspTxt_Cns.getText() + "Success: " + ins + " " + new String(address) + ".\n\n");
 	}
+	
+	// return UI instance in order to have print interfaces
+	public static UI getUIinstance()
+	{
+		if (frame != null)
+			return frame;
+		
+		return new UI();
+	}
 
+	// print interfaces
 	public void print2console(String content)
 	{
-		String Current = DspTxt_Cns.getText() + "\n";
-		DspTxt_Cns.setText(Current + content);
+		String Current = DspTxt_Cns.getText();
+		DspTxt_Cns.setText(Current + content + "\n");
 	}
 	
 	public void print2console(int content)
 	{
-		String Current = DspTxt_Cns.getText() + "\n";
-		DspTxt_Cns.setText(Current + content);
+		String Current = DspTxt_Cns.getText();
+		DspTxt_Cns.setText(Current + content + "\n");
 	}
 	
 	public void print2log(String content)
 	{
-		String Current = DspTxt_Log.getText() + "\n";
-		DspTxt_Log.setText(Current + content);
+		String Current = DspTxt_Log.getText();
+		DspTxt_Log.setText(Current + content + "\n");
 	}
 	
 	public void print2log(int content)
 	{
-		String Current = DspTxt_Log.getText() + "\n";
-		DspTxt_Log.setText(Current + content);
+		String Current = DspTxt_Log.getText();
+		DspTxt_Log.setText(Current + content + "\n");
 	}
 }
