@@ -38,6 +38,7 @@ import javax.swing.JCheckBox;
 
 public class UI extends JFrame {
 	
+	// main UI
 	static UI frame;
 	
 	CPU cpu = CPU.getInstance();
@@ -116,8 +117,6 @@ public class UI extends JFrame {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		
-		
 		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -276,6 +275,7 @@ public class UI extends JFrame {
 		contentPane.add(scrollPane_2, gbc_scrollPane_2);
 		
 		SetTxt_Ins = new JTextArea();
+		SetTxt_Ins.setColumns(18);
 		scrollPane_2.setViewportView(SetTxt_Ins);
 		SetTxt_Ins.setToolTipText("Set 18-bit instruction code");
 		SetTxt_Ins.setWrapStyleWord(true);
@@ -1075,7 +1075,7 @@ public class UI extends JFrame {
 		return new UI();
 	}
 
-	// print interfaces
+	// interfaces for printing usage
 	public void print2console(String content)
 	{
 		String Current = DspTxt_Cns.getText();
