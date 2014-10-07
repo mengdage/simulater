@@ -9,14 +9,12 @@ import gwu.csci.arc.isa.STR;
 import gwu.csci.arc.isa.STX;
 import gwu.csci.arc.test.Initialization;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import java.awt.FlowLayout;
 
 import javax.swing.JTextField;
 import javax.swing.JLabel;
@@ -26,15 +24,10 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 
 import javax.swing.JButton;
-import javax.swing.JSeparator;
-import javax.swing.JEditorPane;
 import javax.swing.JTextArea;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 
-import java.awt.Color;
 
-import javax.swing.JSlider;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -114,6 +107,9 @@ public class UI extends JFrame {
 	private JTextArea DspTxt_Log;
 	private JLabel lblLog;
 	private JScrollPane scrollPane_3;
+	private JTextField SetTxt_PI;
+	private JLabel lblProgramInput;
+	private JButton SbmBtn_PI;
 
 	
 	/**
@@ -151,7 +147,7 @@ public class UI extends JFrame {
 		GridBagLayout gbl_contentPane = new GridBagLayout();
 		gbl_contentPane.columnWidths = new int[]{32, 154, 31, 61, 114, 186, 34, 127, 117, 104, 22, 102, 95, 0};
 		gbl_contentPane.rowHeights = new int[]{20, 20, 20, 20, 34, 0, 0, 0, 44, 0, 34, 34, 34, 34, 34, 0};
-		gbl_contentPane.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_contentPane.columnWeights = new double[]{0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		contentPane.setLayout(gbl_contentPane);
 		
@@ -279,10 +275,10 @@ public class UI extends JFrame {
 		gbc_scrollPane_2.gridy = 1;
 		contentPane.add(scrollPane_2, gbc_scrollPane_2);
 		
-		SetTxt_Ins = new JTextArea(10, 18);
+		SetTxt_Ins = new JTextArea();
+		scrollPane_2.setViewportView(SetTxt_Ins);
 		SetTxt_Ins.setToolTipText("Set 18-bit instruction code");
 		SetTxt_Ins.setWrapStyleWord(true);
-		scrollPane_2.setViewportView(SetTxt_Ins);
 		SetTxt_Ins.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
@@ -558,6 +554,14 @@ public class UI extends JFrame {
 			}
 		});
 		
+		lblProgramInput = new JLabel("Program Input:");
+		GridBagConstraints gbc_lblProgramInput = new GridBagConstraints();
+		gbc_lblProgramInput.anchor = GridBagConstraints.SOUTHWEST;
+		gbc_lblProgramInput.insets = new Insets(0, 0, 5, 5);
+		gbc_lblProgramInput.gridx = 4;
+		gbc_lblProgramInput.gridy = 6;
+		contentPane.add(lblProgramInput, gbc_lblProgramInput);
+		
 		lblPc = new JLabel("PC:");
 		GridBagConstraints gbc_lblPc = new GridBagConstraints();
 		gbc_lblPc.anchor = GridBagConstraints.EAST;
@@ -681,12 +685,38 @@ public class UI extends JFrame {
 			}
 		});
 		
+		SetTxt_PI = new JTextField();
+		SetTxt_PI.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				if ((e.getExtendedKeyCode() < 48) || (e.getExtendedKeyCode() > 57)) e.setKeyChar((char)00);
+			}
+		});
+		SetTxt_PI.setToolTipText("Set input value for program");
+		GridBagConstraints gbc_SetTxt_PI = new GridBagConstraints();
+		gbc_SetTxt_PI.gridwidth = 2;
+		gbc_SetTxt_PI.insets = new Insets(0, 0, 5, 5);
+		gbc_SetTxt_PI.fill = GridBagConstraints.HORIZONTAL;
+		gbc_SetTxt_PI.gridx = 4;
+		gbc_SetTxt_PI.gridy = 7;
+		contentPane.add(SetTxt_PI, gbc_SetTxt_PI);
+		SetTxt_PI.setColumns(10);
+		
 		GridBagConstraints gbc_SbmBtn_PC = new GridBagConstraints();
 		gbc_SbmBtn_PC.anchor = GridBagConstraints.EAST;
 		gbc_SbmBtn_PC.insets = new Insets(0, 0, 5, 5);
 		gbc_SbmBtn_PC.gridx = 8;
 		gbc_SbmBtn_PC.gridy = 7;
 		contentPane.add(SbmBtn_PC, gbc_SbmBtn_PC);
+		
+		SbmBtn_PI = new JButton("Submit");
+		SbmBtn_PI.setToolTipText("Submit program input");
+		GridBagConstraints gbc_SbmBtn_PI = new GridBagConstraints();
+		gbc_SbmBtn_PI.anchor = GridBagConstraints.NORTHEAST;
+		gbc_SbmBtn_PI.insets = new Insets(0, 0, 5, 5);
+		gbc_SbmBtn_PI.gridx = 5;
+		gbc_SbmBtn_PI.gridy = 8;
+		contentPane.add(SbmBtn_PI, gbc_SbmBtn_PI);
 		GridBagConstraints gbc_SbmBtn_SglStp = new GridBagConstraints();
 		gbc_SbmBtn_SglStp.fill = GridBagConstraints.HORIZONTAL;
 		gbc_SbmBtn_SglStp.insets = new Insets(0, 0, 5, 5);
@@ -1058,6 +1088,14 @@ public class UI extends JFrame {
 		DspTxt_Cns.setText(Current + content + "\n");
 	}
 	
+	// for long type only
+/*
+	public void print2console(long content)
+	{
+		String Current = DspTxt_Cns.getText();
+		DspTxt_Cns.setText(Current + content + "\n");
+	}
+*/
 	public void print2log(String content)
 	{
 		String Current = DspTxt_Log.getText();
@@ -1069,4 +1107,16 @@ public class UI extends JFrame {
 		String Current = DspTxt_Log.getText();
 		DspTxt_Log.setText(Current + content + "\n");
 	}
+	
+	// program input interface
+	public int getPI()
+	{
+		String content = SetTxt_PI.getText();
+		
+	//	long PI = Long.valueOf(content);
+		int PI = Integer.valueOf(content);
+	
+		return PI;
+	}
+	
 }
