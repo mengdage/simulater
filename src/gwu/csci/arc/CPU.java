@@ -20,7 +20,7 @@ public class CPU {
 	private InstructionRegister ir = new InstructionRegister();
 	
 	//the algorithm logic unit
-	private ALU alu = new ALU();
+	private ALU alu;
 	//the integrated circuit
 	private IntegratedCircuit ic;
 	//the cache
@@ -34,6 +34,8 @@ public class CPU {
 	private char[] OP2 = new char[IntegratedCircuit.getLenWord()];
 	//the value that will be write into PC
 	private char[] newPC = new char[IntegratedCircuit.getLenAddr()];
+	//the pointer to the Memory address when writing instructions
+	private char[] ins_pointer = {'0','0','0','0','0','0', '0', '0','1', '1', '1', '1'};
 	
 	//the address used when read or write cache
 	private char[] addressCache = new char[IntegratedCircuit.getLenAddr()];
@@ -41,9 +43,10 @@ public class CPU {
 	private CPU() {
 		// TODO Auto-generated constructor stub
 		System.out.println("I am the CPU. I am starting up!!");
-		alu = new ALU();
+		alu = ALU.getInstance(this);
 		ic = IntegratedCircuit.getInstance(this);
-		cache = Cache.getInstance(ic);
+		cache = Cache.getInstance();
+		
 	}
 	//singleton: the only way to get a cpu object
 	public static CPU getInstance() {
@@ -91,11 +94,16 @@ public class CPU {
 	 * write an instruction into memory
 	 * @param ins the instruction
 	 * @param len the length of the instruction
-	 * @param ins_addr the address where the instruction is
+	 * @param ins_addr the address where the instruction is in the memory
 	 * @return 0
 	 */
 	public int writeIns(char[] ins, int len, char[] ins_addr) {
-		ic.writeIns(ins, len, ins_addr);
+		//ic.writeIns(ins, len, ins_addr);
+		writeMem(ins, ins.length, ins_pointer);
+		for (int i = 0; i < ins_addr.length; i++) {
+			ins_addr[i] = ins_pointer[i];
+		}
+		cpu.addition(ins_pointer, ISA.oneInstranceLengthInSByte, ins_pointer);
 		return 0;
 	}
 	/**
@@ -167,12 +175,16 @@ public class CPU {
 	 * @return 0
 	 */
 	public int readMem(char[] c, int len, char[] addr) {
+		return readMem(c, 0, len, addr);
+	}
+	
+	public int readMem(char[] c, int startPos, int len, char[] addr) {
 		for (int i = 0; i < addr.length; i++) {
 			addressCache[i] = addr[i];
 		}
 		int numByte = len /IntegratedCircuit.getLenSByte();
 		for(int i =0; i<numByte; i++){
-			cache.read(c, i*IntegratedCircuit.getLenSByte(), IntegratedCircuit.getLenSByte(), addressCache);
+			cache.read(c, startPos+i*IntegratedCircuit.getLenSByte(), IntegratedCircuit.getLenSByte(), addressCache);
 			if(i+1 < numByte) {
 				addition(IntegratedCircuit.getOne(), addressCache, addressCache);
 			}
@@ -189,12 +201,15 @@ public class CPU {
 	 * @return
 	 */
 	public int writeMem(char[] c, int len, char[] addr) {
+		return writeMem(c, 0, len, addr);
+	}
+	public int writeMem(char[] c, int startPos, int len, char[] addr) {
 		for (int i = 0; i < addr.length; i++) {
 			addressCache[i] = addr[i];
 		}
 		int numByte = len /IntegratedCircuit.getLenSByte();
 		for(int i =0; i<numByte; i++){
-			cache.write(c, i*IntegratedCircuit.getLenSByte(), IntegratedCircuit.getLenSByte(), addressCache);
+			cache.write(c, startPos+i*IntegratedCircuit.getLenSByte(), IntegratedCircuit.getLenSByte(), addressCache);
 			if(i+1 < numByte) {
 				addition(IntegratedCircuit.getOne(), addressCache, addressCache);
 			}
@@ -278,8 +293,8 @@ public class CPU {
 	 * @param len the length of the content
 	 * @return 0
 	 */
-	public int readCC(char[] c, int len) {
-		if(cc.getCC(c, len) == 0) 
+	public int readCC(char[] c, int id) {
+		if(cc.getCC(c, id) == 0) 
 			System.out.println("CPU: reading condition code succeed");
 		return 0;
 	}
@@ -454,6 +469,14 @@ public class CPU {
 	}
 	
 	/**
+	 * call the ic_aix method in IntegratedCircuit
+	 * @return
+	 */
+	public int cpu_aix() {
+		return ic.ic_aix();
+	}
+	
+	/**
 	 * call the ic_sir method in IntegratedCircuit
 	 * @return
 	 */
@@ -461,6 +484,19 @@ public class CPU {
 		return ic.ic_sir();
 	}
 	
+	/**
+	 * call the ic_six method in IntegratedCircuit
+	 * @return
+	 */
+	public int cpu_six() {
+		return ic.ic_six();
+	}
+	public int cpu_in() {
+		return ic.ic_in();
+	}
+	public int cpu_out() {
+		return ic.ic_out();
+	}
 	/**
 	 * do addition
 	 * @param op1 

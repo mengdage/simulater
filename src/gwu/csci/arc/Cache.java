@@ -17,23 +17,25 @@ public class Cache {
 	//the cache memory
 	private char[][] content = new char[NUM_SET][LEN_LIN];
 	
+	private Memory memory;
+	
 	
 	//the set id
 	private int setId;
 	//the block offset
 	private int offset;
-	//
-	IntegratedCircuit ic;
+	
 	//the address used when write block back to memory
 	char[] blocktoMemAddr = new char[IntegratedCircuit.getLenAddr()];
 	//the address used when read block from memory into cache
 	char[] memtoBlockAddr = new char[IntegratedCircuit.getLenAddr()];
 	
-	private Cache(IntegratedCircuit ic) {
+	private Cache() {
 		System.out.println("Hey, I am the Cache! I am starting up!");
 		setId = 0;
 		offset=0;
-		this.ic = ic;
+		
+		memory = Memory.getInstance();
 		
 		int i,j;
 		
@@ -53,11 +55,11 @@ public class Cache {
 	}
 	
 	//Singleton: the only way to get a Memory object
-	public static Cache getInstance(IntegratedCircuit ic) {
+	public static Cache getInstance() {
 		if(cache == null){
 			//the Memory class has not been instantiated yet
 			//new an object and return the object
-			cache = new Cache(ic);
+			cache = new Cache();
 			return cache;
 		}
 		else {
@@ -141,7 +143,8 @@ public class Cache {
 					}
 					System.out.println("Cache: write block back to memory "+ new String(blocktoMemAddr));
 					
-					ic.writeMem(content[setId], blockPos, LEN_BLOCK, blocktoMemAddr);
+					//ic.writeMem(content[setId], blockPos, LEN_BLOCK, blocktoMemAddr);
+					memory.write(content[setId], blockPos, LEN_BLOCK, blocktoMemAddr);
 				}
 				
 				//calculate the address to read block from memory into cache
@@ -154,7 +157,7 @@ public class Cache {
 				}
 				System.out.println("Cache: load memory("+ new String(memtoBlockAddr)+") to cache block at line: "+setId);
 				//load the content from Memory to Cache
-				ic.readMem(content[setId], blockPos, LEN_BLOCK, memtoBlockAddr);
+				memory.read(content[setId], blockPos, LEN_BLOCK, memtoBlockAddr);
 				//reset Tag
 				copyChars(content[setId], tagPos, addr, 0, LEN_TAG);
 			} else{
@@ -172,7 +175,7 @@ public class Cache {
 			}
 			System.out.println("Cache: load memory("+ new String(memtoBlockAddr)+") to cache block at line: "+setId);
 			//load the content from Memory to Cache
-			ic.readMem(content[setId], blockPos, LEN_BLOCK, memtoBlockAddr);
+			memory.read(content[setId], blockPos, LEN_BLOCK, memtoBlockAddr);
 			//set Tag
 			copyChars(content[setId], tagPos, addr, 0, LEN_TAG);
 			//set valid bit

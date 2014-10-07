@@ -18,11 +18,8 @@ public class ConditionCode {
 	 * @param len the length of the content to be read
 	 * @return
 	 */
-	public int getCC(char[] c, int len) {
-		for (int i = 0; i < len && i< LENGTH; i++) {
-			c[i] = content[i];
-			
-		}
+	public int getCC(char[] c, int id) {
+		c[0] = content[id];
 		return 0;
 	}
 

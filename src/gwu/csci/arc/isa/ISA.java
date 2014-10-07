@@ -83,5 +83,8 @@ public abstract class ISA {
 	boolean ifNeedPcUpdate() {
 		return true;
 	}
+	void printString(String s) {
+		System.out.println(s);
+	}
 	
 }

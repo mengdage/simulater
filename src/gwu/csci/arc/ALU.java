@@ -3,8 +3,19 @@ package gwu.csci.arc;
 import gwu.csci.arc.utility.Converter;
 
 public class ALU {
+	private static ALU alu;
+	private CPU cpu;
 	private char[] cc = new char[4];
 	
+	private ALU(CPU cpu){
+		this.cpu = cpu;
+	}
+	public static ALU getInstance(CPU cpu) {
+		if(alu == null){
+			alu = new ALU(cpu);
+		}
+		return alu;
+	}
 	/**
 	 * do addition
 	 * @param op1
@@ -32,7 +43,21 @@ public class ALU {
 //		int len = IntegratedCircuit.getLenAddr();
 		int p1 = Converter.conveterS2I(op1, op1.length);
 		int p2 = Converter.conveterS2I(op2, op2.length);
-		Converter.converterI2S(p1-p2, result);
+		if(p1>p2) {
+			for (int i = 0; i < cc.length; i++) {
+				cc[i] = '0';
+			}
+			cpu.writeCC(cc, cc.length);
+			Converter.converterI2S(p1-p2, result);
+		}
+		else {
+			for (int i = 0; i < cc.length; i++) {
+				cc[i] = '0';
+			}
+			cc[1] = '1';
+			cpu.writeCC(cc, cc.length);
+			Converter.converterI2S(p2-p1, result);
+		}
 		
 		return 0;
 	}

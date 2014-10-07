@@ -16,4 +16,10 @@ public class SIR extends ISA{
 		isaCpu.addition(isaPC, oneInstranceLengthInSByte, isaCpu.getNewPC());
 		return 0;
 	}
+	
+	@Override
+	boolean ifNeedCalcEA() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

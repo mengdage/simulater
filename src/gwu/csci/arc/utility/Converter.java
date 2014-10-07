@@ -10,21 +10,45 @@ public class Converter {
 	 * @return 0 success; 1 failure
 	 */
 	public static int converterI2S(int addr, char[] output) {
+		return converterI2S(addr, output, output.length);
+	}
+	
+	/**
+	 * convert an int to char[]
+	 * @param addr address
+	 * @param output the calculated binary address
+	 * @return 0 success; 1 failure
+	 */
+	public static int converterI2S(int addr, char[] output, int len) {
 		//int len = IntegratedCircuit.getLenAddr();
 		//int len = 10;
-		int len = output.length;
+		
+		
+		return converterI2S(addr, output, 0, len);
+	}
+	
+	/**
+	 * convert an int to char[]
+	 * @param addr address
+	 * @param output the calculated binary address
+	 * @return 0 success; 1 failure
+	 */
+	public static int converterI2S(int addr, char[] output, int startPos, int len) {
+		//int len = IntegratedCircuit.getLenAddr();
+		//int len = 10;
+		
 		
 		for (int i = 0; i < len; i++) {
-			output[i] = '0';
+			output[startPos+i] = '0';
 			
 		}
 		if(addr >= 0) {
 			for (int i = 0; ((addr/2)>0 || addr == 1) && i < len; i++) {
 				if (addr % 2 == 0) {
-					output[len -1 -i] = '0';
+					output[startPos+len -1 -i] = '0';
 				}
 				else {
-					output[len - 1 - i] = '1';
+					output[startPos+len - 1 - i] = '1';
 				}
 				addr = (addr/2);
 			}

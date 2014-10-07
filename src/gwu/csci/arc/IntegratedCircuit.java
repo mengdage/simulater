@@ -1,6 +1,7 @@
 package gwu.csci.arc;
 import gwu.csci.arc.isa.ISA;
 import gwu.csci.arc.utility.Converter;
+import gwu.csci.arc.utility.IOConnector;
 
 enum REG_TYPE {
 	GPR,
@@ -65,11 +66,28 @@ public class IntegratedCircuit {
 //	private char[] valM = new char[LEN_WORD];
 	//the pointer to the Memory address when writing instructions
 	private char[] ins_pointer = new char[LEN_ADDR];
+	
+	
+	
+	private int[] p1In = new int[21];
+	private int p1In_id = 0;
+	public void printP1In() {
+		for (int i = 0; i < p1In.length; i++) {
+			System.out.print(p1In[i] + " ");
+		}
+		System.out.println("");
+		
+	}
+	
+	
 	//the memory
 	private Memory memory;
 	
 	//the CPU
 	private CPU cpu;
+	
+	//
+	private IOConnector io;
 	
 	/**
 	 * constructor
@@ -79,6 +97,7 @@ public class IntegratedCircuit {
 		// TODO Auto-generated constructor stub
 		memory = Memory.getInstance();
 		this.cpu = cpu;
+		io = new IOConnector();
 		
 		//initiliaztion
 		for (int i = 0; i < LEN_ADDR; i++) {
@@ -94,8 +113,11 @@ public class IntegratedCircuit {
 			
 		}
 		
-		//start memory address at 16
-		ins_pointer[LEN_ADDR - 1 - 4] = '1';
+		//start memory address at 15
+		ins_pointer[LEN_ADDR - 1 - 3] = '1';
+		ins_pointer[LEN_ADDR - 1 - 2] = '1';
+		ins_pointer[LEN_ADDR - 1 - 1] = '1';
+		ins_pointer[LEN_ADDR - 1 - 0] = '1';
 	}
 	
 	/**
@@ -212,7 +234,8 @@ public class IntegratedCircuit {
 		case XR:
 			cpu.readXR(c, xfi, len);break;
 		case CC:
-			//cpu.readCC(, len)break;
+			cpu.readCC(c, Converter.conveterS2I(rfi, rfi.length));
+			break;
 		case PC:
 			cpu.readPC(c, len);break;
 		case IR:
@@ -281,7 +304,8 @@ public class IntegratedCircuit {
 	 */
 	public int readMem(char[] c,int startPos, int len, char[] addr) {
 		
-		memory.read(c, startPos,len, addr);
+		//memory.read(c, startPos,len, addr);
+		cpu.readMem(c, startPos, len, addr);
 		
 		return 0;
 	}
@@ -299,12 +323,14 @@ public class IntegratedCircuit {
 	 * write to the Memory with a start position
 	 * @param c then content to be written
 	 * @param startPos the start position of c
+	 * @param startPos the start position of c
 	 * @param len the length of the content
 	 * @param addr the address of the memory to start writing
 	 * @return
 	 */
 	public int writeMem(char[] c, int startPos,int len, char[] addr) {
-		memory.write(c, startPos, len, addr);
+		//memory.write(c, startPos, len, addr);
+		cpu.writeMem(c, startPos, len, addr);
 		
 		return 0;
 	}
@@ -364,6 +390,7 @@ public class IntegratedCircuit {
 			//read a word of GPR into valR
 			readReg(valR, LEN_WORD, REG_TYPE.GPR);
 			//write a word into memory at EA
+			io.printString("STR: store " + new String(valR) + "to memory at: " + new String(EA));
 			writeMem(valR, LEN_WORD, EA);
 		}
 		else {
@@ -509,11 +536,11 @@ public class IntegratedCircuit {
 	 * @return 0 if c is set and newPC is update; 1 otherwise
 	 */
 	public int ic_jcc() {
-		/**********!!!!!!!!!!*************/
 		readReg(valC, valC.length, REG_TYPE.CC);
 		if(valC[0] == '1') {
 			if (I[0] =='0') {
-				cpu.writePC(EA, EA.length);
+				cpu.setNewPC(EA, EA.length);
+				
 			} else {
 				readMem(MAR, MAR.length, EA);
 				cpu.setNewPC(MAR, MAR.length);
@@ -529,7 +556,7 @@ public class IntegratedCircuit {
 	 */
 	public int ic_jmp() {
 		if(I[0] == '0') {
-			cpu.writePC(EA, EA.length);
+			cpu.setNewPC(EA, EA.length);
 			
 		} else {
 			readMem(MAR, MAR.length, EA);
@@ -580,18 +607,26 @@ public class IntegratedCircuit {
 	public int ic_sob() {
 		readReg(valR, valR.length, REG_TYPE.GPR);
 		int r = Converter.conveterS2I(valR, valR.length);
-		Converter.converterI2S(r-1, valR);
+		r = r-1;
+		io.printString("SOB: r-1 = " + r);
+		Converter.converterI2S(r, valR);
 		//c(r) <- c(r)-1
 		writeReg(valR, valR.length, REG_TYPE.GPR);
 		if(r > 0) {
+			
 			if(I[0] == '0') {
-				cpu.writePC(EA, EA.length);
+				io.printString("SOB: r-1 > 0 and I =0");
+				io.printString("SOB: PC = " + new String(EA));
+				cpu.setNewPC(EA, EA.length);
 			} else {
 				readMem(MAR, MAR.length, EA);
+				io.printString("SOB: r-1 > 0 and I =1");
+				io.printString("SOB: PC = " + new String(MAR));
 				cpu.setNewPC(MAR, MAR.length);
 			}
 			return 0;
 		} else {
+			io.printString("r <= 0");
 			return 1;
 		}
 	}
@@ -605,7 +640,7 @@ public class IntegratedCircuit {
 		
 		if(valR[0] == '0') { //c(r) is greater than or equal to zero, change the PC
 			if(I[0] == '0') {
-				cpu.writePC(EA, EA.length);
+				cpu.setNewPC(EA, EA.length);
 			} else {
 				readMem(MAR, MAR.length, EA);
 				cpu.setNewPC(MAR, MAR.length);
@@ -644,21 +679,80 @@ public class IntegratedCircuit {
 	 */
 	public int ic_air() {
 		readReg(valR, valR.length, REG_TYPE.GPR);
-		cpu.addition(valR, EA, valR);
+		io.printString("---AIR: GPR " + Converter.conveterS2I(rfi, rfi.length) + " = "+ new String(valR) + " + " + new String(addr));
+		cpu.addition(valR, addr, valR);
 		writeReg(valR, valR.length, REG_TYPE.GPR);
 		return 0;
 	}
+	
+	/**
+	 * add immediate to index register
+	 * @return
+	 */
+	public int ic_aix() {
+		readReg(valX, valX.length, REG_TYPE.XR);
+		io.printString("---AIX: XR " + Converter.conveterS2I(xfi,xfi.length) + " = "+ new String(valX) + " + " + new String(addr));
+		cpu.addition(valX, addr, valX);
+		writeReg(valX, valX.length, REG_TYPE.XR);
+		return 0;
+	}
+	
 	/**
 	 * subtract immediate to register
 	 * @return
 	 */
 	public int ic_sir() {
 		readReg(valR, valR.length, REG_TYPE.GPR);
-		cpu.subtraction(valR, EA, valR);
+		io.printString("---AIR: GPR " + Converter.conveterS2I(rfi, rfi.length) + " = "+ new String(valR) + " - " + new String(addr));
+		cpu.subtraction(valR, addr, valR);
 		writeReg(valR, valR.length, REG_TYPE.GPR);
 		return 0;
 	}
 	
+	
+	/**
+	 * add immediate to index register
+	 * @return
+	 */
+	public int ic_six() {
+		readReg(valX, valX.length, REG_TYPE.XR);
+		io.printString("---AIX: XR " + Converter.conveterS2I(xfi,xfi.length) + " = "+ new String(valX) + " - " + new String(addr));
+		cpu.subtraction(valX, addr, valX);
+		writeReg(valX, valX.length, REG_TYPE.XR);
+		return 0;
+	}
+	public int ic_in(){
+		int devid = Converter.conveterS2I(addr, addr.length);
+		switch (devid) {
+		case 0:
+			int r = io.readInt();
+			p1In[p1In_id] = r;
+			p1In_id++;
+			Converter.converterI2S(r, valR);
+			io.printString("---IN: write " + r + " into GPR" + Converter.conveterS2I(rfi, rfi.length));
+			writeReg(valR, valR.length, REG_TYPE.GPR);
+			break;
+
+		default:
+			break;
+		}
+		return 0;
+	}
+	
+	public int ic_out(){
+		int devid = Converter.conveterS2I(addr, addr.length);
+		switch (devid) {
+		case 1:
+			readReg(valR, valR.length, REG_TYPE.GPR);
+			int r = Converter.conveterS2I(valR, valR.length);
+			io.printString("---OUT: "+ r);
+			break;
+
+		default:
+			break;
+		}
+		return 0;
+	}
 	/**
 	 * Perform the decode stage
 	 * MAR <- R(RFI)
