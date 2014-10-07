@@ -126,7 +126,7 @@ public class UI extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					//UI frame = new UI();
+					//UI frame = new UI(); //changed to global in order to return instance
 					frame = new UI();
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -196,6 +196,7 @@ public class UI extends JFrame {
 		contentPane.add(lblNewLabel_1, gbc_lblNewLabel_1);
 				
 		SetTxt_R0 = new JTextField();
+		SetTxt_R0.setToolTipText("Set value of R0");
 		SetTxt_R0.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
@@ -218,6 +219,7 @@ public class UI extends JFrame {
 		
 		
 		SbmBtn_R0 = new JButton("Submit");
+		SbmBtn_R0.setToolTipText("Submit R0");
 		SbmBtn_R0.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -251,6 +253,7 @@ public class UI extends JFrame {
 		contentPane.add(scrollPane_1, gbc_scrollPane_1);
 		
 		SetTxt_Mem = new JTextArea();
+		SetTxt_Mem.setToolTipText("Set memory value");
 		SetTxt_Mem.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
@@ -276,7 +279,9 @@ public class UI extends JFrame {
 		gbc_scrollPane_2.gridy = 1;
 		contentPane.add(scrollPane_2, gbc_scrollPane_2);
 		
-		SetTxt_Ins = new JTextArea();
+		SetTxt_Ins = new JTextArea(10, 18);
+		SetTxt_Ins.setToolTipText("Set 18-bit instruction code");
+		SetTxt_Ins.setWrapStyleWord(true);
 		scrollPane_2.setViewportView(SetTxt_Ins);
 		SetTxt_Ins.addKeyListener(new KeyAdapter() {
 			@Override
@@ -299,6 +304,7 @@ public class UI extends JFrame {
 		contentPane.add(scrollPane_3, gbc_scrollPane_3);
 		
 		DspTxt_Log = new JTextArea();
+		DspTxt_Log.setToolTipText("Log output");
 		DspTxt_Log.setEditable(false);
 		scrollPane_3.setViewportView(DspTxt_Log);
 		DspTxt_Log.setWrapStyleWord(true);
@@ -313,6 +319,7 @@ public class UI extends JFrame {
 		contentPane.add(lblNewLabel_2, gbc_lblNewLabel_2);
 		
 		SetTxt_R1 = new JTextField();
+		SetTxt_R1.setToolTipText("Set value of R1");
 		SetTxt_R1.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
@@ -333,6 +340,7 @@ public class UI extends JFrame {
 		SetTxt_R1.setColumns(5);
 		
 		SbmBtn_R1 = new JButton("Submit");
+		SbmBtn_R1.setToolTipText("Submit R1");
 		SbmBtn_R1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -364,6 +372,7 @@ public class UI extends JFrame {
 		contentPane.add(lblNewLabel, gbc_lblNewLabel);
 		
 		SetTxt_R2 = new JTextField();
+		SetTxt_R2.setToolTipText("Set value of R2");
 		SetTxt_R2.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
@@ -384,6 +393,7 @@ public class UI extends JFrame {
 		SetTxt_R2.setColumns(5);
 		
 		SbmBtn_R2 = new JButton("Submit");
+		SbmBtn_R2.setToolTipText("Submit R2");
 		SbmBtn_R2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -415,6 +425,7 @@ public class UI extends JFrame {
 		contentPane.add(lblR, gbc_lblR);
 		
 		SetTxt_R3 = new JTextField();
+		SetTxt_R3.setToolTipText("Set value of R3");
 		SetTxt_R3.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
@@ -435,6 +446,7 @@ public class UI extends JFrame {
 		SetTxt_R3.setColumns(5);
 		
 		SbmBtn_R3 = new JButton("Submit");
+		SbmBtn_R3.setToolTipText("Submit R3");
 		SbmBtn_R3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -466,6 +478,7 @@ public class UI extends JFrame {
 		contentPane.add(lblAddressInput, gbc_lblAddressInput);
 		
 		SetTxt_Addr = new JTextField();
+		SetTxt_Addr.setToolTipText("Set address value");
 		SetTxt_Addr.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
@@ -487,6 +500,7 @@ public class UI extends JFrame {
 		SetTxt_Addr.setColumns(10);
 		
 		SbmBtn_Ins = new JButton("Submit");
+		SbmBtn_Ins.setToolTipText("Submit instruction");
 		SbmBtn_Ins.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -517,6 +531,7 @@ public class UI extends JFrame {
 		contentPane.add(SbmBtn_Ins, gbc_SbmBtn_Ins);
 		
 		chckbxPrepreparation = new JCheckBox("Prepreparation");
+		chckbxPrepreparation.setToolTipText("Load predefined program (Y/N)");
 		chckbxPrepreparation.setSelected(true);
 		chckbxPrepreparation.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -530,6 +545,7 @@ public class UI extends JFrame {
 		});
 		
 		SetTxt_PC = new JTextField();
+		SetTxt_PC.setToolTipText("Set PC value");
 		SetTxt_PC.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
@@ -563,6 +579,7 @@ public class UI extends JFrame {
 		contentPane.add(chckbxPrepreparation, gbc_chckbxPrepreparation);
 		
 		SbmBtn_SglStp = new JButton("Single Step");
+		SbmBtn_SglStp.setToolTipText("Run program in single step");
 		SbmBtn_SglStp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -648,6 +665,7 @@ public class UI extends JFrame {
 		});
 		
 		SbmBtn_PC = new JButton("Submit");
+		SbmBtn_PC.setToolTipText("Submit PC");
 		SbmBtn_PC.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -710,6 +728,7 @@ public class UI extends JFrame {
 		contentPane.add(lblR_1, gbc_lblR_1);
 		
 		DspTxt_R0 = new JLabel("0");
+		DspTxt_R0.setToolTipText("Display value of R0");
 		GridBagConstraints gbc_DspTxt_R0 = new GridBagConstraints();
 		gbc_DspTxt_R0.insets = new Insets(0, 0, 5, 5);
 		gbc_DspTxt_R0.gridx = 1;
@@ -725,6 +744,7 @@ public class UI extends JFrame {
 		contentPane.add(lblX, gbc_lblX);
 		
 		DspTxt_X1 = new JLabel("0");
+		DspTxt_X1.setToolTipText("Display value of X1");
 		GridBagConstraints gbc_DspTxt_X1 = new GridBagConstraints();
 		gbc_DspTxt_X1.gridwidth = 2;
 		gbc_DspTxt_X1.insets = new Insets(0, 0, 5, 5);
@@ -743,6 +763,7 @@ public class UI extends JFrame {
 		contentPane.add(scrollPane, gbc_scrollPane);
 		
 		DspTxt_Cns = new JTextArea();
+		DspTxt_Cns.setToolTipText("Data output");
 		scrollPane.setViewportView(DspTxt_Cns);
 		DspTxt_Cns.setEditable(false);
 		DspTxt_Cns.setWrapStyleWord(true);
@@ -757,6 +778,7 @@ public class UI extends JFrame {
 		contentPane.add(lblR_2, gbc_lblR_2);
 		
 		DspTxt_R1 = new JLabel("0");
+		DspTxt_R1.setToolTipText("Display value of R1");
 		GridBagConstraints gbc_DspTxt_R1 = new GridBagConstraints();
 		gbc_DspTxt_R1.insets = new Insets(0, 0, 5, 5);
 		gbc_DspTxt_R1.gridx = 1;
@@ -772,6 +794,7 @@ public class UI extends JFrame {
 		contentPane.add(lblX_1, gbc_lblX_1);
 		
 		DspTxt_X2 = new JLabel("0");
+		DspTxt_X2.setToolTipText("Display value of X2");
 		GridBagConstraints gbc_DspTxt_X2 = new GridBagConstraints();
 		gbc_DspTxt_X2.gridwidth = 2;
 		gbc_DspTxt_X2.insets = new Insets(0, 0, 5, 5);
@@ -788,6 +811,7 @@ public class UI extends JFrame {
 		contentPane.add(lblR_3, gbc_lblR_3);
 		
 		DspTxt_R2 = new JLabel("0");
+		DspTxt_R2.setToolTipText("Display value of R2");
 		GridBagConstraints gbc_DspTxt_R2 = new GridBagConstraints();
 		gbc_DspTxt_R2.insets = new Insets(0, 0, 5, 5);
 		gbc_DspTxt_R2.gridx = 1;
@@ -803,6 +827,7 @@ public class UI extends JFrame {
 		contentPane.add(lblX_2, gbc_lblX_2);
 		
 		DspTxt_X3 = new JLabel("0");
+		DspTxt_X3.setToolTipText("Display value of X3");
 		GridBagConstraints gbc_DspTxt_X3 = new GridBagConstraints();
 		gbc_DspTxt_X3.gridwidth = 2;
 		gbc_DspTxt_X3.insets = new Insets(0, 0, 5, 5);
@@ -819,6 +844,7 @@ public class UI extends JFrame {
 		contentPane.add(lblR_4, gbc_lblR_4);
 		
 		DspTxt_R3 = new JLabel("0");
+		DspTxt_R3.setToolTipText("Display value of R3");
 		GridBagConstraints gbc_DspTxt_R3 = new GridBagConstraints();
 		gbc_DspTxt_R3.insets = new Insets(0, 0, 5, 5);
 		gbc_DspTxt_R3.gridx = 1;
@@ -834,6 +860,7 @@ public class UI extends JFrame {
 		contentPane.add(lblMar, gbc_lblMar);
 		
 		DspTxt_MAR = new JLabel("0");
+		DspTxt_MAR.setToolTipText("Display value of MAR");
 		GridBagConstraints gbc_DspTxt_MAR = new GridBagConstraints();
 		gbc_DspTxt_MAR.gridwidth = 2;
 		gbc_DspTxt_MAR.insets = new Insets(0, 0, 5, 5);
@@ -850,6 +877,7 @@ public class UI extends JFrame {
 		contentPane.add(lblPc_1, gbc_lblPc_1);
 		
 		DspTxt_PC = new JLabel("0");
+		DspTxt_PC.setToolTipText("Display value of PC");
 		GridBagConstraints gbc_DspTxt_PC = new GridBagConstraints();
 		gbc_DspTxt_PC.insets = new Insets(0, 0, 0, 5);
 		gbc_DspTxt_PC.gridx = 1;
@@ -865,6 +893,7 @@ public class UI extends JFrame {
 		contentPane.add(lblMbr, gbc_lblMbr);
 		
 		DspTxt_MBR = new JLabel("0");
+		DspTxt_MBR.setToolTipText("Display value of MBR");
 		GridBagConstraints gbc_DspTxt_MBR = new GridBagConstraints();
 		gbc_DspTxt_MBR.gridwidth = 2;
 		gbc_DspTxt_MBR.insets = new Insets(0, 0, 0, 5);
