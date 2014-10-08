@@ -1,6 +1,7 @@
 package gwu.csci.arc;
 
 import gwu.csci.arc.utility.Converter;
+import gwu.csci.arc.utility.IOConnector;
 
 public class Cache {
 	private static final int LEN_VALID=1;
@@ -19,6 +20,8 @@ public class Cache {
 	
 	private Memory memory;
 	
+	private IOConnector io;
+	
 	
 	//the set id
 	private int setId;
@@ -34,6 +37,7 @@ public class Cache {
 		System.out.println("Hey, I am the Cache! I am starting up!");
 		setId = 0;
 		offset=0;
+		io = IOConnector.getInstance();
 		
 		memory = Memory.getInstance();
 		

@@ -36,6 +36,7 @@ public class CPU {
 	private char[] newPC = new char[IntegratedCircuit.getLenAddr()];
 	//the pointer to the Memory address when writing instructions
 	private char[] ins_pointer = {'0','0','0','0','0','0', '0', '0','1', '1', '1', '1'};
+	private char[] ins_pointer2 = {'0','0','0','0','0','0', '0', '0','0', '0', '1', '1'};
 	
 	//the address used when read or write cache
 	private char[] addressCache = new char[IntegratedCircuit.getLenAddr()];
@@ -99,11 +100,11 @@ public class CPU {
 	 */
 	public int writeIns(char[] ins, int len, char[] ins_addr) {
 		//ic.writeIns(ins, len, ins_addr);
-		writeMem(ins, ins.length, ins_pointer);
+		writeMem(ins, ins.length, ins_pointer2);
 		for (int i = 0; i < ins_addr.length; i++) {
-			ins_addr[i] = ins_pointer[i];
+			ins_addr[i] = ins_pointer2[i];
 		}
-		cpu.addition(ins_pointer, ISA.oneInstranceLengthInSByte, ins_pointer);
+		cpu.addition(ins_pointer2, ISA.oneInstranceLengthInSByte, ins_pointer2);
 		return 0;
 	}
 	/**
@@ -459,7 +460,13 @@ public class CPU {
 	public int cpu_smr() {
 		return ic.ic_smr();
 	}
-	
+	/**
+	 * call the ic_stir method in IntegratedCircuit
+	 * @return
+	 */
+	public int cpu_stir() {
+		return ic.ic_stir();
+	}
 	/**
 	 * call the ic_air method in IntegratedCircuit
 	 * @return
@@ -467,6 +474,7 @@ public class CPU {
 	public int cpu_air() {
 		return ic.ic_air();
 	}
+	
 	
 	/**
 	 * call the ic_aix method in IntegratedCircuit
@@ -476,6 +484,13 @@ public class CPU {
 		return ic.ic_aix();
 	}
 	
+	/**
+	 * call the ic_stir method in IntegratedCircuit
+	 * @return
+	 */
+	public int cpu_stix() {
+		return ic.ic_stix();
+	}
 	/**
 	 * call the ic_sir method in IntegratedCircuit
 	 * @return

@@ -2,20 +2,31 @@ package gwu.csci.arc.gui;
 
 import gwu.csci.arc.CPU;
 import gwu.csci.arc.IndexRegister;
+import gwu.csci.arc.isa.AIR;
+import gwu.csci.arc.isa.AIX;
+import gwu.csci.arc.isa.JCC;
+import gwu.csci.arc.isa.JMP;
 import gwu.csci.arc.isa.LDA;
 import gwu.csci.arc.isa.LDR;
 import gwu.csci.arc.isa.LDX;
+import gwu.csci.arc.isa.SIR;
+import gwu.csci.arc.isa.SIX;
+import gwu.csci.arc.isa.SMR;
+import gwu.csci.arc.isa.SOB;
+import gwu.csci.arc.isa.STIR;
+import gwu.csci.arc.isa.STIX;
 import gwu.csci.arc.isa.STR;
 import gwu.csci.arc.isa.STX;
 import gwu.csci.arc.test.Initialization;
+import gwu.csci.arc.test.TestProgram1;
+import gwu.csci.arc.utility.Converter;
+import gwu.csci.arc.utility.SAssembler;
 
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-
-
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 
@@ -29,10 +40,25 @@ import javax.swing.JScrollPane;
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.util.Random;
 
 import javax.swing.JCheckBox;
 
@@ -44,7 +70,8 @@ public class UI extends JFrame {
 	CPU cpu = CPU.getInstance();
 	IndexRegister xr;
 	Initialization init = new Initialization();
-	static boolean ifInitial = true;
+	static boolean ifInitial = false;
+	static boolean ifRandom = true;
 	
 	// for instruction opcode & address recognition uses
 	char[] Instruction = new char[18];
@@ -112,6 +139,26 @@ public class UI extends JFrame {
 	private JLabel lblProgramInput;
 	private JButton SbmBtn_PI;
 
+	
+	AIR air = new AIR(cpu);
+	AIX aix = new AIX(cpu);
+	STR str = new STR(cpu);
+	gwu.csci.arc.isa.IN in = new gwu.csci.arc.isa.IN(cpu);
+	SOB sob = new SOB(cpu);
+	SIX six = new SIX(cpu);
+	LDR ldr = new LDR(cpu);
+	SMR smr = new SMR(cpu);
+	SIR sir = new SIR(cpu);
+	JMP jmp = new JMP(cpu);
+	JCC jcc = new JCC(cpu);
+	gwu.csci.arc.isa.OUT out = new gwu.csci.arc.isa.OUT(cpu);
+	STIR stir = new STIR(cpu);
+	STIX stix = new STIX(cpu);
+	private JButton btnRun;
+	private JButton btnProgram;
+	
+	private int[] numbers = new int[21];
+	private int count = 0;
 	
 	/**
 	 * Launch the application.
@@ -217,6 +264,8 @@ public class UI extends JFrame {
 		SbmBtn_R0.setToolTipText("Submit R0");
 		SbmBtn_R0.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				
 				
 				// overwrite R0
 				char[] Current = new char[18];
@@ -519,6 +568,35 @@ public class UI extends JFrame {
 				}
 			}
 		});
+		
+		btnProgram = new JButton("Program 1");
+		btnProgram.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//TestProgram1 test = new TestProgram1();
+				//test.run();
+				
+				String program1 = "AIR 3 20;AIX 3 100;IN 1 0;STR 1 3 0 100;AIX 3 3;SOB 3 0 0 21;AIX 2 100;AIR 3 20;SIX 3 3;IN 1 0;STR 1 0 0 120;LDR 1 3 0 100;STR 1 2 0 94;SMR 1 0 0 120;STR 1 2 0 97;SIR 3 1;SIX 3 3;LDR 1 3 0 100;SMR 1 0 0 120;SMR 1 2 0 97;JCC 1 0 0 84;SOB 3 0 0 63;JMP 0 0 99;LDR 1 3 0 100;STR 1 2 0 94;SMR 1 0 0 120;STR 1 2 0 97;JMP 0 0 78;LDR 0 0 0 120;OUT 0 1;LDR 0 2 0 94;OUT 0 1";
+				String program2 = "STIR 3 20;AIX 3 100;IN 1 0;STR 1 3 0 100;AIX 3 3;SOB 3 0 0 9;AIX 2 100;AIR 3 20;AIX 1 100;LDR 1 1 0 100;OUT 1 1;AIX 1 3;SOB 3 0 0 30 ;AIR 3 20;SIX 3 3;IN 1 0;STR 1 0 0 120;LDR 1 3 0 100;STR 1 2 0 94;SMR 1 0 0 120;STR 1 2 0 97;SIR 3 1;SIX 3 3;LDR 1 3 0 100;SMR 1 0 0 120;SMR 1 2 0 97;JCC 1 0 0 90;SOB 3 0 0 69;JMP 0 0 105;LDR 1 3 0 100;STR 1 2 0 94;SMR 1 0 0 120;STR 1 2 0 97;JMP 0 0 84;LDR 0 2 0 94;OUT 0 1;LDR 0 0 0 120;OUT 0 1";
+				String program3 = "STIR 3 20;STIX 3 100;IN 1 0;STR 1 3 0 100;AIX 3 3;SOB 3 0 0 9;STIX 2 100;STIR 3 20;STIX 1 100;LDR 1 1 0 100;OUT 1 1;AIX 1 3;SOB 3 0 0 30 ;STIR 3 20;SIX 3 3;IN 1 0;STR 1 0 0 120;LDR 1 3 0 100;STR 1 2 0 94;SMR 1 0 0 120;STR 1 2 0 97;SIR 3 1;SIX 3 3;LDR 1 3 0 100;SMR 1 0 0 120;SMR 1 2 0 97;JCC 1 0 0 90;SOB 3 0 0 69;JMP 0 0 105;LDR 1 3 0 100;STR 1 2 0 94;SMR 1 0 0 120;STR 1 2 0 97;JMP 0 0 84;LDR 0 2 0 94;OUT 0 1;LDR 0 0 0 120;OUT 0 1";
+				String[] instruction = program3.split(";");
+				SAssembler sa = new SAssembler();
+				char[] m_code = new char[18];
+				char[] addr = new char[12];
+				String m_code_string = "";
+				for (int i = 0; i < instruction.length; i++) {
+					sa.assembler(m_code, instruction[i]);
+					cpu.writeIns(m_code, m_code.length, addr);
+					DspTxt_Cns.setText(DspTxt_Cns.getText() + "Instruction Submitted.\n"+"The Instruction ("+ ins +" "+ instruction[i]+ ") is written into Memory at: " + new String(addr) + ".\n");
+					m_code_string += new String(m_code) + "\n";
+					System.out.println(m_code_string);
+				}
+			}
+		});
+		GridBagConstraints gbc_btnProgram = new GridBagConstraints();
+		gbc_btnProgram.insets = new Insets(0, 0, 5, 5);
+		gbc_btnProgram.gridx = 7;
+		gbc_btnProgram.gridy = 5;
+		contentPane.add(btnProgram, gbc_btnProgram);
 		GridBagConstraints gbc_SbmBtn_Ins = new GridBagConstraints();
 		gbc_SbmBtn_Ins.anchor = GridBagConstraints.NORTHEAST;
 		gbc_SbmBtn_Ins.insets = new Insets(0, 0, 5, 5);
@@ -527,15 +605,15 @@ public class UI extends JFrame {
 		contentPane.add(SbmBtn_Ins, gbc_SbmBtn_Ins);
 		
 		chckbxPrepreparation = new JCheckBox("Prepreparation");
-		chckbxPrepreparation.setToolTipText("Load predefined program (Y/N)");
 		chckbxPrepreparation.setSelected(true);
+		chckbxPrepreparation.setToolTipText("Load predefined program (Y/N)");
 		chckbxPrepreparation.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(ifInitial == false) {
-					ifInitial = true;
+				if(ifRandom == false) {
+					ifRandom = true;
 				}
 				else {
-					ifInitial = false;
+					ifRandom = false;
 				}
 			}
 		});
@@ -566,13 +644,14 @@ public class UI extends JFrame {
 		GridBagConstraints gbc_lblPc = new GridBagConstraints();
 		gbc_lblPc.anchor = GridBagConstraints.EAST;
 		gbc_lblPc.insets = new Insets(0, 0, 5, 5);
-		gbc_lblPc.gridx = 7;
+		gbc_lblPc.gridx = 6;
 		gbc_lblPc.gridy = 6;
 		contentPane.add(lblPc, gbc_lblPc);
 		GridBagConstraints gbc_SetTxt_PC = new GridBagConstraints();
+		gbc_SetTxt_PC.gridwidth = 2;
 		gbc_SetTxt_PC.insets = new Insets(0, 0, 5, 5);
 		gbc_SetTxt_PC.fill = GridBagConstraints.HORIZONTAL;
-		gbc_SetTxt_PC.gridx = 8;
+		gbc_SetTxt_PC.gridx = 7;
 		gbc_SetTxt_PC.gridy = 6;
 		contentPane.add(SetTxt_PC, gbc_SetTxt_PC);
 		SetTxt_PC.setColumns(10);
@@ -581,6 +660,81 @@ public class UI extends JFrame {
 		gbc_chckbxPrepreparation.gridx = 9;
 		gbc_chckbxPrepreparation.gridy = 6;
 		contentPane.add(chckbxPrepreparation, gbc_chckbxPrepreparation);
+		
+		SbmBtn_PC = new JButton("Submit");
+		SbmBtn_PC.setToolTipText("Submit PC");
+		SbmBtn_PC.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				// overwrite PC
+				char[] Current = new char[12];
+				char[] Current_dsp = new char[12];
+				Current = SetTxt_PC.getText().toCharArray();
+				
+				cpu.writePC(Current, Current.length);
+				
+				cpu.readPC(Current_dsp, Current_dsp.length);
+				DspTxt_PC.setText(new String(Current_dsp));
+			}
+		});
+		
+		SetTxt_PI = new JTextField();
+		SetTxt_PI.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				//if ((e.getExtendedKeyCode() < 48) || (e.getExtendedKeyCode() > 57)) e.setKeyChar((char)00);
+			}
+		});
+		SetTxt_PI.setToolTipText("Set input value for program");
+		GridBagConstraints gbc_SetTxt_PI = new GridBagConstraints();
+		gbc_SetTxt_PI.gridwidth = 2;
+		gbc_SetTxt_PI.insets = new Insets(0, 0, 5, 5);
+		gbc_SetTxt_PI.fill = GridBagConstraints.HORIZONTAL;
+		gbc_SetTxt_PI.gridx = 4;
+		gbc_SetTxt_PI.gridy = 7;
+		contentPane.add(SetTxt_PI, gbc_SetTxt_PI);
+		SetTxt_PI.setColumns(10);
+		
+		GridBagConstraints gbc_SbmBtn_PC = new GridBagConstraints();
+		gbc_SbmBtn_PC.anchor = GridBagConstraints.EAST;
+		gbc_SbmBtn_PC.insets = new Insets(0, 0, 5, 5);
+		gbc_SbmBtn_PC.gridx = 8;
+		gbc_SbmBtn_PC.gridy = 7;
+		contentPane.add(SbmBtn_PC, gbc_SbmBtn_PC);
+		
+		SbmBtn_PI = new JButton("Submit");
+		SbmBtn_PI.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int i = 0, j = 0;
+				String content = SetTxt_PI.getText();
+				String[] convert = content.split(" ");
+				int length = convert.length;
+				if(length >= 21) {
+					for (int k = 0; k < 20; k++) {
+						numbers[k] = Integer.parseInt(convert[k]);
+					}
+					numbers[20] = Integer.parseInt(convert[length-1]);
+				} else {
+					for (int k = 0; k < 20; k++) {
+						if (k >= length-2) {
+							numbers[k] = Integer.parseInt(convert[length-2]);
+						} else {
+						numbers[k] = Integer.parseInt(convert[k]);
+						}
+					}
+					numbers[20] = Integer.parseInt(convert[length-1]);
+				}
+				count = 0;
+				
+			}
+		});
+		SbmBtn_PI.setToolTipText("Submit program input");
+		GridBagConstraints gbc_SbmBtn_PI = new GridBagConstraints();
+		gbc_SbmBtn_PI.anchor = GridBagConstraints.NORTHEAST;
+		gbc_SbmBtn_PI.insets = new Insets(0, 0, 5, 5);
+		gbc_SbmBtn_PI.gridx = 5;
+		gbc_SbmBtn_PI.gridy = 8;
+		contentPane.add(SbmBtn_PI, gbc_SbmBtn_PI);
 		
 		SbmBtn_SglStp = new JButton("Single Step");
 		SbmBtn_SglStp.setToolTipText("Run program in single step");
@@ -600,14 +754,75 @@ public class UI extends JFrame {
 				
 				cpu.readPC(pc, pc.length);
 				cpu.readMem(Instruction, Instruction.length, pc);
-				opcode_check();
-					
+				
+				//opcode_check();
+				int ins_code= Converter.conveterS2I(Instruction, 6);
+					switch (ins_code) {
+					case 1:
+						ldr.start();
+						flag = true;
+						break;
+					case 2:
+						str.start();
+						flag = true;
+						break;
+					case 5:
+						smr.start();
+						flag = true;
+						break;
+					case 7:
+						sir.start();
+						flag = true;
+					case 6:
+						air.start();
+						flag = true;
+						break;
+					case 10:
+						jcc.start();
+						flag = true;
+						break;
+					case 11:
+						jmp.start();
+						flag = true;
+						break;
+					case 14:
+						sob.start();
+						flag = true;
+						break;
+					case 22:
+						aix.start();
+						flag = true;
+						break;
+					case 23:
+						six.start();
+						flag = true;
+						break;
+					case 42:
+						stir.start();
+						flag = true;
+						break;
+					case 43:
+						stix.start();
+						flag = true;
+						break;
+					case 49:
+						in.start();
+						flag = true;
+						break;
+					case 50:
+						out.start();
+						flag = true;
+						break;
+					default:
+						flag =false;
+						break;
+					}
 				if (flag == false) { 
 					DspTxt_Cns.setText(DspTxt_Cns.getText() + "Fail: Unrecognized Instuction!\n");
 				}
-				else { 
-					instruction_run();
-				}
+//				else { 
+//					instruction_run();
+//				}
 				
 				
 				//status update
@@ -667,62 +882,173 @@ public class UI extends JFrame {
 				DspTxt_MBR.setText(new String(MBR));
 			}
 		});
-		
-		SbmBtn_PC = new JButton("Submit");
-		SbmBtn_PC.setToolTipText("Submit PC");
-		SbmBtn_PC.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				// overwrite PC
-				char[] Current = new char[12];
-				char[] Current_dsp = new char[12];
-				Current = SetTxt_PC.getText().toCharArray();
-				
-				cpu.writePC(Current, Current.length);
-				
-				cpu.readPC(Current_dsp, Current_dsp.length);
-				DspTxt_PC.setText(new String(Current_dsp));
-			}
-		});
-		
-		SetTxt_PI = new JTextField();
-		SetTxt_PI.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyTyped(KeyEvent e) {
-				if ((e.getExtendedKeyCode() < 48) || (e.getExtendedKeyCode() > 57)) e.setKeyChar((char)00);
-			}
-		});
-		SetTxt_PI.setToolTipText("Set input value for program");
-		GridBagConstraints gbc_SetTxt_PI = new GridBagConstraints();
-		gbc_SetTxt_PI.gridwidth = 2;
-		gbc_SetTxt_PI.insets = new Insets(0, 0, 5, 5);
-		gbc_SetTxt_PI.fill = GridBagConstraints.HORIZONTAL;
-		gbc_SetTxt_PI.gridx = 4;
-		gbc_SetTxt_PI.gridy = 7;
-		contentPane.add(SetTxt_PI, gbc_SetTxt_PI);
-		SetTxt_PI.setColumns(10);
-		
-		GridBagConstraints gbc_SbmBtn_PC = new GridBagConstraints();
-		gbc_SbmBtn_PC.anchor = GridBagConstraints.EAST;
-		gbc_SbmBtn_PC.insets = new Insets(0, 0, 5, 5);
-		gbc_SbmBtn_PC.gridx = 8;
-		gbc_SbmBtn_PC.gridy = 7;
-		contentPane.add(SbmBtn_PC, gbc_SbmBtn_PC);
-		
-		SbmBtn_PI = new JButton("Submit");
-		SbmBtn_PI.setToolTipText("Submit program input");
-		GridBagConstraints gbc_SbmBtn_PI = new GridBagConstraints();
-		gbc_SbmBtn_PI.anchor = GridBagConstraints.NORTHEAST;
-		gbc_SbmBtn_PI.insets = new Insets(0, 0, 5, 5);
-		gbc_SbmBtn_PI.gridx = 5;
-		gbc_SbmBtn_PI.gridy = 8;
-		contentPane.add(SbmBtn_PI, gbc_SbmBtn_PI);
 		GridBagConstraints gbc_SbmBtn_SglStp = new GridBagConstraints();
 		gbc_SbmBtn_SglStp.fill = GridBagConstraints.HORIZONTAL;
 		gbc_SbmBtn_SglStp.insets = new Insets(0, 0, 5, 5);
-		gbc_SbmBtn_SglStp.gridx = 9;
+		gbc_SbmBtn_SglStp.gridx = 8;
 		gbc_SbmBtn_SglStp.gridy = 8;
 		contentPane.add(SbmBtn_SglStp, gbc_SbmBtn_SglStp);
+		
+		btnRun = new JButton("Run");
+		btnRun.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				char[] Current = new char[18];
+				char[] pc = new char[12];
+				char[] X1 = new char[12], X2 = new char[12], X3 = new char[12], MAR = new char[12], MBR = new char[18];
+				char[] id;
+				
+				//LDX ldx = new LDX(cpu);
+				//ldx.start();
+				//init.toRun();
+
+				
+				
+				cpu.readPC(pc, pc.length);
+				cpu.readMem(Instruction, Instruction.length, pc);
+				
+				//opcode_check();
+				int ins_code= Converter.conveterS2I(Instruction, 6);
+				while(ins_code != 0) {
+					switch (ins_code) {
+					case 1:
+						ldr.start();
+						flag = true;
+						break;
+					case 2:
+						str.start();
+						flag = true;
+						break;
+					case 5:
+						smr.start();
+						flag = true;
+						break;
+					case 7:
+						sir.start();
+						flag = true;
+					case 6:
+						air.start();
+						flag = true;
+						break;
+					case 10:
+						jcc.start();
+						flag = true;
+						break;
+					case 11:
+						jmp.start();
+						flag = true;
+						break;
+					case 14:
+						sob.start();
+						flag = true;
+						break;
+					case 22:
+						aix.start();
+						flag = true;
+						break;
+					case 23:
+						six.start();
+						flag = true;
+						break;
+					case 42:
+						stir.start();
+						flag = true;
+						break;
+					case 43:
+						stix.start();
+						flag = true;
+						break;
+					case 49:
+						in.start();
+						flag = true;
+						break;
+					case 50:
+						out.start();
+						flag = true;
+						break;
+					default:
+						flag =false;
+						break;
+					}
+				if (flag == false) { 
+					DspTxt_Cns.setText(DspTxt_Cns.getText() + "Fail: Unrecognized Instuction!\n");
+				}
+//				else { 
+//					instruction_run();
+//				}
+				
+				
+				//status update
+				
+				// R0 operation
+				id = new char[] {'0', '0'};
+				
+				cpu.readGPR(Current, id, Current.length);
+				DspTxt_R0.setText(new String(Current));
+				
+				// R1 operation
+				id = new char[] {'0', '1'};
+				
+				cpu.readGPR(Current, id, Current.length);
+				DspTxt_R1.setText(new String(Current));
+				
+				// R2 operation
+				id = new char[] {'1', '0'};
+				
+				cpu.readGPR(Current, id, Current.length);
+				DspTxt_R2.setText(new String(Current));
+				
+				// R3 operation
+				id = new char[] {'1', '1'};
+				
+				cpu.readGPR(Current, id, Current.length);
+				DspTxt_R3.setText(new String(Current));
+				
+				// PC operation
+				cpu.readPC(pc, pc.length);
+				DspTxt_PC.setText(new String(pc));
+				
+				// X1 operation
+				id = new char[] {'0', '1'};
+				
+				cpu.readXR(X1, id, xr.getLength());
+				DspTxt_X1.setText(new String(X1));
+				
+				// X2 operation
+				id = new char[] {'1', '0'};
+				
+				cpu.readXR(X2, id, xr.getLength());
+				DspTxt_X2.setText(new String(X2));
+				
+				// X3 operation
+				id = new char[] {'1', '1'};
+				
+				cpu.readXR(X3, id, xr.getLength());
+				DspTxt_X3.setText(new String(X3));
+				
+				// MAR operation
+				MAR = cpu.getMAR();
+				DspTxt_MAR.setText(new String(MAR));
+				
+				// MBR operation
+				MBR = cpu.getMBR();
+				DspTxt_MBR.setText(new String(MBR));
+				
+				
+				
+				cpu.readPC(pc, pc.length);
+				cpu.readMem(Instruction, Instruction.length, pc);
+				
+				//opcode_check();
+				ins_code= Converter.conveterS2I(Instruction, 6);
+				}
+			}
+		});
+		GridBagConstraints gbc_btnRun = new GridBagConstraints();
+		gbc_btnRun.insets = new Insets(0, 0, 5, 5);
+		gbc_btnRun.gridx = 9;
+		gbc_btnRun.gridy = 8;
+		contentPane.add(btnRun, gbc_btnRun);
 		
 		lblValue_1 = new JLabel("Value:");
 		GridBagConstraints gbc_lblValue_1 = new GridBagConstraints();
@@ -1117,6 +1443,23 @@ public class UI extends JFrame {
 		int PI = Integer.valueOf(content);
 	
 		return PI;
+	}
+	public int returnPI() {
+		if(ifRandom) {
+			Random random = new Random();
+			
+			return random.nextInt(100);
+		} else {
+			if(count >= 21)
+			{
+				count = 0;
+			}
+				int value = numbers[count];
+				count++;
+				
+				return value;
+		}
+		
 	}
 	
 }

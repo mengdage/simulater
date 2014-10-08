@@ -29,7 +29,7 @@ public class IntegratedCircuit {
 	/*used for communicating with the memory*/
 	private char[] MAR = new char[LEN_ADDR];
 	private char[] MBR = new char[LEN_WORD];
-	/*-------------------------------------------*/
+	/*$$$$$$$$$$$$$$-*/
 	
 	/*used for decompose a instruction; 18 bits*/
 	private char[] opcode = new char[LEN_OPCODE];
@@ -37,7 +37,7 @@ public class IntegratedCircuit {
 	private char[] xfi = new char[LEN_XFI];
 	private char[] I = new char[LEN_I];
 	private char[] addr = new char[LEN_ADDR_INCODE];
-	/*------------------------------------------*/
+	/*$$$$$$$$$$$$$$*/
 	
 	//the effective address
 	private char[] EA = new char[LEN_ADDR];
@@ -52,7 +52,7 @@ public class IntegratedCircuit {
 	private char[] OP1 = new char[LEN_WORD];
 	//second operand
 	private char[] OP2 = new char[LEN_WORD];
-	/*------------------------*/
+	/*$$$$$$$$*/
 	
 	//the value read from the register file
 	private char[] valR = new char[LEN_WORD];
@@ -72,10 +72,11 @@ public class IntegratedCircuit {
 	private int[] p1In = new int[21];
 	private int p1In_id = 0;
 	public void printP1In() {
-		for (int i = 0; i < p1In.length; i++) {
-			System.out.print(p1In[i] + " ");
+		String sin = "";
+		for (int i = 0; i < p1In.length -1; i++) {
+			sin = sin+p1In[i]+ " ";
 		}
-		System.out.println("");
+		io.printToConsole(sin);
 		
 	}
 	
@@ -97,7 +98,7 @@ public class IntegratedCircuit {
 		// TODO Auto-generated constructor stub
 		memory = Memory.getInstance();
 		this.cpu = cpu;
-		io = new IOConnector();
+		io =IOConnector.getInstance();
 		
 		//initiliaztion
 		for (int i = 0; i < LEN_ADDR; i++) {
@@ -539,10 +540,13 @@ public class IntegratedCircuit {
 		readReg(valC, valC.length, REG_TYPE.CC);
 		if(valC[0] == '1') {
 			if (I[0] =='0') {
+				io.printToLog("$JMP: jump to Memory "+Converter.conveterS2I(EA, EA.length));
 				cpu.setNewPC(EA, EA.length);
 				
 			} else {
+				
 				readMem(MAR, MAR.length, EA);
+				io.printToLog("$JMP: jump to Memory "+Converter.conveterS2I(MAR, MAR.length));
 				cpu.setNewPC(MAR, MAR.length);
 			}
 			return 0;
@@ -556,10 +560,12 @@ public class IntegratedCircuit {
 	 */
 	public int ic_jmp() {
 		if(I[0] == '0') {
+			io.printToLog("$JMP: jump to Memory "+Converter.conveterS2I(EA,EA.length));
 			cpu.setNewPC(EA, EA.length);
 			
 		} else {
 			readMem(MAR, MAR.length, EA);
+			io.printToLog("$JMP: jump to Memory "+Converter.conveterS2I(MAR,MAR.length));
 			cpu.setNewPC(MAR, MAR.length);
 			
 		}
@@ -608,20 +614,20 @@ public class IntegratedCircuit {
 		readReg(valR, valR.length, REG_TYPE.GPR);
 		int r = Converter.conveterS2I(valR, valR.length);
 		r = r-1;
-		io.printString("SOB: r-1 = " + r);
+		io.printToLog("$SOB: r-1 = " + r);
 		Converter.converterI2S(r, valR);
 		//c(r) <- c(r)-1
 		writeReg(valR, valR.length, REG_TYPE.GPR);
 		if(r > 0) {
 			
 			if(I[0] == '0') {
-				io.printString("SOB: r-1 > 0 and I =0");
-				io.printString("SOB: PC = " + new String(EA));
+				io.printToLog("$SOB: r-1 = "+r+" > 0 and I =0");
+				io.printToLog("$SOB: PC = " + Converter.conveterS2I(EA, EA.length));
 				cpu.setNewPC(EA, EA.length);
 			} else {
 				readMem(MAR, MAR.length, EA);
-				io.printString("SOB: r-1 > 0 and I =1");
-				io.printString("SOB: PC = " + new String(MAR));
+				io.printToLog("$SOB: r-1 = "+r+" > 0 and I =1");
+				io.printToLog("$SOB: PC = " + Converter.conveterS2I(MAR, MAR.length));
 				cpu.setNewPC(MAR, MAR.length);
 			}
 			return 0;
@@ -657,6 +663,7 @@ public class IntegratedCircuit {
 	public int ic_amr() {
 		readMem(MBR, MBR.length, EA);
 		readReg(valR, valR.length, REG_TYPE.GPR);
+		io.printToLog("$AMR: add "+Converter.conveterS2I(MBR,MBR.length) + " to GPR(" + Converter.conveterS2I(valR,valR.length)+")");
 		cpu.addition(valR, MBR, valR);
 		writeReg(valR, valR.length, REG_TYPE.GPR);
 		return 0;
@@ -674,12 +681,32 @@ public class IntegratedCircuit {
 		return 0;
 	}
 	/**
+	 * store immediate to general purpose register
+	 * @return
+	 */
+	public int ic_stir() {
+		io.printToLog("$STIR: GPR " + Converter.conveterS2I(rfi, rfi.length) + " = " + Converter.conveterS2I(addr, addr.length));
+		
+		writeReg(addr, addr.length, REG_TYPE.GPR);
+		return 0;
+	}
+	/**
+	 * store immediate to general purpose register
+	 * @return
+	 */
+	public int ic_stix() {
+		io.printToLog("$STIX: XR " + Converter.conveterS2I(rfi, rfi.length) + " = " + Converter.conveterS2I(addr, addr.length));
+		
+		writeReg(addr, addr.length, REG_TYPE.XR);
+		return 0;
+	}
+	/**
 	 * add immediate to register
 	 * @return
 	 */
 	public int ic_air() {
 		readReg(valR, valR.length, REG_TYPE.GPR);
-		io.printString("---AIR: GPR " + Converter.conveterS2I(rfi, rfi.length) + " = "+ new String(valR) + " + " + new String(addr));
+		io.printToLog("$AIR: GPR " + Converter.conveterS2I(rfi, rfi.length) + " = "+ Converter.conveterS2I(valR, valR.length) + " + " + Converter.conveterS2I(addr, addr.length));
 		cpu.addition(valR, addr, valR);
 		writeReg(valR, valR.length, REG_TYPE.GPR);
 		return 0;
@@ -691,7 +718,7 @@ public class IntegratedCircuit {
 	 */
 	public int ic_aix() {
 		readReg(valX, valX.length, REG_TYPE.XR);
-		io.printString("---AIX: XR " + Converter.conveterS2I(xfi,xfi.length) + " = "+ new String(valX) + " + " + new String(addr));
+		io.printToLog("$AIX: XR " + Converter.conveterS2I(xfi,xfi.length) + " = "+ Converter.conveterS2I(valX, valX.length) + " + " + Converter.conveterS2I(addr, addr.length));
 		cpu.addition(valX, addr, valX);
 		writeReg(valX, valX.length, REG_TYPE.XR);
 		return 0;
@@ -703,7 +730,7 @@ public class IntegratedCircuit {
 	 */
 	public int ic_sir() {
 		readReg(valR, valR.length, REG_TYPE.GPR);
-		io.printString("---AIR: GPR " + Converter.conveterS2I(rfi, rfi.length) + " = "+ new String(valR) + " - " + new String(addr));
+		io.printToLog("$SIR: GPR " + Converter.conveterS2I(rfi, rfi.length) + " = "+ Converter.conveterS2I(valR,valR.length) + " - " + Converter.conveterS2I(addr,addr.length));
 		cpu.subtraction(valR, addr, valR);
 		writeReg(valR, valR.length, REG_TYPE.GPR);
 		return 0;
@@ -716,7 +743,7 @@ public class IntegratedCircuit {
 	 */
 	public int ic_six() {
 		readReg(valX, valX.length, REG_TYPE.XR);
-		io.printString("---AIX: XR " + Converter.conveterS2I(xfi,xfi.length) + " = "+ new String(valX) + " - " + new String(addr));
+		io.printToLog("$SIX: XR " + Converter.conveterS2I(xfi,xfi.length) + " = "+ Converter.conveterS2I(valX,valX.length) + " - " + Converter.conveterS2I(addr,addr.length));
 		cpu.subtraction(valX, addr, valX);
 		writeReg(valX, valX.length, REG_TYPE.XR);
 		return 0;
@@ -726,10 +753,13 @@ public class IntegratedCircuit {
 		switch (devid) {
 		case 0:
 			int r = io.readInt();
+			if (p1In_id == 21) {
+				p1In_id=0;
+			}
 			p1In[p1In_id] = r;
 			p1In_id++;
 			Converter.converterI2S(r, valR);
-			io.printString("---IN: write " + r + " into GPR" + Converter.conveterS2I(rfi, rfi.length));
+			io.printToLog("$IN: write " + r + " into GPR" + Converter.conveterS2I(rfi, rfi.length));
 			writeReg(valR, valR.length, REG_TYPE.GPR);
 			break;
 
@@ -745,7 +775,8 @@ public class IntegratedCircuit {
 		case 1:
 			readReg(valR, valR.length, REG_TYPE.GPR);
 			int r = Converter.conveterS2I(valR, valR.length);
-			io.printString("---OUT: "+ r);
+			//io.printString("$OUT: "+ r);
+			io.printToConsole("$OUT: "+ r);
 			break;
 
 		default:
