@@ -583,6 +583,7 @@ public class UI extends JFrame {
 				char[] m_code = new char[18];
 				char[] addr = new char[12];
 				String m_code_string = "";
+				//write the program into memory
 				for (int i = 0; i < instruction.length; i++) {
 					sa.assembler(m_code, instruction[i]);
 					cpu.writeIns(m_code, m_code.length, addr);

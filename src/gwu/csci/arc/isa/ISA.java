@@ -17,6 +17,7 @@ public abstract class ISA {
 		isaCpu = cpu;
 		//Converter.addrConverterI2S(IntegratedCircuit.getLenInstruction(), oneInstranceLength);
 	}
+	
 	public final int start() {
 		if (ifNeedDecode()) {
 			decode();
