@@ -3,6 +3,7 @@ package gwu.csci.arc;
 import gwu.csci.arc.utility.Converter;
 
 public class ALU {
+	//mengTest
 	private static ALU alu;
 	private CPU cpu;
 	private char[] cc = new char[4];
