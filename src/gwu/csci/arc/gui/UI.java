@@ -35,29 +35,20 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Random;
 
 import javax.swing.JCheckBox;
@@ -159,6 +150,15 @@ public class UI extends JFrame {
 	
 	private int[] numbers = new int[21];
 	private int count = 0;
+	
+	// program 2 components
+	private JButton btnBrowse;
+	private JLabel lblReadProgram;
+	
+	String[] line = new String[6];
+	private JLabel lblProgramInput_1;
+	private JTextField SetTxt_P2I;
+	private JButton SbmBtn_P2I;
 	
 	/**
 	 * Launch the application.
@@ -535,6 +535,14 @@ public class UI extends JFrame {
 				if ((e.getKeyChar() != '0') && (e.getKeyChar() != '1')) e.setKeyChar((char) 00);
 			}
 		});
+		
+		lblReadProgram = new JLabel("Read Program 2 File:");
+		GridBagConstraints gbc_lblReadProgram = new GridBagConstraints();
+		gbc_lblReadProgram.anchor = GridBagConstraints.SOUTHWEST;
+		gbc_lblReadProgram.insets = new Insets(0, 0, 5, 5);
+		gbc_lblReadProgram.gridx = 1;
+		gbc_lblReadProgram.gridy = 5;
+		contentPane.add(lblReadProgram, gbc_lblReadProgram);
 		GridBagConstraints gbc_SetTxt_Addr = new GridBagConstraints();
 		gbc_SetTxt_Addr.gridwidth = 2;
 		gbc_SetTxt_Addr.insets = new Insets(0, 0, 5, 5);
@@ -633,6 +641,61 @@ public class UI extends JFrame {
 			}
 		});
 		
+		btnBrowse = new JButton("Browse...");
+		btnBrowse.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fc = new JFileChooser(System.getProperty("user.dir")); 
+				File f;
+				int i = 0;
+				
+				int get_File = fc.showOpenDialog(null);
+				
+				if (get_File == JFileChooser.CANCEL_OPTION)
+					DspTxt_Cns.setText(DspTxt_Cns.getText() + "File fetching canceled.\n");
+				
+				if (get_File == JFileChooser.ERROR_OPTION)
+					DspTxt_Cns.setText(DspTxt_Cns.getText() + "File fetching failed. An Error occured while fetcing\n");
+				
+				if (get_File == JFileChooser.APPROVE_OPTION)
+				{
+					f = fc.getSelectedFile();
+					DspTxt_Cns.setText(DspTxt_Cns.getText() + "File fetching succeed: " + f.getName() + ".\n");
+					
+					try
+					{
+						String temp;
+						FileReader fd = new FileReader(f);
+						BufferedReader bufferedReader = new BufferedReader(fd);
+						
+						 while((temp = bufferedReader.readLine()) != null)
+						 {
+				                DspTxt_Cns.setText(DspTxt_Cns.getText() + "  Line" + (i+1) + ": " + temp + "\n"); 
+				                line[i] = temp;
+				                i++;
+						 }
+						 
+						 bufferedReader.close();						 
+					}
+					
+					catch (FileNotFoundException e1)
+					{
+						DspTxt_Cns.setText(DspTxt_Cns.getText() + "File Not Found.\n");
+					}
+					
+					catch (IOException e1)
+					{
+						DspTxt_Cns.setText(DspTxt_Cns.getText() + "I/O Error.\n");
+					}
+				}
+			}
+		});
+		GridBagConstraints gbc_btnBrowse = new GridBagConstraints();
+		gbc_btnBrowse.anchor = GridBagConstraints.WEST;
+		gbc_btnBrowse.insets = new Insets(0, 0, 5, 5);
+		gbc_btnBrowse.gridx = 1;
+		gbc_btnBrowse.gridy = 6;
+		contentPane.add(btnBrowse, gbc_btnBrowse);
+		
 		lblProgramInput = new JLabel("Program Input:");
 		GridBagConstraints gbc_lblProgramInput = new GridBagConstraints();
 		gbc_lblProgramInput.anchor = GridBagConstraints.SOUTHWEST;
@@ -686,6 +749,14 @@ public class UI extends JFrame {
 				//if ((e.getExtendedKeyCode() < 48) || (e.getExtendedKeyCode() > 57)) e.setKeyChar((char)00);
 			}
 		});
+		
+		lblProgramInput_1 = new JLabel("Program 2 Input:");
+		GridBagConstraints gbc_lblProgramInput_1 = new GridBagConstraints();
+		gbc_lblProgramInput_1.anchor = GridBagConstraints.SOUTHWEST;
+		gbc_lblProgramInput_1.insets = new Insets(0, 0, 5, 5);
+		gbc_lblProgramInput_1.gridx = 1;
+		gbc_lblProgramInput_1.gridy = 7;
+		contentPane.add(lblProgramInput_1, gbc_lblProgramInput_1);
 		SetTxt_PI.setToolTipText("Set input value for program");
 		GridBagConstraints gbc_SetTxt_PI = new GridBagConstraints();
 		gbc_SetTxt_PI.gridwidth = 2;
@@ -729,6 +800,24 @@ public class UI extends JFrame {
 				
 			}
 		});
+		
+		SetTxt_P2I = new JTextField();
+		GridBagConstraints gbc_SetTxt_P2I = new GridBagConstraints();
+		gbc_SetTxt_P2I.anchor = GridBagConstraints.NORTH;
+		gbc_SetTxt_P2I.insets = new Insets(0, 0, 5, 5);
+		gbc_SetTxt_P2I.fill = GridBagConstraints.HORIZONTAL;
+		gbc_SetTxt_P2I.gridx = 1;
+		gbc_SetTxt_P2I.gridy = 8;
+		contentPane.add(SetTxt_P2I, gbc_SetTxt_P2I);
+		SetTxt_P2I.setColumns(10);
+		
+		SbmBtn_P2I = new JButton("Submit");
+		GridBagConstraints gbc_SbmBtn_P2I = new GridBagConstraints();
+		gbc_SbmBtn_P2I.anchor = GridBagConstraints.NORTH;
+		gbc_SbmBtn_P2I.insets = new Insets(0, 0, 5, 5);
+		gbc_SbmBtn_P2I.gridx = 2;
+		gbc_SbmBtn_P2I.gridy = 8;
+		contentPane.add(SbmBtn_P2I, gbc_SbmBtn_P2I);
 		SbmBtn_PI.setToolTipText("Submit program input");
 		GridBagConstraints gbc_SbmBtn_PI = new GridBagConstraints();
 		gbc_SbmBtn_PI.anchor = GridBagConstraints.NORTHEAST;
@@ -749,9 +838,7 @@ public class UI extends JFrame {
 				
 				//LDX ldx = new LDX(cpu);
 				//ldx.start();
-				//init.toRun();
-
-				
+				//init.toRun();	
 				
 				cpu.readPC(pc, pc.length);
 				cpu.readMem(Instruction, Instruction.length, pc);
