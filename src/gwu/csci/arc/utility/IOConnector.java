@@ -27,8 +27,18 @@ public class IOConnector {
 		if(ui == null){
 			ui = UI.getUIinstance();
 		}
-		return ui.returnPI();
+		//return ui.returnPI();
+		return ui.returnP2I();
 	}
+	
+	// for program2 input usages
+//	public char readString()
+//	{
+//		if (ui == null)
+//			ui = UI.getUIinstance();
+//		
+//		return ui.returnP2I();
+//	}
 	
 	public void printInt(int i) {
 		printString(i+"");
