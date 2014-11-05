@@ -160,8 +160,9 @@ public class UI extends JFrame {
 	private JButton SbmBtn_P2I;
 	private JButton btnProgram2;
 	
-	String[] sentence = new String[6];
-	String keyword;
+	String sentence = "";
+	char[] sentence_char;
+	String keyword = "";
 	int snt_count = 0, word_count = 0, char_count = 0;
 	
 	/**
@@ -777,7 +778,6 @@ public class UI extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fc = new JFileChooser(System.getProperty("user.dir")); 
 				File f;
-				int i = 0;
 				
 				int get_File = fc.showOpenDialog(null);
 				
@@ -800,12 +800,58 @@ public class UI extends JFrame {
 						
 						 while((temp = bufferedReader.readLine()) != null)
 						 {
-				                DspTxt_Cns.setText(DspTxt_Cns.getText() + "  Line" + (i+1) + ": " + temp + "\n"); 
-				                sentence[i] = temp;
-				                i++;
+				                sentence += temp;
 						 }
 						 
-						 bufferedReader.close();						 
+						 bufferedReader.close();
+						 
+						 // get each char in the paragraph
+						 sentence_char = new char[sentence.length()];
+						 sentence_char = sentence.toCharArray();
+	
+// Convert char to binary
+//						 //convert char into 7-digit binary
+//						 char[] ascii_char = new char[7*sentence.length()];
+//						 
+//						 for (int i = 0; i < sentence.length(); i++)
+//						 {
+//							 //get current char and convert into ASCII
+//							 int ascii;
+//							 // special case for space and period
+//							 if (sentence_char[i] == '.')
+//								 ascii = 75;
+//							 else
+//							 {
+//								 if (sentence_char[i] == ' ')
+//									 ascii = 76;
+//								 else
+//									 ascii = (int)sentence_char[i] - 48;
+//							 }
+//							 // convert to binary
+//							 String binary = Integer.toBinaryString(ascii);
+//							 // if less than 7 digits
+//							 int b_len = binary.length();
+//							 if (b_len < 7)
+//							 {
+//								 for (int j = 0; j < (7-b_len); j++)
+//								 {
+//									 // add 0s in front
+//									 binary = "0" + binary;
+//								 }
+//							 }
+//							 
+//							 // get binary char
+//							 for (int j = 0; j < 7; j++)
+//							 {
+//								 ascii_char[7*i+j] = binary.charAt(j);
+//							 }
+//						 }
+//						 
+						 // write all six sentences to memory address 000000000111
+						 char[] pointer = {'0', '0', '0', '0', '0', '0', '0', '0', '0', '1', '1', '1'};
+//						 cpu.writeMem(ascii_char, ascii_char.length, pointer);
+						 cpu.writeMem(sentence_char, sentence_char.length, pointer);
+						 DspTxt_Cns.setText(DspTxt_Cns.getText() + "The file has been written into memory at: " + new String(pointer) + ".\n");
 					}
 					
 					catch (FileNotFoundException e1)
@@ -830,8 +876,13 @@ public class UI extends JFrame {
 		btnProgram2 = new JButton("Program 2");
 		btnProgram2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String program1 = "STIR 3 20;STIX 3 100;IN 1 0;STR 1 3 0 100;AIX 3 3;SOB 3 0 0 9;STIX 2 100;STIR 3 20;STIX 1 100;LDR 1 1 0 100;OUT 1 1;AIX 1 3;SOB 3 0 0 30 ;STIR 3 20;SIX 3 3;IN 1 0;STR 1 0 0 120;LDR 1 3 0 100;STR 1 2 0 94;SMR 1 0 0 120;STR 1 2 0 97;SIR 3 1;SIX 3 3;LDR 1 3 0 100;SMR 1 0 0 120;SMR 1 2 0 97;JCC 1 0 0 90;SOB 3 0 0 69;JMP 0 0 105;LDR 1 3 0 100;STR 1 2 0 94;SMR 1 0 0 120;STR 1 2 0 97;JMP 0 0 84;LDR 0 2 0 94;OUT 0 1;LDR 0 0 0 120;OUT 0 1";
+				char[] id = {'0', '0'};
+				cpu.writeGPR(sentence_char, id, sentence_char.length);
 				
+				String program1 = "";
+				
+//				String program1 = "STIR 3 20;STIX 3 100;IN 1 0;STR 1 3 0 100;AIX 3 3;SOB 3 0 0 9;STIX 2 100;STIR 3 20;STIX 1 100;LDR 1 1 0 100;OUT 1 1;AIX 1 3;SOB 3 0 0 30 ;STIR 3 20;SIX 3 3;IN 1 0;STR 1 0 0 120;LDR 1 3 0 100;STR 1 2 0 94;SMR 1 0 0 120;STR 1 2 0 97;SIR 3 1;SIX 3 3;LDR 1 3 0 100;SMR 1 0 0 120;SMR 1 2 0 97;JCC 1 0 0 90;SOB 3 0 0 69;JMP 0 0 105;LDR 1 3 0 100;STR 1 2 0 94;SMR 1 0 0 120;STR 1 2 0 97;JMP 0 0 84;LDR 0 2 0 94;OUT 0 1;LDR 0 0 0 120;OUT 0 1";
+//				
 				String[] instruction = program1.split(";");
 				SAssembler sa = new SAssembler();
 				char[] m_code = new char[18];
@@ -846,10 +897,49 @@ public class UI extends JFrame {
 					m_code_string += new String(m_code) + "\n";
 					System.out.println(m_code_string);
 				}
+				
+				
+// convert from binary to ascii, then from binary to char
+//				char[] ascii = new char[sentence.length()*7];
+//				char[] pointer = {'0', '0', '0', '0', '0', '0', '0', '0', '0', '1', '1', '1'};
+//				
+//				// to store words
+//				String[] sentence_ascii = new String[sentence.length()];
+//				for (int i = 0; i < sentence.length(); i++) sentence_ascii[i] = "";
+//				
+//				cpu.readMem(ascii, ascii.length, pointer);
+//				
+//				int j = 0;
+//				for (int i = 0; i < sentence.length()*7; i++)
+//				{
+//					// separate 7-digit ascii
+//					if ((i != 0) && ((i%7) == 0)) j++;
+//					sentence_ascii[j] += ascii[i];
+//				}
+//				
+//				// recover word from ascii to char
+//				int[] recovered = new int[sentence.length()];
+//				char[] recovered_char = new char[sentence.length()];
+//				for (int i = 0; i < recovered.length; i++) recovered[i] = 0;
+//				for (int i = 0; i < sentence.length(); i++)
+//				{
+//					for (int k = 0; k < 7; k++)
+//					{
+//						// from binary to ascii
+//						recovered[i] += Math.pow(2, 7-k-1) * ((int)sentence_ascii[i].charAt(k)-48);
+//					}
+//					// from ascii to char
+//					recovered_char[i] = (char)(recovered[i]+48);
+//					// special cases for space and period
+//					if (recovered_char[i] == '{') recovered_char[i] = '.';
+//					if (recovered_char[i] == '|') recovered_char[i] = ' ';
+//				}
+//				for (int i = 0; i < sentence.length(); i++)
+//					System.out.print(recovered_char[i]);
 			}
 		});
 		GridBagConstraints gbc_btnProgram2 = new GridBagConstraints();
-		gbc_btnProgram2.anchor = GridBagConstraints.WEST;
+		gbc_btnProgram2.anchor = GridBagConstraints.NORTHWEST;
 		gbc_btnProgram2.gridwidth = 2;
 		gbc_btnProgram2.insets = new Insets(0, 0, 5, 5);
 		gbc_btnProgram2.gridx = 2;
@@ -1589,23 +1679,24 @@ public class UI extends JFrame {
 	
 	public char returnP2I()
 	{
-		if (snt_count >= 6)
-		{
-			snt_count = 0;
-		}
-		
-		String current_sentence = sentence[snt_count];
-		char char_val = current_sentence.charAt(char_count);
-		
-		char_count++;
-		if (char_val == ' ') word_count++;
-		if (char_val == '\n')
-		{
-			snt_count++;
-			word_count = 0;
-			char_count = 0;
-		}
-		return char_val;
+//		if (snt_count >= 6)
+//		{
+//			snt_count = 0;
+//		}
+//		
+//		String current_sentence = sentence[snt_count];
+//		char char_val = current_sentence.charAt(char_count);
+//		
+//		char_count++;
+//		if (char_val == ' ') word_count++;
+//		if (char_val == '.')
+//		{
+//			snt_count++;
+//			word_count = 0;
+//			char_count = 0;
+//		}
+//		return char_val;
+		return ' ';
 	}
 	
 }
