@@ -49,9 +49,9 @@ public class IOConnector {
 	}
 	public void printToLog(String s) {
 //		System.out.println(s);
-		if(ui == null){
-			ui = UI.getUIinstance();
-		}
-		ui.print2log(s);
+//		if(ui == null){
+//			ui = UI.getUIinstance();
+//		}
+//		ui.print2log(s);
 	}
 }
