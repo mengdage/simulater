@@ -4,6 +4,8 @@ import gwu.csci.arc.utility.Converter;
 import gwu.csci.arc.utility.IOConnector;
 
 public class Cache {
+	private boolean debug = false;
+	
 	private static final int LEN_VALID=1;
 	private static final int LEN_DIRTY=1;
 	private static final int LEN_TAG=4;
@@ -82,7 +84,9 @@ public class Cache {
 	public int read(char[] c, int startPos, int len, char[] addr) {
 		prepare(addr);
 		int offsetPos = LEN_VALID+LEN_DIRTY+LEN_TAG+offset*IntegratedCircuit.getLenSByte();
-		System.out.println("read from set "+setId+" blockoffset " + offset);
+		if(debug){
+		System.out.println("Cache: read from set "+setId+" blockoffset " + offset);
+		}
 		//return the requested content
 		for (int i = 0; i < len; i++) { 
 			c[startPos+i] = content[setId][offsetPos+i];
@@ -106,7 +110,9 @@ public class Cache {
 		
 		prepare(addr);
 		int offsetPos = LEN_VALID+LEN_DIRTY+LEN_TAG+offset*IntegratedCircuit.getLenSByte();
-		System.out.println("write to set "+setId+" blockoffset " + offset);
+		if(debug){
+		System.out.println("Cache: write to set "+setId+" blockoffset " + offset);
+		}
 		//return the requested content
 		for (int i = 0; i < len; i++) { 
 			content[setId][offsetPos+i] = c[startPos+i]; 
@@ -126,11 +132,15 @@ public class Cache {
 		int tagPos = LEN_VALID+LEN_DIRTY;
 		int blockPos = LEN_VALID+LEN_DIRTY+LEN_TAG;
 		if (content[setId][0] == '1') { // the valid bit is set
+			if(debug){
 			System.out.println("Cache: valid set");
+			}
 			
 			//compare tags
 			if(!compareChars(content[setId], tagPos, addr, 0, LEN_TAG)) { 
+				if(debug){
 				System.out.println("Cache: cache miss");
+				}
 				//cache miss	
 				//if dirty bit is set, write the block back to memory
 				if(content[setId][1] == '1') {
@@ -145,8 +155,9 @@ public class Cache {
 						}
 						
 					}
+					if(debug){
 					System.out.println("Cache: write block back to memory "+ new String(blocktoMemAddr));
-					
+					}
 					//ic.writeMem(content[setId], blockPos, LEN_BLOCK, blocktoMemAddr);
 					memory.write(content[setId], blockPos, LEN_BLOCK, blocktoMemAddr);
 				}
@@ -159,16 +170,22 @@ public class Cache {
 						memtoBlockAddr[i] = '0';
 					}
 				}
+				if(debug){
 				System.out.println("Cache: load memory("+ new String(memtoBlockAddr)+") to cache block at line: "+setId);
+				}
 				//load the content from Memory to Cache
 				memory.read(content[setId], blockPos, LEN_BLOCK, memtoBlockAddr);
 				//reset Tag
 				copyChars(content[setId], tagPos, addr, 0, LEN_TAG);
 			} else{
+				if(debug){
 				System.out.println("Cache: cache hit");
+				}
 			}
 		} else { //the valid bit is not set
+			if(debug){
 			System.out.println("Cache: valid unset");
+			}
 			//calculate the address to read block from memory into cache
 			for (int i = 0; i < IntegratedCircuit.getLenAddr(); i++) {
 				if (i<LEN_TAG+LEN_SET_BIT) {
@@ -177,7 +194,9 @@ public class Cache {
 					memtoBlockAddr[i] = '0';
 				}
 			}
+			if(debug){
 			System.out.println("Cache: load memory("+ new String(memtoBlockAddr)+") to cache block at line: "+setId);
+			}
 			//load the content from Memory to Cache
 			memory.read(content[setId], blockPos, LEN_BLOCK, memtoBlockAddr);
 			//set Tag

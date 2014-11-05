@@ -27,7 +27,7 @@ public class SAssembler {
 	
 	public void assembler(char[] out, String in){
 		String[] component = in.split(" ");
-		System.out.println("--------"+component[0] + "--------");
+		//System.out.println("--------"+component[0] + "--------");
 		switch (component[0]) {
 		case "LDR":
 			//instruction[0-5]

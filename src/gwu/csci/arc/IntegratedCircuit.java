@@ -545,9 +545,9 @@ public class IntegratedCircuit {
 				
 			} else {
 				
-				readMem(MAR, MAR.length, EA);
-				io.printToLog("$JMP: jump to Memory "+Converter.conveterS2I(MAR, MAR.length));
-				cpu.setNewPC(MAR, MAR.length);
+				//readMem(MAR, MAR.length, EA);
+				io.printToLog("$JMP: jump to Memory "+Converter.conveterS2I(EA, MAR.length));
+				cpu.setNewPC(EA, EA.length);
 			}
 			return 0;
 		}
@@ -564,9 +564,9 @@ public class IntegratedCircuit {
 			cpu.setNewPC(EA, EA.length);
 			
 		} else {
-			readMem(MAR, MAR.length, EA);
-			io.printToLog("$JMP: jump to Memory "+Converter.conveterS2I(MAR,MAR.length));
-			cpu.setNewPC(MAR, MAR.length);
+			//readMem(MAR, MAR.length, EA);
+			io.printToLog("$JMP: jump to Memory "+Converter.conveterS2I(EA,EA.length));
+			cpu.setNewPC(EA, EA.length);
 			
 		}
 		return 0;
@@ -625,10 +625,10 @@ public class IntegratedCircuit {
 				io.printToLog("$SOB: PC = " + Converter.conveterS2I(EA, EA.length));
 				cpu.setNewPC(EA, EA.length);
 			} else {
-				readMem(MAR, MAR.length, EA);
+				//readMem(MAR, MAR.length, EA);
 				io.printToLog("$SOB: r-1 = "+r+" > 0 and I =1");
-				io.printToLog("$SOB: PC = " + Converter.conveterS2I(MAR, MAR.length));
-				cpu.setNewPC(MAR, MAR.length);
+				io.printToLog("$SOB: PC = " + Converter.conveterS2I(EA, EA.length));
+				cpu.setNewPC(EA, EA.length);
 			}
 			return 0;
 		} else {
@@ -676,6 +676,7 @@ public class IntegratedCircuit {
 	public int ic_smr() {
 		readMem(MBR, MBR.length, EA);
 		readReg(valR, valR.length, REG_TYPE.GPR);
+		io.printToLog("$SMR: GPR " + Converter.conveterS2I(rfi, rfi.length) + " = "+ Converter.conveterS2I(valR,valR.length) + " - " + Converter.conveterS2I(MBR,MBR.length));
 		cpu.subtraction(valR, MBR, valR);
 		writeReg(valR, valR.length, REG_TYPE.GPR);
 		return 0;
@@ -691,11 +692,11 @@ public class IntegratedCircuit {
 		return 0;
 	}
 	/**
-	 * store immediate to general purpose register
+	 * store immediate to index register
 	 * @return
 	 */
 	public int ic_stix() {
-		io.printToLog("$STIX: XR " + Converter.conveterS2I(rfi, rfi.length) + " = " + Converter.conveterS2I(addr, addr.length));
+		io.printToLog("$STIX: XR " + Converter.conveterS2I(xfi, xfi.length) + " = " + Converter.conveterS2I(addr, addr.length));
 		
 		writeReg(addr, addr.length, REG_TYPE.XR);
 		return 0;
@@ -906,7 +907,8 @@ public class IntegratedCircuit {
 				//add ad to ad2
 				//!!!!!!need revise!!!!!!!!!!
 				cpu.addition(ad, ad2, EA);
-				readMem(EA, EA.length, EA);
+				cpu.readMem(EA, EA.length, EA);
+				//readMem(EA, EA.length, EA);
 //				memory.read(EA, LEN_ADDR, ad2);
 //				for(int i = 0; i < LEN_ADDR; i++) {
 //					EA[i] = ad2[i];

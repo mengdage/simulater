@@ -774,6 +774,7 @@ public class UI extends JFrame {
 					case 7:
 						sir.start();
 						flag = true;
+						break;
 					case 6:
 						air.start();
 						flag = true;
@@ -927,6 +928,7 @@ public class UI extends JFrame {
 					case 7:
 						sir.start();
 						flag = true;
+						break;
 					case 6:
 						air.start();
 						flag = true;
