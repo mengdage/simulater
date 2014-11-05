@@ -668,6 +668,7 @@ public class UI extends JFrame {
 				
 				cpu.writeMem(binWord.toCharArray(), binWord.length(), pointer.toCharArray());
 				cpu.writeMem(ch, ch.length, pointer_len.toCharArray());
+				DspTxt_Cns.setText(DspTxt_Cns.getText() + "Keyword: "+ keyword +", has been written into memory at: " + new String(pointer) + ".\n");
 			}
 		});
 		
@@ -826,6 +827,17 @@ public class UI extends JFrame {
 						 // get each char in the paragraph
 						 sentence_char = new char[sentence.length()];
 						 sentence_char = sentence.toCharArray();
+						 
+						 String binSentence = "";
+						 int c;
+						 char[] ch = new char[18];
+						 
+						 for (int i = 0; i < sentence_char.length; i++)
+						 {
+							 c = sentence_char[i];
+							 Converter.converterI2S(c, ch);
+							 binSentence += new String(ch);
+						 }
 	
 // Convert char to binary
 //						 //convert char into 7-digit binary
@@ -868,7 +880,7 @@ public class UI extends JFrame {
 						 // write all six sentences to memory address 000000000111
 						 String pointer = "001000000000";
 //						 cpu.writeMem(ascii_char, ascii_char.length, pointer);
-						 cpu.writeMem(sentence_char, sentence_char.length, pointer.toCharArray());
+						 cpu.writeMem(binSentence.toCharArray(), binSentence.length(), pointer.toCharArray());
 						 DspTxt_Cns.setText(DspTxt_Cns.getText() + "The file has been written into memory at: " + new String(pointer) + ".\n");
 					}
 					
