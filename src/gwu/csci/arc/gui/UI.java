@@ -649,7 +649,7 @@ public class UI extends JFrame {
 		SbmBtn_P2I = new JButton("Submit");
 		SbmBtn_P2I.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String keyword = SetTxt_P2I.getText();
+				keyword = SetTxt_P2I.getText();
 			}
 		});
 		
@@ -877,27 +877,70 @@ public class UI extends JFrame {
 		btnProgram2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				char[] id = {'0', '0'};
-				cpu.writeGPR(sentence_char, id, sentence_char.length);
-				
-				String program1 = "";
-				
-//				String program1 = "STIR 3 20;STIX 3 100;IN 1 0;STR 1 3 0 100;AIX 3 3;SOB 3 0 0 9;STIX 2 100;STIR 3 20;STIX 1 100;LDR 1 1 0 100;OUT 1 1;AIX 1 3;SOB 3 0 0 30 ;STIR 3 20;SIX 3 3;IN 1 0;STR 1 0 0 120;LDR 1 3 0 100;STR 1 2 0 94;SMR 1 0 0 120;STR 1 2 0 97;SIR 3 1;SIX 3 3;LDR 1 3 0 100;SMR 1 0 0 120;SMR 1 2 0 97;JCC 1 0 0 90;SOB 3 0 0 69;JMP 0 0 105;LDR 1 3 0 100;STR 1 2 0 94;SMR 1 0 0 120;STR 1 2 0 97;JMP 0 0 84;LDR 0 2 0 94;OUT 0 1;LDR 0 0 0 120;OUT 0 1";
+//				cpu.writeGPR(sentence_char, id, sentence_char.length);
 //				
-				String[] instruction = program1.split(";");
-				SAssembler sa = new SAssembler();
-				char[] m_code = new char[18];
-				char[] addr = new char[12];
-				String m_code_string = "";
-				// write the program into memory
-				for (int i = 0; i < instruction.length; i++)
+//				String program1 = "";
+//				
+////				String program1 = "STIR 3 20;STIX 3 100;IN 1 0;STR 1 3 0 100;AIX 3 3;SOB 3 0 0 9;STIX 2 100;STIR 3 20;STIX 1 100;LDR 1 1 0 100;OUT 1 1;AIX 1 3;SOB 3 0 0 30 ;STIR 3 20;SIX 3 3;IN 1 0;STR 1 0 0 120;LDR 1 3 0 100;STR 1 2 0 94;SMR 1 0 0 120;STR 1 2 0 97;SIR 3 1;SIX 3 3;LDR 1 3 0 100;SMR 1 0 0 120;SMR 1 2 0 97;JCC 1 0 0 90;SOB 3 0 0 69;JMP 0 0 105;LDR 1 3 0 100;STR 1 2 0 94;SMR 1 0 0 120;STR 1 2 0 97;JMP 0 0 84;LDR 0 2 0 94;OUT 0 1;LDR 0 0 0 120;OUT 0 1";
+////				
+//				String[] instruction = program1.split(";");
+//				SAssembler sa = new SAssembler();
+//				char[] m_code = new char[18];
+//				char[] addr = new char[12];
+//				String m_code_string = "";
+//				// write the program into memory
+//				for (int i = 0; i < instruction.length; i++)
+//				{
+//					sa.assembler(m_code, instruction[i]);
+//					cpu.writeIns(m_code, m_code.length, addr);
+//					DspTxt_Cns.setText(DspTxt_Cns.getText() + "Instruction submitted.\n" + "The instruction (" + ins + " " + instruction[i] + ") is writedn into memory at: " + new String(addr) + ".\n");
+//					m_code_string += new String(m_code) + "\n";
+//					System.out.println(m_code_string);
+//				}
+				
+// linmeng
+				String addSt = "000001000000";
+				String addWord = "001010000000";
+				
+				//String word_exp = "Meng";
+				//String sentence_exp = "Hello. My name is Meng. I am a student. I am from GWU. Nice to meet you. Goodbye.";
+				
+				String binWord = "";
+				String binSentence = "";
+				
+				//int lenSt = sentence_exp.length();
+				int lenSt = sentence.length();
+				int c = 0;
+				char[] ch = new char[18];
+				
+				for (int i = 0; i < lenSt;i++)
 				{
-					sa.assembler(m_code, instruction[i]);
-					cpu.writeIns(m_code, m_code.length, addr);
-					DspTxt_Cns.setText(DspTxt_Cns.getText() + "Instruction submitted.\n" + "The instruction (" + ins + " " + instruction[i] + ") is writedn into memory at: " + new String(addr) + ".\n");
-					m_code_string += new String(m_code) + "\n";
-					System.out.println(m_code_string);
+					//c = sentence_exp.charAt(i);
+					c = sentence.charAt(i);
+					Converter.converterI2S(c, ch);
+					binSentence += new String(ch);
 				}
 				
+				//for (int i = 0; i < word_exp.length(); i++)
+				for (int i = 0; i < keyword.length(); i++)
+				{
+					//c = word_exp.charAt(i);
+					c = keyword.charAt(i);
+					Converter.converterI2S(c, ch);
+					binWord += new String(ch);
+				}
+				
+				cpu.writeMem(binSentence.toCharArray(),binSentence.length(), addSt.toCharArray());
+				cpu.writeMem(binWord.toCharArray(), binWord.length(), addWord.toCharArray());
+				
+				char[] result_snt = new char[binSentence.length()];
+				char[] result_word = new char[binWord.length()];
+				
+				cpu.readMem(result_snt, result_snt.length, addSt.toCharArray());
+				cpu.readMem(result_word, result_word.length, addWord.toCharArray());
+				
+				DspTxt_Cns.setText(DspTxt_Cns.getText() + new String(result_snt) + "\n");
+				DspTxt_Cns.setText(DspTxt_Cns.getText() + new String(result_word) + "\n");
 				
 // convert from binary to ascii, then from binary to char
 //				char[] ascii = new char[sentence.length()*7];
