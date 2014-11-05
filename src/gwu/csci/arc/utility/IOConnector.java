@@ -19,7 +19,7 @@ public class IOConnector {
 	}
 
 	public void printString(String s) {
-		System.out.println(s);
+		//System.out.println(s);
 	}
 	
 	

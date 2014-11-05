@@ -76,7 +76,7 @@ public class IntegratedCircuit {
 	
 	private int[] p1In = new int[21];
 	private int p1In_id = 0;
-	public void printP1In() {
+	public void printP1In1() {
 		String sin = "";
 		for (int i = 0; i < p1In.length -1; i++) {
 			sin = sin+p1In[i]+ " ";
@@ -1013,8 +1013,7 @@ public class IntegratedCircuit {
 				
 			}
 		}
-		System.out.print("EA: ");
-		System.out.println(EA);
+		io.printString("EA: " + new String(EA));
 		return 0;
 	}
 	
