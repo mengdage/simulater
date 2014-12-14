@@ -856,14 +856,14 @@ public class IntegratedCircuit {
 		int dec_exp_y = 0;
 		
 		// convert 18 bits binary floating point numbers into decimal
-		dec_x = Converter.converterS2F(FP1, FP1.length, dec_exp_x);
-		dec_y = Converter.converterS2F(FP2, FP2.length, dec_exp_y);
+		dec_x = Converter.converterS2F(FP1, FP1.length);
+		dec_y = Converter.converterS2F(FP2, FP2.length);
 		
 		// floating point addition in decimal
 		dec_x += dec_y;
 		
 		// convert sum of 2 floating point numbers back to 18 bits binary from decimal
-		Converter.converterF2S(dec_x, dec_exp_x);
+		Converter.converterF2S(dec_x);
 		
 		// write back
 		writeReg(FP1, FP1.length,REG_TYPE.FR);
@@ -893,14 +893,14 @@ public class IntegratedCircuit {
 		int dec_exp_y = 0;
 				
 		// convert 18 bits binary floating point numbers into decimal
-		dec_x = Converter.converterS2F(FP1, FP1.length, dec_exp_x);
-		dec_y = Converter.converterS2F(FP2, FP2.length, dec_exp_y);
+		dec_x = Converter.converterS2F(FP1, FP1.length);
+		dec_y = Converter.converterS2F(FP2, FP2.length);
 				
 		// floating point subtraction in decimal
 		dec_x -= dec_y;
 				
 		// convert sum of 2 floating point numbers back to 18 bits binary from decimal
-		Converter.converterF2S(dec_x, dec_exp_x);
+		Converter.converterF2S(dec_x);
 				
 		// write back
 		writeReg(FP1, FP1.length,REG_TYPE.FR);

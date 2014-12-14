@@ -102,7 +102,7 @@ public class Converter {
 	 * @param dec_exp exponent of the floating point number in decimal
 	 * @return the floating point number in decimal
 	 */
-	public static double converterS2F(char[] s, int len, int dec_exp)
+	public static double converterS2F(char[] s, int len)
 	{
 		char sign;
 		char[] exp = new char[7];
@@ -125,7 +125,7 @@ public class Converter {
 		}
 		
 		// convert exponent to decimal
-		dec_exp = conveterS2I(exp, 7);
+		int dec_exp = conveterS2I(exp, 7);
 		
 		// convert mantissa to decimal sum
 		for (int i = 0; i < 10; i++)
@@ -154,7 +154,7 @@ public class Converter {
 	 * @param dec_exp the exponent of the floating point number in decimal
 	 * @return the floating point number in 18 bits binary
 	 */
-	public static char[] converterF2S(double dec, int dec_exp)
+	public static char[] converterF2S(double dec)
 	{
 		char[] s = new char[18];
 		char[] exp = new char[7];
@@ -167,15 +167,23 @@ public class Converter {
 			dec = dec * (-1);
 		}
 		
+		double dec_temp = dec;
+		int count = 0;
+		while (dec_temp >= 1)
+		{
+			dec_temp = dec_temp/2;
+			count++;
+		}
+		
 		// convert decimal exponent back to 7 bits binary
-		converterI2S(dec_exp, exp, 7);
+		converterI2S(count, exp, 7);
 		for (int i = 0; i < 7; i++)
 		{
 			s[i+1] = exp[i];
 		}
 		
 		// divide exponent to get mantissa
-		dec = dec / Math.pow(2, dec_exp);
+		dec = dec / Math.pow(2, count);
 		
 		// convert mantissa to sum of fractions in binary
 		for (int i = 0; i < 10; i++)
