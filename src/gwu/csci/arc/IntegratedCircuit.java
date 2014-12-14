@@ -869,8 +869,8 @@ public class IntegratedCircuit {
 		double dec_y = 0;
 		
 		// convert binary exponents to integer
-		dec_exp_x = Converter.conveterS2I(exp_x, LEN_EXP) - 127;
-		dec_exp_y = Converter.conveterS2I(exp_y, LEN_EXP) - 127;
+		dec_exp_x = Converter.conveterS2I(exp_x, LEN_EXP);
+		dec_exp_y = Converter.conveterS2I(exp_y, LEN_EXP);
 		
 		// convert binary mantissas to integers 
 		for (int i = 0; i < LEN_MTS; i++)
@@ -966,8 +966,8 @@ public class IntegratedCircuit {
 				double dec_y = 0;
 				
 				// convert binary exponents to integer
-				dec_exp_x = Converter.conveterS2I(exp_x, LEN_EXP) - 127;
-				dec_exp_y = Converter.conveterS2I(exp_y, LEN_EXP) - 127;
+				dec_exp_x = Converter.conveterS2I(exp_x, LEN_EXP);
+				dec_exp_y = Converter.conveterS2I(exp_y, LEN_EXP);
 				
 				// convert binary mantissas to integers 
 				for (int i = 0; i < LEN_MTS; i++)
