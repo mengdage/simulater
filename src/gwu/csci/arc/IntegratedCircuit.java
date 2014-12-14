@@ -15,6 +15,7 @@ enum REG_TYPE {
 public class IntegratedCircuit {
 	private static IntegratedCircuit ic; //singleton
 	private static final int LEN_WORD = 18; // the length of the word
+	private static final int LEN_FLOATING = 18; // the length of the floating point
 	private static final int LEN_ADDR = 12; // the length of the address
 	private static final int LEN_INSTRUCTION = 18; //the length of an instruction
 	private static final int LEN_OPCODE = 6; //the length of the OPCODE in an instruct
@@ -858,20 +859,20 @@ public class IntegratedCircuit {
 	{
 		if (I[0] == '0')
 		{
-			need editing
+			//need editing
 			//read a word of memory at EA into MBR
-			readMem(MBR, LEN_WORD, EA);
+			readMem(MBR, LEN_FLOATING, EA);
 			//write MRB into GPR
-			writeReg(MBR, LEN_WORD, REG_TYPE.FR);
+			writeReg(MBR, LEN_FLOATING, REG_TYPE.FR);
 		}
 		else
 		{
-			need editing
+			//need editing
 			//read the actual address from memory at EA into MBR
 			readMem(MAR, LEN_ADDR, EA);
 			//read a word from memory at MAR into MBR
-			readMem(MBR, LEN_WORD, MAR);
-			writeReg(MBR, LEN_WORD, REG_TYPE.FR);
+			readMem(MBR, LEN_FLOATING, MAR);
+			writeReg(MBR, LEN_FLOATING, REG_TYPE.FR);
 		}
 		
 		return 0;
@@ -884,11 +885,19 @@ public class IntegratedCircuit {
 	{
 		if (I[0] == '0')
 		{
-			
+			//read floating point register to valR
+			readReg(valR, LEN_FLOATING, REG_TYPE.FR);
+			//store valR to the destination in the Memory
+			writeMem(valR, LEN_FLOATING, EA);
 		}
 		else
 		{
-			
+			//read floating point register to valR
+			readReg(valR, LEN_FLOATING, REG_TYPE.FR);
+			//read the actual address from memory at EA into MBR
+			readMem(MAR, LEN_ADDR, EA);
+			//store valR to the destination in the Memory
+			writeMem(valR, LEN_FLOATING, MAR);
 		}
 		
 		return 0;
