@@ -334,9 +334,9 @@ public class UI extends JFrame {
 		SetTxt_Ins.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
-				String Current = SetTxt_Ins.getText();
-				if (Current.length() == 18) e.setKeyChar((char) 00);
-				if ((e.getKeyChar() != '0') && (e.getKeyChar() != '1')) e.setKeyChar((char) 00);
+//				String Current = SetTxt_Ins.getText();
+//				if (Current.length() == 18) e.setKeyChar((char) 00);
+//				if ((e.getKeyChar() != '0') && (e.getKeyChar() != '1')) e.setKeyChar((char) 00);
 			}
 		});
 		SetTxt_Ins.setText("000000000000000000");
@@ -560,23 +560,38 @@ public class UI extends JFrame {
 		SbmBtn_Ins.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				for (int i = 0; i < 18; i++) Instruction[i] = '0';
-				Instruction = SetTxt_Ins.getText().toCharArray();
+				SAssembler sa = new SAssembler();
+				char[] m_code = new char[18];
+				char[] addr = new char[12];
 				
-				opcode_check();
+				String ins = SetTxt_Ins.getText();
+				String[] split = ins.split("\n");
 				
-				// get address if no instruction error
-				if (flag == true)
-					for (int i = 6; i < 18; i++) address[i-6] = Instruction[i];
-				
-				
-				if (flag == false) DspTxt_Cns.setText(DspTxt_Cns.getText() + "Fail: Instruction Error!\n\n");
-				else
-				{ 
-					cpu.writeIns(Instruction, Instruction.length, address_mem);
-					//instruction_run();
-					DspTxt_Cns.setText(DspTxt_Cns.getText() + "Instruction Submitted.\n"+"The Instruction ("+ ins +" "+ new String(address)+ ") is written into Memory at: " + new String(address_mem) + ".\n");
+				for (int i = 0; i < split.length; i++)
+				{	
+					sa.assembler(m_code, split[i]);
+					cpu.writeIns(m_code, m_code.length, addr);
 				}
+				
+				DspTxt_Cns.setText(DspTxt_Cns.getText() + "Instruction Submitted.\n" + "It is written into Memory at: " + new String(addr) + ".\n");
+				
+//				for (int i = 0; i < 18; i++) Instruction[i] = '0';
+//				Instruction = SetTxt_Ins.getText().toCharArray();
+//				
+//				opcode_check();
+//				
+//				// get address if no instruction error
+//				if (flag == true)
+//					for (int i = 6; i < 18; i++) address[i-6] = Instruction[i];
+//				
+//				
+//				if (flag == false) DspTxt_Cns.setText(DspTxt_Cns.getText() + "Fail: Instruction Error!\n\n");
+//				else
+//				{ 
+//					cpu.writeIns(Instruction, Instruction.length, address_mem);
+//					//instruction_run();
+//					DspTxt_Cns.setText(DspTxt_Cns.getText() + "Instruction Submitted.\n"+"The Instruction ("+ ins +" "+ new String(address)+ ") is written into Memory at: " + new String(address_mem) + ".\n");
+//				}
 			}
 		});
 		
