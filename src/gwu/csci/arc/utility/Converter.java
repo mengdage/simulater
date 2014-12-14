@@ -102,7 +102,7 @@ public class Converter {
 	 * @param dec_exp exponent of the floating point number in decimal
 	 * @return the floating point number in decimal
 	 */
-	public static double converterF2S(char[] s, int len, int dec_exp)
+	public static double converterS2F(char[] s, int len, int dec_exp)
 	{
 		char sign;
 		char[] exp = new char[7];
@@ -154,7 +154,7 @@ public class Converter {
 	 * @param dec_exp the exponent of the floating point number in decimal
 	 * @return the floating point number in 18 bits binary
 	 */
-	public static char[] converterS2F(double dec, int dec_exp)
+	public static char[] converterF2S(double dec, int dec_exp)
 	{
 		char[] s = new char[18];
 		char[] exp = new char[7];
