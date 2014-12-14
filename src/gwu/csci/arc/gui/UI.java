@@ -129,7 +129,6 @@ public class UI extends JFrame {
 	private JTextField SetTxt_PI;
 	private JLabel lblProgramInput;
 	private JButton SbmBtn_PI;
-
 	
 	AIR air = new AIR(cpu);
 	AIX aix = new AIX(cpu);
@@ -160,6 +159,7 @@ public class UI extends JFrame {
 	private JButton SbmBtn_P2I;
 	private JButton btnProgram2;
 	
+	// assembly code read from file
 	String program2_2 = "";
 	
 	String sentence = "";
@@ -251,7 +251,6 @@ public class UI extends JFrame {
 		SetTxt_R0.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
-		
 				String Current = SetTxt_R0.getText();
 				
 				// restrict input size and format for R0
@@ -268,14 +267,10 @@ public class UI extends JFrame {
 		contentPane.add(SetTxt_R0, gbc_SetTxt_R0);
 		SetTxt_R0.setColumns(5);
 		
-		
 		SbmBtn_R0 = new JButton("Submit");
 		SbmBtn_R0.setToolTipText("Submit R0");
 		SbmBtn_R0.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				
-				
+			public void actionPerformed(ActionEvent e) {		
 				// overwrite R0
 				char[] Current = new char[18];
 				char[] Current_dsp = new char[18];
@@ -309,8 +304,7 @@ public class UI extends JFrame {
 		SetTxt_Mem.setToolTipText("Set memory value");
 		SetTxt_Mem.addKeyListener(new KeyAdapter() {
 			@Override
-			public void keyTyped(KeyEvent e) {
-				
+			public void keyTyped(KeyEvent e) {		
 				String Current = SetTxt_Mem.getText();
 				
 				// restrict input size and format for memory input

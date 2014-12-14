@@ -6,6 +6,7 @@ import gwu.csci.arc.utility.IOConnector;
 enum REG_TYPE {
 	GPR,
 	XR,
+	FR,
 	CC,
 	PC,
 	IR
@@ -19,6 +20,7 @@ public class IntegratedCircuit {
 	private static final int LEN_OPCODE = 6; //the length of the OPCODE in an instruct
 	private static final int LEN_RFI = 2; //the length of the RFI in an instruction
 	private static final int LEN_XFI = 2; //the length of the XFI in an instruction
+	private static final int LEN_FFI = 1; //the length of the FFI in an instruction
 	private static final int LEN_I = 1; //the length of the I in an instruction
 	private static final int LEN_ADDR_INCODE= 7; //the length of the address in an instruction
 	private static final int LEN_SBYTE = 6; //one sByte = six sBit
@@ -35,6 +37,7 @@ public class IntegratedCircuit {
 	private char[] opcode = new char[LEN_OPCODE];
 	private char[] rfi = new char[LEN_RFI];
 	private char[] xfi = new char[LEN_XFI];
+	private char[] ffi = new char[LEN_FFI];
 	private char[] I = new char[LEN_I];
 	private char[] addr = new char[LEN_ADDR_INCODE];
 	/*$$$$$$$$$$$$$$*/
@@ -58,8 +61,10 @@ public class IntegratedCircuit {
 	private char[] valR = new char[LEN_WORD];
 	//the value read from the index file
 	private char[] valX = new char[LEN_ADDR];
-	//the value read from the instruaction register
+	//the value read from the instruction register
 	private char[] valIR = new char[18];
+	//the value read from the floating point register
+	private char[] valF = new char[18];
 	
 	//the value read from the cc
 	private char[] valC = new char[1];
@@ -100,7 +105,7 @@ public class IntegratedCircuit {
 		this.cpu = cpu;
 		io =IOConnector.getInstance();
 		
-		//initiliaztion
+		//initialization
 		for (int i = 0; i < LEN_ADDR; i++) {
 			EA[i] = '0';
 			MAR[i] = '0';
@@ -191,9 +196,19 @@ public class IntegratedCircuit {
 	public char[] getXfi() {
 		return xfi;
 	}
-
+	
 	public void setXfi(char[] xfi) {
 		this.xfi = xfi;
+	}
+	
+	public char[] getFfi()
+	{
+		return ffi;
+	}
+	
+	public void setFfi(char[] ffi)
+	{
+		this.ffi = ffi;
 	}
 
 	public char[] getAddr() {
@@ -234,6 +249,8 @@ public class IntegratedCircuit {
 			cpu.readGPR(c, rfi, len);break;
 		case XR:
 			cpu.readXR(c, xfi, len);break;
+		case FR:
+			cpu.readFR(c, ffi, len);break;
 		case CC:
 			cpu.readCC(c, Converter.conveterS2I(rfi, rfi.length));
 			break;
@@ -263,6 +280,10 @@ public class IntegratedCircuit {
 			
 		case XR:
 			cpu.writeXR(c, xfi, len);
+			break;
+			
+		case FR:
+			cpu.writeFR(c, ffi, len);
 			break;
 			
 		case CC:
@@ -797,6 +818,82 @@ public class IntegratedCircuit {
 	 * ADDR <- IR11-17
 	 * @return 0
 	 */
+	
+	public int ic_fadd()
+	{
+		
+		
+		return 0;
+	}
+	public int ic_fsub()
+	{
+		
+		
+		return 0;
+	}
+	public int ic_vadd()
+	{
+		
+		
+		return 0;
+	}
+	public int ic_vsub()
+	{
+		
+		
+		return 0;
+	}
+	public int ic_cnvrt()
+	{
+		
+		
+		return 0;
+	}
+	
+	/**
+	 * load a floating point number from memory to floating point register
+	 * @return
+	 */
+	public int ic_ldfr()
+	{
+		if (I[0] == '0')
+		{
+			need editing
+			//read a word of memory at EA into MBR
+			readMem(MBR, LEN_WORD, EA);
+			//write MRB into GPR
+			writeReg(MBR, LEN_WORD, REG_TYPE.FR);
+		}
+		else
+		{
+			need editing
+			//read the actual address from memory at EA into MBR
+			readMem(MAR, LEN_ADDR, EA);
+			//read a word from memory at MAR into MBR
+			readMem(MBR, LEN_WORD, MAR);
+			writeReg(MBR, LEN_WORD, REG_TYPE.FR);
+		}
+		
+		return 0;
+	}
+	
+	/**
+	 * store a floating point number from floating point register to memory
+	 */
+	public int ic_stfr()
+	{
+		if (I[0] == '0')
+		{
+			
+		}
+		else
+		{
+			
+		}
+		
+		return 0;
+	}
+	
 	public int decode() {
 		
 		int n;

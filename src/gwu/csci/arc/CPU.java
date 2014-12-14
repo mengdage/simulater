@@ -14,6 +14,8 @@ public class CPU {
 	private ConditionCode cc = new ConditionCode();
 	//the index register, X1, X2, X3, 12 bits each, for index addressing
 	private IndexRegister xr = new IndexRegister();
+	// floating point registers, FR0, FR1, 18 bits each, for floating point arithmetic
+	private FloatingRegister fr = new FloatingRegister();
 	//the program counter, 12 bit, storing the address of the next instruction
 	private ProgramCounter pc = new ProgramCounter();
 	//the instruction register, 18 bit, storing the content of the next instruction 
@@ -277,6 +279,52 @@ public class CPU {
 	}
 	
 	/**
+	 * write c of length len into id-th floating point register
+	 * @param c the content to be written
+	 * @param id the ID of the register used
+	 * @param len the length of the content
+	 * @return 0
+	 */
+	public int writeFR(char[] c, char[] id, int len)
+	{
+		if (id[0] == '0')
+		{
+			if (fr.setFR0(c, len) == 0)
+				System.out.println("CPU: writing floating point register 0 succeed");
+		}
+		else
+		{
+			if (fr.setFR1(c, len) == 0)
+				System.out.println("CPU: writing floating point register 1 succeed");
+		}
+		
+		return 0;
+	}
+	
+	/**
+	 * read the content of length len from id-th floating point register into c
+	 * @param c store the content read
+	 * @param id the ID of the register read
+	 * @param len the length of the content
+	 * @return 0
+	 */
+	public int readFR(char[] c, char[] id, int len)
+	{
+		if (id[0] == '0')
+		{
+			if (fr.getFR0(c, len) == 0)
+				System.out.println("CPU: reading floating point register 0 succeed");
+		}
+		else
+		{
+			if (fr.getFR1(c, len) == 0)
+				System.out.println("CPU: reading floating point register 1 succeed");
+		}
+		
+		return 0;
+	}
+	
+	/**
 	 * write c of length len into condition code register 
 	 * @param c the content to be written
 	 * @param len the length of the content
@@ -512,6 +560,39 @@ public class CPU {
 	public int cpu_out() {
 		return ic.ic_out();
 	}
+	
+	/**
+	 * call floating point, vector arithmetics and operations in IC
+	 */
+	public int cpu_fadd()
+	{
+		return ic.ic_fadd();
+	}
+	public int cpu_fsub()
+	{
+		return ic.ic_fsub();
+	}
+	public int cpu_vadd()
+	{
+		return ic.ic_vadd();
+	}
+	public int cpu_vsub()
+	{
+		return ic.ic_vsub();
+	}
+	public int cpu_cnvrt()
+	{
+		return ic.ic_cnvrt();
+	}
+	public int cpu_ldfr()
+	{
+		return ic.ic_ldfr();
+	}
+	public int cpu_stfr()
+	{
+		return ic.ic_stfr();
+	}
+	
 	/**
 	 * do addition
 	 * @param op1 
