@@ -251,7 +251,7 @@ public class IntegratedCircuit {
 		case XR:
 			cpu.readXR(c, xfi, len);break;
 		case FR:
-			cpu.readFR(c, ffi, len);break;
+			cpu.readFR(c, rfi, len);break;
 		case CC:
 			cpu.readCC(c, Converter.conveterS2I(rfi, rfi.length));
 			break;
@@ -284,7 +284,7 @@ public class IntegratedCircuit {
 			break;
 			
 		case FR:
-			cpu.writeFR(c, ffi, len);
+			cpu.writeFR(c, xfi, len);
 			break;
 			
 		case CC:
@@ -834,13 +834,93 @@ public class IntegratedCircuit {
 	}
 	public int ic_vadd()
 	{
-		
+		readReg(valR, LEN_FLOATING, REG_TYPE.FR);
+		int len = 3*Converter.conveterS2I(valR, valR.length);
+		if(I[0] == '0') {
+			for(int i =0; i < LEN_ADDR; i++){
+				MAR[i] = EA[i];
+			}
+		} else {
+			readMem(MAR, LEN_ADDR, EA);
+		}
+		for(int i = 0; i < len; i++) {
+			//read the first operand, the i-th element in the first Vector
+			readMem(MBR, LEN_WORD, MAR);
+			for(int k =0; k < LEN_WORD; k++){
+				OP1[k] = MBR[k];
+			}
+			
+			//calculate the address of the i-th element in the second Vector
+			int adr = Converter.conveterS2I(MAR, LEN_ADDR);
+			adr = adr + len;
+			Converter.converterI2S(adr, MAR);
+			
+			//read the second operand, the i-th element in the second Vector
+			readMem(MBR, LEN_WORD, MAR);
+			for(int k =0; k < LEN_WORD; k++){
+				OP2[k] = MBR[k];
+			}
+			
+			//add the op1 and op2, and store them to MBR
+			cpu.addition(OP1, OP2, MBR);
+			
+			//calculate the address of the i-th element in the first Vector
+			adr = adr - len;
+			Converter.converterI2S(adr, MAR);
+			
+			//write the 
+			writeMem(MBR, LEN_WORD, MAR);
+			
+			//point to the (i+1)-th element in the first Vector
+			adr = adr +3;
+			Converter.converterI2S(adr, MAR);
+		}
 		
 		return 0;
 	}
 	public int ic_vsub()
 	{
-		
+		readReg(valR, LEN_FLOATING, REG_TYPE.FR);
+		int len = 3*Converter.conveterS2I(valR, valR.length);
+		if(I[0] == '0') {
+			for(int i =0; i < LEN_ADDR; i++){
+				MAR[i] = EA[i];
+			}
+		} else {
+			readMem(MAR, LEN_ADDR, EA);
+		}
+		for(int i = 0; i < len; i++) {
+			//read the first operand, the i-th element in the first Vector
+			readMem(MBR, LEN_WORD, MAR);
+			for(int k =0; k < LEN_WORD; k++){
+				OP1[k] = MBR[k];
+			}
+			
+			//calculate the address of the i-th element in the second Vector
+			int adr = Converter.conveterS2I(MAR, LEN_ADDR);
+			adr = adr + len;
+			Converter.converterI2S(adr, MAR);
+			
+			//read the second operand, the i-th element in the second Vector
+			readMem(MBR, LEN_WORD, MAR);
+			for(int k =0; k < LEN_WORD; k++){
+				OP2[k] = MBR[k];
+			}
+			
+			//add the op1 and op2, and store them to MBR
+			cpu.subtraction(OP1, OP2, MBR);
+			
+			//calculate the address of the i-th element in the first Vector
+			adr = adr - len;
+			Converter.converterI2S(adr, MAR);
+			
+			//write the 
+			writeMem(MBR, LEN_WORD, MAR);
+			
+			//point to the (i+1)-th element in the first Vector
+			adr = adr +3;
+			Converter.converterI2S(adr, MAR);
+		}
 		
 		return 0;
 	}
