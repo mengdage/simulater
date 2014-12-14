@@ -25,6 +25,10 @@ public class IntegratedCircuit {
 	private static final int LEN_I = 1; //the length of the I in an instruction
 	private static final int LEN_ADDR_INCODE= 7; //the length of the address in an instruction
 	private static final int LEN_SBYTE = 6; //one sByte = six sBit
+	//for floating point arithmetic usages
+	private static final int LEN_SIGN = 1;
+	private static final int LEN_EXP = 7;
+	private static final int LEN_MTS = 10;
 	//6 in binary
 	private static final char[] ONE_12 = {'0','0','0','0','0','0','0','0', '0', '0', '0','1'}; //one sByte = six sBit
 
@@ -73,6 +77,15 @@ public class IntegratedCircuit {
 	//the pointer to the Memory address when writing instructions
 	private char[] ins_pointer = new char[LEN_ADDR];
 	
+	// for floating point arithmetic usages
+	private char[] FP1 = new char[18];
+	private char[] FP2 = new char[18];
+	private char[] fp_sign_x = new char[LEN_SIGN];
+	private char[] fp_sign_y = new char[LEN_SIGN];
+	private char[] exp_x = new char[LEN_EXP];
+	private char[] exp_y = new char[LEN_EXP];
+	private char[] mts_x = new char[LEN_MTS];
+	private char[] mts_y = new char[LEN_MTS];
 	
 	
 	private int[] p1In = new int[21];
@@ -284,7 +297,7 @@ public class IntegratedCircuit {
 			break;
 			
 		case FR:
-			cpu.writeFR(c, ffi, len);
+			cpu.writeFR(c, xfi, len);
 			break;
 			
 		case CC:
@@ -821,14 +834,196 @@ public class IntegratedCircuit {
 	 */
 	
 	public int ic_fadd()
-	{
+	{	
+		// get floating point operands from register and addr
+		readReg(FP1, FP1.length, REG_TYPE.FR);
 		
+		if (I[0] == '0')
+		{
+			readMem(FP2, LEN_FLOATING, EA);
+		}
+		else
+		{
+			readMem(MAR, LEN_ADDR, EA);
+			readMem(FP2, LEN_FLOATING, MAR);
+		}
+		
+		// separate signs, exponents, and mantissas
+		fp_sign_x[0] = FP1[0];
+		fp_sign_y[0] = FP2[0];
+		
+		for (int i = 1; i < 8; i++)
+		{
+			exp_x[i-1] = FP1[i];
+			exp_y[i-1] = FP2[i];
+		}
+		for (int i = 8; i < 18; i++)
+		{
+			mts_x[i-8] = FP1[i];
+			mts_y[i-8] = FP2[i];
+		}
+		
+		int dec_exp_x = 0;
+		int dec_exp_y = 0;
+		double dec_x = 0;
+		double dec_y = 0;
+		
+		// convert binary exponents to integer
+		dec_exp_x = Converter.conveterS2I(exp_x, LEN_EXP) - 127;
+		dec_exp_y = Converter.conveterS2I(exp_y, LEN_EXP) - 127;
+		
+		// convert binary mantissas to integers 
+		for (int i = 0; i < LEN_MTS; i++)
+		{
+			if (mts_x[i] == '1')
+			{
+				dec_x += Math.pow(2, -(i+1));
+			}
+			if (mts_y[i] == '1')
+			{
+				dec_y += Math.pow(2, -(i+1));
+			}
+		}
+		
+		dec_x = dec_x * Math.pow(2, dec_exp_x);
+		dec_y = dec_y * Math.pow(2, dec_exp_y);
+		
+		// sign
+		if (fp_sign_x[0] == '1')
+		{	
+			dec_x = dec_x * (-1);
+		}
+		if (fp_sign_y[0] == '1')
+		{
+			dec_y = dec_y * (-1);
+		}
+		
+		// floating point addition in decimal
+		dec_x += dec_y;
+		
+		// convert back to binary
+		// reset sign bit
+		if (dec_x >= 0) fp_sign_x[0] = '0';
+		else
+		{
+			fp_sign_x[0] = '1';
+			// ignore value sign
+			dec_x = dec_x * (-1);
+		}
+		
+		// divide exponent to get mantissa
+		dec_x = dec_x / Math.pow(2, dec_exp_x);
+		
+		// convert mantissa to sum of fractions in binary
+		for (int i = 0; i < 10; i++)
+		{
+			if (dec_x >= Math.pow(2, -(i+1)))
+			{
+				dec_x -= Math.pow(2, -(i+1));
+				FP1[i+8] = '1';
+			}
+			else
+				FP1[i+8] = '0';
+		}
+		
+		writeReg(FP1, FP1.length,REG_TYPE.FR);
 		
 		return 0;
 	}
 	public int ic_fsub()
 	{
-		
+		// get floating point operands from register and addr
+				readReg(FP1, FP1.length, REG_TYPE.FR);
+				
+				if (I[0] == '0')
+				{
+					readMem(FP2, LEN_FLOATING, EA);
+				}
+				else
+				{
+					readMem(MAR, LEN_ADDR, EA);
+					readMem(FP2, LEN_FLOATING, MAR);
+				}
+				
+				// separate signs, exponents, and mantissas
+				fp_sign_x[0] = FP1[0];
+				fp_sign_y[0] = FP2[0];
+				
+				for (int i = 1; i < 8; i++)
+				{
+					exp_x[i-1] = FP1[i];
+					exp_y[i-1] = FP2[i];
+				}
+				for (int i = 8; i < 18; i++)
+				{
+					mts_x[i-8] = FP1[i];
+					mts_y[i-8] = FP2[i];
+				}
+				
+				int dec_exp_x = 0;
+				int dec_exp_y = 0;
+				double dec_x = 0;
+				double dec_y = 0;
+				
+				// convert binary exponents to integer
+				dec_exp_x = Converter.conveterS2I(exp_x, LEN_EXP) - 127;
+				dec_exp_y = Converter.conveterS2I(exp_y, LEN_EXP) - 127;
+				
+				// convert binary mantissas to integers 
+				for (int i = 0; i < LEN_MTS; i++)
+				{
+					if (mts_x[i] == '1')
+					{
+						dec_x += Math.pow(2, -(i+1));
+					}
+					if (mts_y[i] == '1')
+					{
+						dec_y += Math.pow(2, -(i+1));
+					}
+				}
+				
+				dec_x = dec_x * Math.pow(2, dec_exp_x);
+				dec_y = dec_y * Math.pow(2, dec_exp_y);
+				
+				// sign
+				if (fp_sign_x[0] == '1')
+				{	
+					dec_x = dec_x * (-1);
+				}
+				if (fp_sign_y[0] == '1')
+				{
+					dec_y = dec_y * (-1);
+				}
+				
+				// floating point addition in decimal
+				dec_x -= dec_y;
+				
+				// convert back to binary
+				// reset sign bit
+				if (dec_x >= 0) fp_sign_x[0] = '0';
+				else
+				{
+					fp_sign_x[0] = '1';
+					// ignore value sign
+					dec_x = dec_x * (-1);
+				}
+				
+				// divide exponent to get mantissa
+				dec_x = dec_x / Math.pow(2, dec_exp_x);
+				
+				// convert mantissa to sum of fractions in binary
+				for (int i = 0; i < 10; i++)
+				{
+					if (dec_x >= Math.pow(2, -(i+1)))
+					{
+						dec_x -= Math.pow(2, -(i+1));
+						FP1[i+8] = '1';
+					}
+					else
+						FP1[i+8] = '0';
+				}
+				
+				writeReg(FP1, FP1.length,REG_TYPE.FR);
 		
 		return 0;
 	}
@@ -846,7 +1041,16 @@ public class IntegratedCircuit {
 	}
 	public int ic_cnvrt()
 	{
-		
+		if (I[0] == '0')
+		{
+			readMem(FP1, LEN_FLOATING, EA);
+			writeReg(FP1, LEN_FLOATING, REG_TYPE.GPR);
+		}
+		else
+		{
+			readMem(FP1, LEN_FLOATING, EA);
+			writeReg(FP1,LEN_FLOATING, REG_TYPE.FR);
+		}
 		
 		return 0;
 	}
