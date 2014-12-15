@@ -20,10 +20,13 @@ public class SAssembler {
 	private int sir = 7;
 	private int aix = 22;
 	private int six = 23;
+	private int fadd = 27;
+	private int fsub = 28;
 	private int stir = 42;
 	private int stix = 43;
 	private int in_ = 49;
 	private int out_ = 50;
+	private int fout_=52;
 	
 	public void assembler(char[] out, String in){
 		String[] component = in.split(" ");
@@ -187,6 +190,18 @@ public class SAssembler {
 			//instruction[11-17]
 			Converter.converterI2S(Integer.parseInt(component[2]), out,11,7);
 			break;
+		case "FOUT":
+			//instruction[0-5]
+			Converter.converterI2S(fout_, out, 6);
+			//instruction[6-7]
+			Converter.converterI2S(Integer.parseInt(component[1]), out, 6,2);
+			//instruction[8-10]
+			for (int i = 0; i < 3; i++) {
+				out[8+i] = '0';
+			}
+			//instruction[11-17]
+			Converter.converterI2S(Integer.parseInt(component[2]), out,11,7);
+			break;
 		case "JCC":
 			//instruction[0-5]
 			Converter.converterI2S(jcc, out, 6);
@@ -200,6 +215,31 @@ public class SAssembler {
 			Converter.converterI2S(Integer.parseInt(component[4]), out,11,7);
 			break;
 
+		case "FADD":
+			//instruction[0-5]
+			Converter.converterI2S(fadd, out, 6);
+			//instruction[6-7]
+			Converter.converterI2S(Integer.parseInt(component[1]), out,6,2);
+			//instruction[8-9]
+			Converter.converterI2S(Integer.parseInt(component[2]), out,8,2);
+			//instruction[10-10]
+			Converter.converterI2S(Integer.parseInt(component[3]), out,10,1);
+			//instruction[11-17]
+			Converter.converterI2S(Integer.parseInt(component[4]), out,11,7);
+			break;
+		case "FSUB":
+			//instruction[0-5]
+			Converter.converterI2S(fsub, out, 6);
+			//instruction[6-7]
+			Converter.converterI2S(Integer.parseInt(component[1]), out,6,2);
+			//instruction[8-9]
+			Converter.converterI2S(Integer.parseInt(component[2]), out,8,2);
+			//instruction[10-10]
+			Converter.converterI2S(Integer.parseInt(component[3]), out,10,1);
+			//instruction[11-17]
+			Converter.converterI2S(Integer.parseInt(component[4]), out,11,7);
+			break;
+			
 		default:
 			System.err.println("illegal instruciton!");
 			break;

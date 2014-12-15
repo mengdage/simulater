@@ -264,7 +264,7 @@ public class IntegratedCircuit {
 		case XR:
 			cpu.readXR(c, xfi, len);break;
 		case FR:
-			cpu.readFR(c, ffi, len);break;
+			cpu.readFR(c, rfi, len);break;
 		case CC:
 			cpu.readCC(c, Converter.conveterS2I(rfi, rfi.length));
 			break;
@@ -297,7 +297,7 @@ public class IntegratedCircuit {
 			break;
 			
 		case FR:
-			cpu.writeFR(c, xfi, len);
+			cpu.writeFR(c, rfi, len);
 			break;
 			
 		case CC:
@@ -820,6 +820,22 @@ public class IntegratedCircuit {
 		}
 		return 0;
 	}
+	
+	public int ic_fout(){
+		int devid = Converter.conveterS2I(addr, addr.length);
+		switch (devid) {
+		case 1:
+			readReg(valR, valR.length, REG_TYPE.FR);
+			double r = Converter.converterS2F(valR, valR.length);
+			//io.printString("$OUT: "+ r);
+			io.printToConsole("$OUT: "+ r);
+			break;
+
+		default:
+			break;
+		}
+		return 0;
+	}
 	/**
 	 * Perform the decode stage
 	 * MAR <- R(RFI)
@@ -851,10 +867,6 @@ public class IntegratedCircuit {
 		double dec_x = 0;
 		double dec_y = 0;
 		
-		// need to store exponent in order to convert back
-		int dec_exp_x = 0;
-		int dec_exp_y = 0;
-		
 		// convert 18 bits binary floating point numbers into decimal
 		dec_x = Converter.converterS2F(FP1, FP1.length);
 		dec_y = Converter.converterS2F(FP2, FP2.length);
@@ -863,7 +875,7 @@ public class IntegratedCircuit {
 		dec_x += dec_y;
 		
 		// convert sum of 2 floating point numbers back to 18 bits binary from decimal
-		Converter.converterF2S(dec_x);
+		FP1 = Converter.converterF2S(dec_x);
 		
 		// write back
 		writeReg(FP1, FP1.length,REG_TYPE.FR);
@@ -888,10 +900,6 @@ public class IntegratedCircuit {
 		double dec_x = 0;
 		double dec_y = 0;
 				
-		// need to store exponent in order to convert back
-		int dec_exp_x = 0;
-		int dec_exp_y = 0;
-				
 		// convert 18 bits binary floating point numbers into decimal
 		dec_x = Converter.converterS2F(FP1, FP1.length);
 		dec_y = Converter.converterS2F(FP2, FP2.length);
@@ -900,7 +908,7 @@ public class IntegratedCircuit {
 		dec_x -= dec_y;
 				
 		// convert sum of 2 floating point numbers back to 18 bits binary from decimal
-		Converter.converterF2S(dec_x);
+		FP1 = Converter.converterF2S(dec_x);
 				
 		// write back
 		writeReg(FP1, FP1.length,REG_TYPE.FR);

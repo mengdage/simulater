@@ -290,7 +290,7 @@ public class CPU {
 	 */
 	public int writeFR(char[] c, char[] id, int len)
 	{
-		if (id[0] == '0')
+		if (id[1] == '0')
 		{
 			if (fr.setFR0(c, len) == 0)
 				System.out.println("CPU: writing floating point register 0 succeed");
@@ -562,6 +562,9 @@ public class CPU {
 	}
 	public int cpu_out() {
 		return ic.ic_out();
+	}
+	public int cpu_fout() {
+		return ic.ic_fout();
 	}
 	
 	/**
