@@ -1,23 +1,7 @@
 package gwu.csci.arc.test;
 
 import gwu.csci.arc.CPU;
-import gwu.csci.arc.isa.AIR;
-import gwu.csci.arc.isa.AIX;
-import gwu.csci.arc.isa.FADD;
-import gwu.csci.arc.isa.FOUT;
-import gwu.csci.arc.isa.FSUB;
-import gwu.csci.arc.isa.JCC;
-import gwu.csci.arc.isa.JMP;
-import gwu.csci.arc.isa.LDR;
-import gwu.csci.arc.isa.SIR;
-import gwu.csci.arc.isa.SIX;
-import gwu.csci.arc.isa.SMR;
-import gwu.csci.arc.isa.SOB;
-import gwu.csci.arc.isa.STIR;
-import gwu.csci.arc.isa.STIX;
-import gwu.csci.arc.isa.STR;
-import gwu.csci.arc.isa.VADD;
-import gwu.csci.arc.isa.VSUB;
+import gwu.csci.arc.isa.*;
 import gwu.csci.arc.utility.Converter;
 import gwu.csci.arc.utility.SAssembler;
 
@@ -26,27 +10,29 @@ public class TestFADDSUB {
 	public static void main(String[] args) {
 CPU cpu = CPU.getInstance();
 		
-		AIR air = new AIR(cpu);
-		AIX aix = new AIX(cpu);
-		STR str = new STR(cpu);
-		gwu.csci.arc.isa.IN in = new gwu.csci.arc.isa.IN(cpu);
-		SOB sob = new SOB(cpu);
-		SIX six = new SIX(cpu);
-		LDR ldr = new LDR(cpu);
-		SMR smr = new SMR(cpu);
-		SIR sir = new SIR(cpu);
-		JMP jmp = new JMP(cpu);
-		JCC jcc = new JCC(cpu);
-		STIR stir = new STIR(cpu);
-		STIX stix = new STIX(cpu);
-		gwu.csci.arc.isa.OUT out = new gwu.csci.arc.isa.OUT(cpu);
-		FOUT fout = new FOUT(cpu);
-		VADD vadd = new VADD(cpu);
-		VSUB vsub = new VSUB(cpu);
-		FADD fadd = new FADD(cpu);
-		FSUB fsub = new FSUB(cpu);
+		ISA air = new AIR(cpu);
+		ISA aix = new AIX(cpu);
+		ISA str = new STR(cpu);
+		ISA in = new gwu.csci.arc.isa.IN(cpu);
+		ISA sob = new SOB(cpu);
+		ISA six = new SIX(cpu);
+		ISA ldr = new LDR(cpu);
+		ISA smr = new SMR(cpu);
+		ISA sir = new SIR(cpu);
+		ISA jmp = new JMP(cpu);
+		ISA jcc = new JCC(cpu);
+		ISA stir = new STIR(cpu);
+		ISA stix = new STIX(cpu);
+		ISA out = new gwu.csci.arc.isa.OUT(cpu);
+		ISA fout = new FOUT(cpu);
+		ISA vadd = new VADD(cpu);
+		ISA vsub = new VSUB(cpu);
+		ISA fadd = new FADD(cpu);
+		ISA fsub = new FSUB(cpu);
+		ISA ldfr = new LDFR(cpu);
+		ISA stfr = new STFR(cpu);
 		
-		String program = "STIX 3 0;STIR 1 8;AIX 3 64;SOB 1 0 0 9;FADD 0 3 0 0;FOUT 0 1;FADD 0 3 0 0;FOUT 0 1;STFR 0 3 0 3;LDFR 1 3 0 3;FOUT 1 1;";
+		String program = "STIX 3 0;STIR 1 8;AIX 3 64;SOB 1 0 0 9;FADD 0 3 0 0;FOUT 0 1;FADD 0 3 0 0;FOUT 0 1;STFR 0 3 0 3;LDFR 1 3 0 3;FOUT 1 1;FADD 1 3 0 3;FOUT 1 1;FSUB 1 3 0 0;FOUT 1 1;";
 		String[] instruction = program.split(";");
 		
 		
@@ -169,6 +155,11 @@ CPU cpu = CPU.getInstance();
 				break;
 			case 30:
 				vsub.start();
+				break;
+			case 40:
+				ldfr.start();
+				break;
+			case 41: stfr.start();
 				break;
 			case 42:
 				stir.start();

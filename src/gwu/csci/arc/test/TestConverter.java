@@ -5,7 +5,7 @@ import gwu.csci.arc.utility.Converter;
 public class TestConverter {
 public static void main(String[] args) {
 	int i=0;
-	double a = -3.5;
+	double a = 3;
 
 	char[] r = Converter.converterF2S(a);
 	a = Converter.converterS2F(r, r.length);

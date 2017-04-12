@@ -199,4 +199,33 @@ public class Converter {
 		
 		return s;
 	}
+//	public static char[] converterI2FX(int dec) {
+//		char[] result = new char[18];
+//		char[] c = new char[11];
+//		converterI2S(dec, c, c.length);
+//		for(int i = 0; i < 18 ;i++) {
+//			if(i < 11) {
+//				result[i] = c[i];
+//			} else {
+//				result[i] = 0;
+//			}
+//		}
+//		return result;
+//		
+//	}
+//	
+//	public static float converterFX2I( char[] s, int len) {
+//		char[] i = new char[11];
+//		char[] f = new char[7];
+//		
+//		for(int k = 0; k < 18 ;k++) {
+//			if(k < 11) {
+//				i[k] = s[k];
+//			} else {
+//				f[k] = s[k];
+//			}
+//		}
+//		return result;
+//		
+//	}
 }

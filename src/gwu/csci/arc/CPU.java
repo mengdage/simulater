@@ -313,7 +313,7 @@ public class CPU {
 	 */
 	public int readFR(char[] c, char[] id, int len)
 	{
-		if (id[0] == '0')
+		if (id[1] == '0')
 		{
 			if (fr.getFR0(c, len) == 0)
 				System.out.println("CPU: reading floating point register 0 succeed");

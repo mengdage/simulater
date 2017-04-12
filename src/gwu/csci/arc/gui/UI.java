@@ -4,19 +4,27 @@ import gwu.csci.arc.CPU;
 import gwu.csci.arc.IndexRegister;
 import gwu.csci.arc.isa.AIR;
 import gwu.csci.arc.isa.AIX;
+import gwu.csci.arc.isa.CNVRT;
+import gwu.csci.arc.isa.FADD;
+import gwu.csci.arc.isa.FOUT;
+import gwu.csci.arc.isa.FSUB;
 import gwu.csci.arc.isa.JCC;
 import gwu.csci.arc.isa.JMP;
 import gwu.csci.arc.isa.LDA;
+import gwu.csci.arc.isa.LDFR;
 import gwu.csci.arc.isa.LDR;
 import gwu.csci.arc.isa.LDX;
 import gwu.csci.arc.isa.SIR;
 import gwu.csci.arc.isa.SIX;
 import gwu.csci.arc.isa.SMR;
 import gwu.csci.arc.isa.SOB;
+import gwu.csci.arc.isa.STFR;
 import gwu.csci.arc.isa.STIR;
 import gwu.csci.arc.isa.STIX;
 import gwu.csci.arc.isa.STR;
 import gwu.csci.arc.isa.STX;
+import gwu.csci.arc.isa.VADD;
+import gwu.csci.arc.isa.VSUB;
 import gwu.csci.arc.test.Initialization;
 import gwu.csci.arc.test.TestProgram1;
 import gwu.csci.arc.utility.Converter;
@@ -144,6 +152,14 @@ public class UI extends JFrame {
 	gwu.csci.arc.isa.OUT out = new gwu.csci.arc.isa.OUT(cpu);
 	STIR stir = new STIR(cpu);
 	STIX stix = new STIX(cpu);
+	FADD fadd = new FADD(cpu);
+	FSUB fsub = new FSUB(cpu);
+	LDFR ldfr = new LDFR(cpu);
+	STFR stfr = new STFR(cpu);
+	FOUT fout = new FOUT(cpu);
+	VADD vadd = new VADD(cpu);
+	VSUB vsub = new VSUB(cpu);
+	CNVRT cnvrt = new CNVRT(cpu);
 	private JButton btnRun;
 	private JButton btnProgram;
 	
@@ -339,7 +355,6 @@ public class UI extends JFrame {
 //				if ((e.getKeyChar() != '0') && (e.getKeyChar() != '1')) e.setKeyChar((char) 00);
 			}
 		});
-		SetTxt_Ins.setText("000000000000000000");
 		SetTxt_Ins.setLineWrap(true);
 		
 		scrollPane_3 = new JScrollPane();
@@ -563,6 +578,7 @@ public class UI extends JFrame {
 				SAssembler sa = new SAssembler();
 				char[] m_code = new char[18];
 				char[] addr = new char[12];
+				char[] addr2 = new char[12];
 				
 				String ins = SetTxt_Ins.getText();
 				String[] split = ins.split("\n");
@@ -571,9 +587,14 @@ public class UI extends JFrame {
 				{	
 					sa.assembler(m_code, split[i]);
 					cpu.writeIns(m_code, m_code.length, addr);
+					if(i == 0) {
+						for(int j =0; j < 12; j++) {
+							addr2[j] = addr[j];
+						}
+					}
 				}
+				DspTxt_Cns.setText(DspTxt_Cns.getText() + "Instruction Submitted.\n" + "It is written into Memory at: " + new String(addr2) + ".\n");
 				
-				DspTxt_Cns.setText(DspTxt_Cns.getText() + "Instruction Submitted.\n" + "It is written into Memory at: " + new String(addr) + ".\n");
 				
 //				for (int i = 0; i < 18; i++) Instruction[i] = '0';
 //				Instruction = SetTxt_Ins.getText().toCharArray();
@@ -681,7 +702,7 @@ public class UI extends JFrame {
 				
 				cpu.writeMem(binWord.toCharArray(), binWord.length(), pointer.toCharArray());
 				cpu.writeMem(ch, ch.length, pointer_len.toCharArray());
-				DspTxt_Cns.setText(DspTxt_Cns.getText() + "Keyword: "+ keyword +", has been written into memory at: " + new String(pointer) + ".\n");
+				DspTxt_Cns.setText(DspTxt_Cns.getText() + "Keyword: "+ keyword +", has been written into memory.\n");
 			}
 		});
 		
@@ -700,7 +721,7 @@ public class UI extends JFrame {
 		gbc_SbmBtn_P2I.gridy = 6;
 		contentPane.add(SbmBtn_P2I, gbc_SbmBtn_P2I);
 		
-		lblProgramInput = new JLabel("Program Input:");
+		lblProgramInput = new JLabel("Program 1 Input:");
 		GridBagConstraints gbc_lblProgramInput = new GridBagConstraints();
 		gbc_lblProgramInput.anchor = GridBagConstraints.SOUTHWEST;
 		gbc_lblProgramInput.insets = new Insets(0, 0, 5, 5);
@@ -1008,70 +1029,78 @@ public class UI extends JFrame {
 				
 				//opcode_check();
 				int ins_code= Converter.conveterS2I(Instruction, 6);
-					switch (ins_code) {
-					case 1:
-						ldr.start();
-						flag = true;
-						break;
-					case 2:
-						str.start();
-						flag = true;
-						break;
-					case 5:
-						smr.start();
-						flag = true;
-						break;
-					case 7:
-						sir.start();
-						flag = true;
-						break;
-					case 6:
-						air.start();
-						flag = true;
-						break;
-					case 10:
-						jcc.start();
-						flag = true;
-						break;
-					case 11:
-						jmp.start();
-						flag = true;
-						break;
-					case 14:
-						sob.start();
-						flag = true;
-						break;
-					case 22:
-						aix.start();
-						flag = true;
-						break;
-					case 23:
-						six.start();
-						flag = true;
-						break;
-					case 42:
-						stir.start();
-						flag = true;
-						break;
-					case 43:
-						stix.start();
-						flag = true;
-						break;
-					case 49:
-						in.start();
-						flag = true;
-						break;
-					case 50:
-						out.start();
-						flag = true;
-						break;
-					default:
-						flag =false;
-						break;
-					}
-				if (flag == false) { 
-					DspTxt_Cns.setText(DspTxt_Cns.getText() + "Fail: Unrecognized Instuction!\n");
+				switch (ins_code) {
+				case 1:
+					ldr.start();
+					break;
+				case 2:
+					str.start();
+					break;
+				case 5:
+					smr.start();
+					break;
+				case 7:
+					sir.start();
+					break;
+				case 6:
+					air.start();
+					break;
+				case 10:
+					jcc.start();
+					break;
+				case 11:
+					jmp.start();
+					break;
+				case 14:
+					sob.start();
+					break;
+				case 22:
+					aix.start();
+					break;
+				case 23:
+					six.start();
+					break;
+				case 27:
+					fadd.start();
+					break;
+				case 28:
+					fsub.start();
+					break;
+				case 29:
+					vadd.start();
+					break;
+				case 30:
+					vsub.start();
+					break;
+				case 31:
+					cnvrt.start();
+					break;
+				case 40:
+					ldfr.start();
+					break;
+				case 41: stfr.start();
+					break;
+				case 42:
+					stir.start();
+					break;
+				case 43:
+					stix.start();
+					break;
+				case 49:
+					in.start();
+					break;
+				case 50:
+					out.start();
+					break;
+				case 52:
+					fout.start();
+					break;
+				default:
+					break;
 				}
+//				if (flag == false) { 
+//					DspTxt_Cns.setText(DspTxt_Cns.getText() + "Fail: Unrecognized Instuction!\n");
+//				}
 //				else { 
 //					instruction_run();
 //				}
@@ -1144,7 +1173,13 @@ public class UI extends JFrame {
 		btnRun = new JButton("Run");
 		btnRun.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+//				String fpr = "000000000000000011";
+//				char[] fri = {'0', '0'};
+//				cpu.writeFR(fpr.toCharArray(), fri, fpr.length());
+				String add_v1 = "001000000000";
+				char[] addBuffer = add_v1.toCharArray();
+				String f_3_5 = "000000101110000000";
+				cpu.writeMem(f_3_5.toCharArray(), f_3_5.length(), add_v1.toCharArray());
 				char[] Current = new char[18];
 				char[] pc = new char[12];
 				char[] X1 = new char[12], X2 = new char[12], X3 = new char[12], MAR = new char[12], MBR = new char[18];
@@ -1165,67 +1200,75 @@ public class UI extends JFrame {
 					switch (ins_code) {
 					case 1:
 						ldr.start();
-						flag = true;
 						break;
 					case 2:
 						str.start();
-						flag = true;
 						break;
 					case 5:
 						smr.start();
-						flag = true;
 						break;
 					case 7:
 						sir.start();
-						flag = true;
 						break;
 					case 6:
 						air.start();
-						flag = true;
 						break;
 					case 10:
 						jcc.start();
-						flag = true;
 						break;
 					case 11:
 						jmp.start();
-						flag = true;
 						break;
 					case 14:
 						sob.start();
-						flag = true;
 						break;
 					case 22:
 						aix.start();
-						flag = true;
 						break;
 					case 23:
 						six.start();
-						flag = true;
+						break;
+					case 27:
+						fadd.start();
+						break;
+					case 28:
+						fsub.start();
+						break;
+					case 29:
+						vadd.start();
+						break;
+					case 30:
+						vsub.start();
+						break;
+					case 31:
+						cnvrt.start();
+						break;
+					case 40:
+						ldfr.start();
+						break;
+					case 41: stfr.start();
 						break;
 					case 42:
 						stir.start();
-						flag = true;
 						break;
 					case 43:
 						stix.start();
-						flag = true;
 						break;
 					case 49:
 						in.start();
-						flag = true;
 						break;
 					case 50:
 						out.start();
-						flag = true;
+						break;
+					case 52:
+						fout.start();
 						break;
 					default:
-						flag =false;
 						break;
 					}
-				if (flag == false) { 
-					DspTxt_Cns.setText(DspTxt_Cns.getText() + "Fail: Unrecognized Instuction!\n");
-				}
+//				if (flag == false) { 
+//					DspTxt_Cns.setText(DspTxt_Cns.getText() + "Fail: Unrecognized Instuction!\n");
+//				}
 //				else { 
 //					instruction_run();
 //				}

@@ -4,8 +4,10 @@ public class SAssembler {
 	private int ldr = 1;
 	private int str = 2;
 	private int lda = 3;
-	private int ldx = 33;
-	private int stx = 34;
+	private int amr = 4;
+	private int smr = 5;
+	private int air = 6;
+	private int sir = 7;
 	private int jz = 8;
 	private int jne = 9;
 	private int jcc = 10;
@@ -14,14 +16,17 @@ public class SAssembler {
 	private int rfs = 13;
 	private int sob = 14;
 	private int jge = 15;
-	private int amr = 4;
-	private int smr = 5;
-	private int air = 6;
-	private int sir = 7;
 	private int aix = 22;
 	private int six = 23;
 	private int fadd = 27;
 	private int fsub = 28;
+	private int vadd = 29;
+	private int vsub=30;
+	private int cnvrt = 31;
+	private int ldx = 33;
+	private int stx = 34;
+	private int ldfr = 40;
+	private int stfr = 41;
 	private int stir = 42;
 	private int stix = 43;
 	private int in_ = 49;
@@ -230,6 +235,66 @@ public class SAssembler {
 		case "FSUB":
 			//instruction[0-5]
 			Converter.converterI2S(fsub, out, 6);
+			//instruction[6-7]
+			Converter.converterI2S(Integer.parseInt(component[1]), out,6,2);
+			//instruction[8-9]
+			Converter.converterI2S(Integer.parseInt(component[2]), out,8,2);
+			//instruction[10-10]
+			Converter.converterI2S(Integer.parseInt(component[3]), out,10,1);
+			//instruction[11-17]
+			Converter.converterI2S(Integer.parseInt(component[4]), out,11,7);
+			break;
+		case "VADD":
+			//instruction[0-5]
+			Converter.converterI2S(vadd, out, 6);
+			//instruction[6-7]
+			Converter.converterI2S(Integer.parseInt(component[1]), out,6,2);
+			//instruction[8-9]
+			Converter.converterI2S(Integer.parseInt(component[2]), out,8,2);
+			//instruction[10-10]
+			Converter.converterI2S(Integer.parseInt(component[3]), out,10,1);
+			//instruction[11-17]
+			Converter.converterI2S(Integer.parseInt(component[4]), out,11,7);
+			break;
+		case "VSUB":
+			//instruction[0-5]
+			Converter.converterI2S(vsub, out, 6);
+			//instruction[6-7]
+			Converter.converterI2S(Integer.parseInt(component[1]), out,6,2);
+			//instruction[8-9]
+			Converter.converterI2S(Integer.parseInt(component[2]), out,8,2);
+			//instruction[10-10]
+			Converter.converterI2S(Integer.parseInt(component[3]), out,10,1);
+			//instruction[11-17]
+			Converter.converterI2S(Integer.parseInt(component[4]), out,11,7);
+			break;
+		case "LDFR":
+			//instruction[0-5]
+			Converter.converterI2S(ldfr, out, 6);
+			//instruction[6-7]
+			Converter.converterI2S(Integer.parseInt(component[1]), out,6,2);
+			//instruction[8-9]
+			Converter.converterI2S(Integer.parseInt(component[2]), out,8,2);
+			//instruction[10-10]
+			Converter.converterI2S(Integer.parseInt(component[3]), out,10,1);
+			//instruction[11-17]
+			Converter.converterI2S(Integer.parseInt(component[4]), out,11,7);
+			break;
+		case "STFR":
+			//instruction[0-5]
+			Converter.converterI2S(stfr, out, 6);
+			//instruction[6-7]
+			Converter.converterI2S(Integer.parseInt(component[1]), out,6,2);
+			//instruction[8-9]
+			Converter.converterI2S(Integer.parseInt(component[2]), out,8,2);
+			//instruction[10-10]
+			Converter.converterI2S(Integer.parseInt(component[3]), out,10,1);
+			//instruction[11-17]
+			Converter.converterI2S(Integer.parseInt(component[4]), out,11,7);
+			break;
+		case "CNVRT":
+			//instruction[0-5]
+			Converter.converterI2S(cnvrt, out, 6);
 			//instruction[6-7]
 			Converter.converterI2S(Integer.parseInt(component[1]), out,6,2);
 			//instruction[8-9]

@@ -917,25 +917,130 @@ public class IntegratedCircuit {
 	}
 	public int ic_vadd()
 	{
-		
+		readReg(valR, LEN_WORD, REG_TYPE.GPR);
+		int len = 3*Converter.conveterS2I(valR, valR.length);
+		if(I[0] == '0') {
+			for(int i =0; i < LEN_ADDR; i++){
+				MAR[i] = EA[i];
+			}
+		} else {
+			readMem(MAR, LEN_ADDR, EA);
+		}
+		for(int i = 0; i < len; i++) {
+			//read the first operand, the i-th element in the first Vector
+			readMem(MBR, LEN_WORD, MAR);
+			for(int k =0; k < LEN_WORD; k++){
+				OP1[k] = MBR[k];
+			}
+			
+			//calculate the address of the i-th element in the second Vector
+			int adr = Converter.conveterS2I(MAR, LEN_ADDR);
+			adr = adr + len;
+			Converter.converterI2S(adr, MAR);
+			
+			//read the second operand, the i-th element in the second Vector
+			readMem(MBR, LEN_WORD, MAR);
+			for(int k =0; k < LEN_WORD; k++){
+				OP2[k] = MBR[k];
+			}
+			
+			//add the op1 and op2, and store them to MBR
+			cpu.addition(OP1, OP2, MBR);
+			
+			//calculate the address of the i-th element in the first Vector
+			adr = adr - len;
+			Converter.converterI2S(adr, MAR);
+			
+			//write the 
+			writeMem(MBR, LEN_WORD, MAR);
+			
+			//point to the (i+1)-th element in the first Vector
+			adr = adr +3;
+			Converter.converterI2S(adr, MAR);
+		}
 		
 		return 0;
 	}
 	public int ic_vsub()
 	{
-		
+		readReg(valR, LEN_WORD, REG_TYPE.GPR);
+		int len = 3*Converter.conveterS2I(valR, valR.length);
+		if(I[0] == '0') {
+			for(int i =0; i < LEN_ADDR; i++){
+				MAR[i] = EA[i];
+			}
+		} else {
+			readMem(MAR, LEN_ADDR, EA);
+		}
+		for(int i = 0; i < len; i++) {
+			//read the first operand, the i-th element in the first Vector
+			readMem(MBR, LEN_WORD, MAR);
+			for(int k =0; k < LEN_WORD; k++){
+				OP1[k] = MBR[k];
+			}
+			
+			//calculate the address of the i-th element in the second Vector
+			int adr = Converter.conveterS2I(MAR, LEN_ADDR);
+			adr = adr + len;
+			Converter.converterI2S(adr, MAR);
+			
+			//read the second operand, the i-th element in the second Vector
+			readMem(MBR, LEN_WORD, MAR);
+			for(int k =0; k < LEN_WORD; k++){
+				OP2[k] = MBR[k];
+			}
+			
+			//add the op1 and op2, and store them to MBR
+			cpu.subtraction(OP1, OP2, MBR);
+			
+			//calculate the address of the i-th element in the first Vector
+			adr = adr - len;
+			Converter.converterI2S(adr, MAR);
+			
+			//write the 
+			writeMem(MBR, LEN_WORD, MAR);
+			
+			//point to the (i+1)-th element in the first Vector
+			adr = adr +3;
+			Converter.converterI2S(adr, MAR);
+		}
 		
 		return 0;
+
 	}
 	public int ic_cnvrt()
 	{
+		readReg(valR, valR.length, REG_TYPE.GPR);
+		int f = Converter.conveterS2I(valR, valR.length);
+		
 		if (I[0] == '0')
 		{
-			readMem(FP1, LEN_FLOATING, EA);
-			writeReg(FP1, LEN_FLOATING, REG_TYPE.GPR);
+			if(f ==0) {
+				readMem(MBR, MBR.length, EA);
+				int m = (int)Converter.converterS2F(MBR, MBR.length);
+				Converter.converterI2S(m, valR);
+
+				writeReg(valR, LEN_WORD, REG_TYPE.GPR);
+			} else {
+				readMem(MBR, MBR.length, EA);
+				double m = Converter.conveterS2I(MBR, MBR.length);
+				char[] k = Converter.converterF2S(m);
+				for (int j = 0; j < k.length; j++) {
+					FP1[j] = k[j];
+				}
+				rfi[0] ='0';
+				rfi[1] = '0';
+				writeReg(FP1, LEN_FLOATING, REG_TYPE.FR);
+			}
+			
 		}
 		else
 		{
+			if(f == 0) {
+				
+			}else {
+				
+			}
 			readMem(FP1, LEN_FLOATING, EA);
 			writeReg(FP1,LEN_FLOATING, REG_TYPE.FR);
 		}
@@ -968,6 +1073,7 @@ public class IntegratedCircuit {
 		}
 		
 		return 0;
+
 	}
 	
 	/**
@@ -993,6 +1099,7 @@ public class IntegratedCircuit {
 		}
 		
 		return 0;
+
 	}
 	
 	public int decode() {
