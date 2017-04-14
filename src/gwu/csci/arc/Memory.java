@@ -1,6 +1,7 @@
 package gwu.csci.arc;
 
 import gwu.csci.arc.utility.Converter;
+import gwu.csci.arc.utility.IOConnector;
 
 //need revise
 public class Memory {
@@ -11,10 +12,13 @@ public class Memory {
 	//Singleton
 	private static Memory memory;
 	
+	private IOConnector io = IOConnector.getInstance();
+	
 	private char[] content = new char[LENGTH];
 	private Memory() {
 		// TODO Auto-generated constructor stub
-		System.out.println("Hey, I am the Memory! I am starting up!");
+		io.printString("Hey, I am the Memory! I am starting up!");
+		
 		//initialization
 		int i;
 		for(i = 0; i < LENGTH; i++) {
@@ -62,7 +66,7 @@ public class Memory {
 	public int write(char[] c,int startPos, int len, char[] addr ) {
 		int intaddr;
 		intaddr = 6*Converter.conveterS2I(addr, IntegratedCircuit.getLenAddr());
-		System.out.println("Memory: Writing content into memory at " + intaddr/6 +" ("+intaddr+")");
+		io.printString("Memory: Writing content into memory at " + intaddr/6 +" ("+intaddr+")");
 		for(int i = 0; i < len; i++) {
 			content[intaddr+i] = c[startPos+i];
 		}
@@ -91,7 +95,7 @@ public class Memory {
 	public int read(char[] c,int startPos, int len, char[] addr) {
 		int intaddr;
 		intaddr = 6*Converter.conveterS2I(addr, IntegratedCircuit.getLenAddr());
-		System.out.println("Memory: Reading content from memory at: " + intaddr/6 +" ("+intaddr+")");
+		io.printString("Memory: Reading content from memory at: " + intaddr/6 +" ("+intaddr+")");
 		for(int i = 0; i < len; i++) {
 			c[startPos+i] = content[intaddr + i];
 		}

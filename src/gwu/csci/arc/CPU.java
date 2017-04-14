@@ -1,6 +1,7 @@
 package gwu.csci.arc;
 
 import gwu.csci.arc.isa.ISA;
+import gwu.csci.arc.utility.IOConnector;
 import gwu.csci.arc.utility.OPERATORS;
 
 public class CPU {
@@ -14,6 +15,8 @@ public class CPU {
 	private ConditionCode cc = new ConditionCode();
 	//the index register, X1, X2, X3, 12 bits each, for index addressing
 	private IndexRegister xr = new IndexRegister();
+	// floating point registers, FR0, FR1, 18 bits each, for floating point arithmetic
+	private FloatingRegister fr = new FloatingRegister();
 	//the program counter, 12 bit, storing the address of the next instruction
 	private ProgramCounter pc = new ProgramCounter();
 	//the instruction register, 18 bit, storing the content of the next instruction 
@@ -38,12 +41,14 @@ public class CPU {
 	private char[] ins_pointer = {'0','0','0','0','0','0', '0', '0','1', '1', '1', '1'};
 	private char[] ins_pointer2 = {'0','0','0','0','0','0', '0', '0','0', '0', '1', '1'};
 	
+	private IOConnector io = IOConnector.getInstance();
+	
 	//the address used when read or write cache
 	private char[] addressCache = new char[IntegratedCircuit.getLenAddr()];
 	
 	private CPU() {
 		// TODO Auto-generated constructor stub
-		System.out.println("I am the CPU. I am starting up!!");
+		io.printString("I am the CPU. I am starting up!!");
 		alu = ALU.getInstance(this);
 		ic = IntegratedCircuit.getInstance(this);
 		cache = Cache.getInstance();
@@ -118,20 +123,20 @@ public class CPU {
 		if(id[1] == '0') {
 			if (id[0] == '0' ){ // 00(2) = 0(10) register
 				if(rf.setR0(c, len) == 0)
-					System.out.println("CPU: writing register 0 succeed");
+					io.printString("CPU: writing register 0 succeed");
 			}else {//10(2) = 2(10) register
 				if(rf.setR2(c, len) == 0)
-					System.out.println("CPU: writing register 2 succeed");
+					io.printString("CPU: writing register 2 succeed");
 			}
 		}
 		else {
 			if (id[0]=='0') {//01(2) = 1(10) register
 				if(rf.setR1(c, len) == 0)
-					System.out.println("CPU: writing register 1 succeed");
+					io.printString("CPU: writing register 1 succeed");
 			}
 			else { //11(2) = 3(10) register
 				if(rf.setR3(c, len) == 0)
-					System.out.println("CPU: writing register 3 succeed");
+					io.printString("CPU: writing register 3 succeed");
 			}
 		}
 		
@@ -149,20 +154,20 @@ public class CPU {
 		if(id[1] == '0') {
 			if (id[0] == '0' ){ // 00(2) = 0(10) register
 				if(rf.getR0(c, len) == 0)
-					System.out.println("CPU: reading register 0 succeed");
+					io.printString("CPU: reading register 0 succeed");
 			}else {//10(2) = 2(10) register
 				if(rf.getR2(c, len) == 0)
-					System.out.println("CPU: reading register 2 succeed");
+					io.printString("CPU: reading register 2 succeed");
 			}
 		}
 		else {
 			if (id[0]=='0') {//01(2) = 1(10) register
 				if(rf.getR1(c, len) == 0)
-					System.out.println("CPU: reading register 1 succeed");
+					io.printString("CPU: reading register 1 succeed");
 			}
 			else { //11(2) = 3(10) register
 				if(rf.getR3(c, len) == 0)
-					System.out.println("CPU: reading register 3 succeed");
+					io.printString("CPU: reading register 3 succeed");
 			}
 		}
 		return 0;
@@ -231,17 +236,17 @@ public class CPU {
 				
 			}else {//10(2) = 2(10) register
 				if(xr.setX2(c, len) == 0)
-					System.out.println("CPU: writing index register 2 succeed");
+					io.printString("CPU: writing index register 2 succeed");
 			}
 		}
 		else {
 			if (id[0]=='0') {//01(2) = 1(10) register
 				if(xr.setX1(c, len) == 0)
-					System.out.println("CPU: writing index register 1 succeed");
+					io.printString("CPU: writing index register 1 succeed");
 			}
 			else { //11(2) = 3(10) register
 				if(xr.setX3(c, len) == 0)
-					System.out.println("CPU: writing index register 3 succeed");
+					io.printString("CPU: writing index register 3 succeed");
 			}
 		}
 		return 0;
@@ -260,19 +265,65 @@ public class CPU {
 				
 			}else {//10(2) = 2(10) register
 				if(xr.getX2(c, len) == 0)
-					System.out.println("CPU: reading index register 2 succeed");
+					io.printString("CPU: reading index register 2 succeed");
 			}
 		}
 		else {
 			if (id[0]=='0') {//01(2) = 1(10) register
 				if(xr.getX1(c, len) == 0)
-					System.out.println("CPU: reading index register 1 succeed");
+					io.printString("CPU: reading index register 1 succeed");
 			}
 			else { //11(2) = 3(10) register
 				if(xr.getX3(c, len) == 0)
-					System.out.println("CPU: reading index register 3 succeed");
+					io.printString("CPU: reading index register 3 succeed");
 			}
 		}
+		return 0;
+	}
+	
+	/**
+	 * write c of length len into id-th floating point register
+	 * @param c the content to be written
+	 * @param id the ID of the register used
+	 * @param len the length of the content
+	 * @return 0
+	 */
+	public int writeFR(char[] c, char[] id, int len)
+	{
+		if (id[1] == '0')
+		{
+			if (fr.setFR0(c, len) == 0)
+				System.out.println("CPU: writing floating point register 0 succeed");
+		}
+		else
+		{
+			if (fr.setFR1(c, len) == 0)
+				System.out.println("CPU: writing floating point register 1 succeed");
+		}
+		
+		return 0;
+	}
+	
+	/**
+	 * read the content of length len from id-th floating point register into c
+	 * @param c store the content read
+	 * @param id the ID of the register read
+	 * @param len the length of the content
+	 * @return 0
+	 */
+	public int readFR(char[] c, char[] id, int len)
+	{
+		if (id[1] == '0')
+		{
+			if (fr.getFR0(c, len) == 0)
+				System.out.println("CPU: reading floating point register 0 succeed");
+		}
+		else
+		{
+			if (fr.getFR1(c, len) == 0)
+				System.out.println("CPU: reading floating point register 1 succeed");
+		}
+		
 		return 0;
 	}
 	
@@ -284,7 +335,7 @@ public class CPU {
 	 */
 	public int writeCC(char[] c, int len) {
 		if(cc.setCC(c, len) == 0) 
-			System.out.println("CPU: writing condition code succeed");
+			io.printString("CPU: writing condition code succeed");
 		return 0;
 	}
 
@@ -296,7 +347,7 @@ public class CPU {
 	 */
 	public int readCC(char[] c, int id) {
 		if(cc.getCC(c, id) == 0) 
-			System.out.println("CPU: reading condition code succeed");
+			io.printString("CPU: reading condition code succeed");
 		return 0;
 	}
 	
@@ -308,7 +359,7 @@ public class CPU {
 	 */
 	public int writePC(char[] c, int len) {
 		if(pc.setPC(c, len) == 0) 
-			System.out.println("CPU: writing program counter register succeed");
+			io.printString("CPU: writing program counter register succeed");
 		return 0;
 	}
 	
@@ -320,7 +371,7 @@ public class CPU {
 	 */
 	public int readPC(char[] c, int len) {
 		if(pc.getPC(c, len) == 0) 
-			System.out.println("CPU: reading program counter register succeed");
+			io.printString("CPU: reading program counter register succeed");
 		return 0;
 	}
 
@@ -332,7 +383,7 @@ public class CPU {
 	 */
 	public int writeIR(char[] c, int len) {
 		if(ir.setIR(c, len) == 0) 
-			System.out.println("CPU: writing instruction register succeed");
+			io.printString("CPU: writing instruction register succeed");
 		return 0;
 	}
 
@@ -344,7 +395,7 @@ public class CPU {
 	 */
 	public int readIR(char[] c, int len) {
 		if(ir.getIR(c, len) == 0) 
-			System.out.println("CPU: reading instruction register succeed");
+			io.printString("CPU: reading instruction register succeed");
 		return 0;
 	}
 	/**
@@ -512,6 +563,42 @@ public class CPU {
 	public int cpu_out() {
 		return ic.ic_out();
 	}
+	public int cpu_fout() {
+		return ic.ic_fout();
+	}
+	
+	/**
+	 * call floating point, vector arithmetics and operations in IC
+	 */
+	public int cpu_fadd()
+	{
+		return ic.ic_fadd();
+	}
+	public int cpu_fsub()
+	{
+		return ic.ic_fsub();
+	}
+	public int cpu_vadd()
+	{
+		return ic.ic_vadd();
+	}
+	public int cpu_vsub()
+	{
+		return ic.ic_vsub();
+	}
+	public int cpu_cnvrt()
+	{
+		return ic.ic_cnvrt();
+	}
+	public int cpu_ldfr()
+	{
+		return ic.ic_ldfr();
+	}
+	public int cpu_stfr()
+	{
+		return ic.ic_stfr();
+	}
+	
 	/**
 	 * do addition
 	 * @param op1 

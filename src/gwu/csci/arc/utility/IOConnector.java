@@ -19,7 +19,7 @@ public class IOConnector {
 	}
 
 	public void printString(String s) {
-		System.out.println(s);
+		//System.out.println(s);
 	}
 	
 	
@@ -51,15 +51,17 @@ public class IOConnector {
 		return ui.getPI();
 	}
 	public void printToConsole(String s) {
+//		System.out.println(s);
 		if(ui == null){
 			ui = UI.getUIinstance();
 		}
 		ui.print2console(s);
 	}
 	public void printToLog(String s) {
-		if(ui == null){
-			ui = UI.getUIinstance();
-		}
-		ui.print2log(s);
+//		System.out.println(s);
+//		if(ui == null){
+//			ui = UI.getUIinstance();
+//		}
+//		ui.print2log(s);
 	}
 }

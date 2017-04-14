@@ -3,6 +3,7 @@ package gwu.csci.arc;
 import gwu.csci.arc.utility.Converter;
 
 public class ALU {
+	//mengTest
 	private static ALU alu;
 	private CPU cpu;
 	private char[] cc = new char[4];
@@ -54,7 +55,11 @@ public class ALU {
 			for (int i = 0; i < cc.length; i++) {
 				cc[i] = '0';
 			}
-			cc[1] = '1';
+			if(p1==p2) {
+				cc[3] ='1';
+			} else {
+				cc[1] = '1';
+			}
 			cpu.writeCC(cc, cc.length);
 			Converter.converterI2S(p2-p1, result);
 		}

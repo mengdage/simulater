@@ -94,4 +94,138 @@ public class Converter {
 		}
 		return result;
 	}
+	
+	/**
+	 * 
+	 * @param s 18 bits binary floating point number
+	 * @param len length of the binary floating point number
+	 * @param dec_exp exponent of the floating point number in decimal
+	 * @return the floating point number in decimal
+	 */
+	public static double converterS2F(char[] s, int len)
+	{
+		char sign;
+		char[] exp = new char[7];
+		char[] mts = new char[10];
+		
+		// floating point number in decimal
+		double dec = 0;
+		
+		// set sign
+		sign = s[0];
+		
+		// separate exponent and mantissa
+		for (int i = 1; i < 8; i++)
+		{
+			exp[i-1] = s[i];
+		}
+		for (int i = 8; i < 18; i++)
+		{
+			mts[i-8] = s[i];
+		}
+		
+		// convert exponent to decimal
+		int dec_exp = conveterS2I(exp, 7);
+		
+		// convert mantissa to decimal sum
+		for (int i = 0; i < 10; i++)
+		{
+			if (mts[i] == '1')
+			{
+				dec += Math.pow(2, -(i+1));
+			}
+		}
+		
+		// combine decimal mantissa sum and exponent
+		dec = dec * Math.pow(2, dec_exp);
+		
+		// combine decimal floating point number and its sign
+		if (sign == '1')
+		{	
+			dec = dec * (-1);
+		}	
+		
+		return dec;
+	}
+	
+	/**
+	 * 
+	 * @param dec the floating point number in decimal
+	 * @param dec_exp the exponent of the floating point number in decimal
+	 * @return the floating point number in 18 bits binary
+	 */
+	public static char[] converterF2S(double dec)
+	{
+		char[] s = new char[18];
+		char[] exp = new char[7];
+		
+		if (dec >= 0) s[0] = '0';
+		else
+		{
+			s[0] = '1';
+			// ignore value sign
+			dec = dec * (-1);
+		}
+		
+		double dec_temp = dec;
+		int count = 0;
+		while (dec_temp >= 1)
+		{
+			dec_temp = dec_temp/2;
+			count++;
+		}
+		
+		// convert decimal exponent back to 7 bits binary
+		converterI2S(count, exp, 7);
+		for (int i = 0; i < 7; i++)
+		{
+			s[i+1] = exp[i];
+		}
+		
+		// divide exponent to get mantissa
+		dec = dec / Math.pow(2, count);
+		
+		// convert mantissa to sum of fractions in binary
+		for (int i = 0; i < 10; i++)
+		{
+			if (dec >= Math.pow(2, -(i+1)))
+			{
+				dec -= Math.pow(2, -(i+1));
+				s[i+8] = '1';
+			}
+			else
+				s[i+8] = '0';
+		}
+		
+		return s;
+	}
+//	public static char[] converterI2FX(int dec) {
+//		char[] result = new char[18];
+//		char[] c = new char[11];
+//		converterI2S(dec, c, c.length);
+//		for(int i = 0; i < 18 ;i++) {
+//			if(i < 11) {
+//				result[i] = c[i];
+//			} else {
+//				result[i] = 0;
+//			}
+//		}
+//		return result;
+//		
+//	}
+//	
+//	public static float converterFX2I( char[] s, int len) {
+//		char[] i = new char[11];
+//		char[] f = new char[7];
+//		
+//		for(int k = 0; k < 18 ;k++) {
+//			if(k < 11) {
+//				i[k] = s[k];
+//			} else {
+//				f[k] = s[k];
+//			}
+//		}
+//		return result;
+//		
+//	}
 }

@@ -6,6 +6,7 @@ import gwu.csci.arc.utility.IOConnector;
 enum REG_TYPE {
 	GPR,
 	XR,
+	FR,
 	CC,
 	PC,
 	IR
@@ -14,14 +15,20 @@ enum REG_TYPE {
 public class IntegratedCircuit {
 	private static IntegratedCircuit ic; //singleton
 	private static final int LEN_WORD = 18; // the length of the word
+	private static final int LEN_FLOATING = 18; // the length of the floating point
 	private static final int LEN_ADDR = 12; // the length of the address
 	private static final int LEN_INSTRUCTION = 18; //the length of an instruction
 	private static final int LEN_OPCODE = 6; //the length of the OPCODE in an instruct
 	private static final int LEN_RFI = 2; //the length of the RFI in an instruction
 	private static final int LEN_XFI = 2; //the length of the XFI in an instruction
+	private static final int LEN_FFI = 1; //the length of the FFI in an instruction
 	private static final int LEN_I = 1; //the length of the I in an instruction
 	private static final int LEN_ADDR_INCODE= 7; //the length of the address in an instruction
 	private static final int LEN_SBYTE = 6; //one sByte = six sBit
+	//for floating point arithmetic usages
+	private static final int LEN_SIGN = 1;
+	private static final int LEN_EXP = 7;
+	private static final int LEN_MTS = 10;
 	//6 in binary
 	private static final char[] ONE_12 = {'0','0','0','0','0','0','0','0', '0', '0', '0','1'}; //one sByte = six sBit
 
@@ -35,6 +42,7 @@ public class IntegratedCircuit {
 	private char[] opcode = new char[LEN_OPCODE];
 	private char[] rfi = new char[LEN_RFI];
 	private char[] xfi = new char[LEN_XFI];
+	private char[] ffi = new char[LEN_FFI];
 	private char[] I = new char[LEN_I];
 	private char[] addr = new char[LEN_ADDR_INCODE];
 	/*$$$$$$$$$$$$$$*/
@@ -58,8 +66,10 @@ public class IntegratedCircuit {
 	private char[] valR = new char[LEN_WORD];
 	//the value read from the index file
 	private char[] valX = new char[LEN_ADDR];
-	//the value read from the instruaction register
+	//the value read from the instruction register
 	private char[] valIR = new char[18];
+	//the value read from the floating point register
+	private char[] valF = new char[18];
 	
 	//the value read from the cc
 	private char[] valC = new char[1];
@@ -67,11 +77,20 @@ public class IntegratedCircuit {
 	//the pointer to the Memory address when writing instructions
 	private char[] ins_pointer = new char[LEN_ADDR];
 	
+	// for floating point arithmetic usages
+	private char[] FP1 = new char[18];
+	private char[] FP2 = new char[18];
+	private char[] fp_sign_x = new char[LEN_SIGN];
+	private char[] fp_sign_y = new char[LEN_SIGN];
+	private char[] exp_x = new char[LEN_EXP];
+	private char[] exp_y = new char[LEN_EXP];
+	private char[] mts_x = new char[LEN_MTS];
+	private char[] mts_y = new char[LEN_MTS];
 	
 	
 	private int[] p1In = new int[21];
 	private int p1In_id = 0;
-	public void printP1In() {
+	public void printP1In1() {
 		String sin = "";
 		for (int i = 0; i < p1In.length -1; i++) {
 			sin = sin+p1In[i]+ " ";
@@ -100,7 +119,7 @@ public class IntegratedCircuit {
 		this.cpu = cpu;
 		io =IOConnector.getInstance();
 		
-		//initiliaztion
+		//initialization
 		for (int i = 0; i < LEN_ADDR; i++) {
 			EA[i] = '0';
 			MAR[i] = '0';
@@ -191,9 +210,19 @@ public class IntegratedCircuit {
 	public char[] getXfi() {
 		return xfi;
 	}
-
+	
 	public void setXfi(char[] xfi) {
 		this.xfi = xfi;
+	}
+	
+	public char[] getFfi()
+	{
+		return ffi;
+	}
+	
+	public void setFfi(char[] ffi)
+	{
+		this.ffi = ffi;
 	}
 
 	public char[] getAddr() {
@@ -234,6 +263,8 @@ public class IntegratedCircuit {
 			cpu.readGPR(c, rfi, len);break;
 		case XR:
 			cpu.readXR(c, xfi, len);break;
+		case FR:
+			cpu.readFR(c, rfi, len);break;
 		case CC:
 			cpu.readCC(c, Converter.conveterS2I(rfi, rfi.length));
 			break;
@@ -263,6 +294,10 @@ public class IntegratedCircuit {
 			
 		case XR:
 			cpu.writeXR(c, xfi, len);
+			break;
+			
+		case FR:
+			cpu.writeFR(c, rfi, len);
 			break;
 			
 		case CC:
@@ -545,9 +580,9 @@ public class IntegratedCircuit {
 				
 			} else {
 				
-				readMem(MAR, MAR.length, EA);
-				io.printToLog("$JMP: jump to Memory "+Converter.conveterS2I(MAR, MAR.length));
-				cpu.setNewPC(MAR, MAR.length);
+				//readMem(MAR, MAR.length, EA);
+				io.printToLog("$JMP: jump to Memory "+Converter.conveterS2I(EA, MAR.length));
+				cpu.setNewPC(EA, EA.length);
 			}
 			return 0;
 		}
@@ -564,9 +599,9 @@ public class IntegratedCircuit {
 			cpu.setNewPC(EA, EA.length);
 			
 		} else {
-			readMem(MAR, MAR.length, EA);
-			io.printToLog("$JMP: jump to Memory "+Converter.conveterS2I(MAR,MAR.length));
-			cpu.setNewPC(MAR, MAR.length);
+			//readMem(MAR, MAR.length, EA);
+			io.printToLog("$JMP: jump to Memory "+Converter.conveterS2I(EA,EA.length));
+			cpu.setNewPC(EA, EA.length);
 			
 		}
 		return 0;
@@ -625,10 +660,10 @@ public class IntegratedCircuit {
 				io.printToLog("$SOB: PC = " + Converter.conveterS2I(EA, EA.length));
 				cpu.setNewPC(EA, EA.length);
 			} else {
-				readMem(MAR, MAR.length, EA);
+				//readMem(MAR, MAR.length, EA);
 				io.printToLog("$SOB: r-1 = "+r+" > 0 and I =1");
-				io.printToLog("$SOB: PC = " + Converter.conveterS2I(MAR, MAR.length));
-				cpu.setNewPC(MAR, MAR.length);
+				io.printToLog("$SOB: PC = " + Converter.conveterS2I(EA, EA.length));
+				cpu.setNewPC(EA, EA.length);
 			}
 			return 0;
 		} else {
@@ -676,6 +711,7 @@ public class IntegratedCircuit {
 	public int ic_smr() {
 		readMem(MBR, MBR.length, EA);
 		readReg(valR, valR.length, REG_TYPE.GPR);
+		io.printToLog("$SMR: GPR " + Converter.conveterS2I(rfi, rfi.length) + " = "+ Converter.conveterS2I(valR,valR.length) + " - " + Converter.conveterS2I(MBR,MBR.length));
 		cpu.subtraction(valR, MBR, valR);
 		writeReg(valR, valR.length, REG_TYPE.GPR);
 		return 0;
@@ -691,11 +727,11 @@ public class IntegratedCircuit {
 		return 0;
 	}
 	/**
-	 * store immediate to general purpose register
+	 * store immediate to index register
 	 * @return
 	 */
 	public int ic_stix() {
-		io.printToLog("$STIX: XR " + Converter.conveterS2I(rfi, rfi.length) + " = " + Converter.conveterS2I(addr, addr.length));
+		io.printToLog("$STIX: XR " + Converter.conveterS2I(xfi, xfi.length) + " = " + Converter.conveterS2I(addr, addr.length));
 		
 		writeReg(addr, addr.length, REG_TYPE.XR);
 		return 0;
@@ -784,6 +820,22 @@ public class IntegratedCircuit {
 		}
 		return 0;
 	}
+	
+	public int ic_fout(){
+		int devid = Converter.conveterS2I(addr, addr.length);
+		switch (devid) {
+		case 1:
+			readReg(valR, valR.length, REG_TYPE.FR);
+			double r = Converter.converterS2F(valR, valR.length);
+			//io.printString("$OUT: "+ r);
+			io.printToConsole("$OUT: "+ r);
+			break;
+
+		default:
+			break;
+		}
+		return 0;
+	}
 	/**
 	 * Perform the decode stage
 	 * MAR <- R(RFI)
@@ -796,6 +848,260 @@ public class IntegratedCircuit {
 	 * ADDR <- IR11-17
 	 * @return 0
 	 */
+	
+	public int ic_fadd()
+	{	
+		// get floating point operands from register and addr
+		readReg(FP1, FP1.length, REG_TYPE.FR);
+		
+		if (I[0] == '0')
+		{
+			readMem(FP2, LEN_FLOATING, EA);
+		}
+		else
+		{
+			readMem(MAR, LEN_ADDR, EA);
+			readMem(FP2, LEN_FLOATING, MAR);
+		}
+		
+		double dec_x = 0;
+		double dec_y = 0;
+		
+		// convert 18 bits binary floating point numbers into decimal
+		dec_x = Converter.converterS2F(FP1, FP1.length);
+		dec_y = Converter.converterS2F(FP2, FP2.length);
+		
+		// floating point addition in decimal
+		dec_x += dec_y;
+		
+		// convert sum of 2 floating point numbers back to 18 bits binary from decimal
+		FP1 = Converter.converterF2S(dec_x);
+		
+		// write back
+		writeReg(FP1, FP1.length,REG_TYPE.FR);
+		
+		return 0;
+	}
+	public int ic_fsub()
+	{
+		// get floating point operands from register and addr
+		readReg(FP1, FP1.length, REG_TYPE.FR);
+				
+		if (I[0] == '0')
+		{
+			readMem(FP2, LEN_FLOATING, EA);
+		}
+		else
+		{
+			readMem(MAR, LEN_ADDR, EA);
+			readMem(FP2, LEN_FLOATING, MAR);
+		}
+				
+		double dec_x = 0;
+		double dec_y = 0;
+				
+		// convert 18 bits binary floating point numbers into decimal
+		dec_x = Converter.converterS2F(FP1, FP1.length);
+		dec_y = Converter.converterS2F(FP2, FP2.length);
+				
+		// floating point subtraction in decimal
+		dec_x -= dec_y;
+				
+		// convert sum of 2 floating point numbers back to 18 bits binary from decimal
+		FP1 = Converter.converterF2S(dec_x);
+				
+		// write back
+		writeReg(FP1, FP1.length,REG_TYPE.FR);
+		
+		return 0;
+	}
+	public int ic_vadd()
+	{
+		readReg(valR, LEN_WORD, REG_TYPE.GPR);
+		int len = 3*Converter.conveterS2I(valR, valR.length);
+		if(I[0] == '0') {
+			for(int i =0; i < LEN_ADDR; i++){
+				MAR[i] = EA[i];
+			}
+		} else {
+			readMem(MAR, LEN_ADDR, EA);
+		}
+		for(int i = 0; i < len; i++) {
+			//read the first operand, the i-th element in the first Vector
+			readMem(MBR, LEN_WORD, MAR);
+			for(int k =0; k < LEN_WORD; k++){
+				OP1[k] = MBR[k];
+			}
+			
+			//calculate the address of the i-th element in the second Vector
+			int adr = Converter.conveterS2I(MAR, LEN_ADDR);
+			adr = adr + len;
+			Converter.converterI2S(adr, MAR);
+			
+			//read the second operand, the i-th element in the second Vector
+			readMem(MBR, LEN_WORD, MAR);
+			for(int k =0; k < LEN_WORD; k++){
+				OP2[k] = MBR[k];
+			}
+			
+			//add the op1 and op2, and store them to MBR
+			cpu.addition(OP1, OP2, MBR);
+			
+			//calculate the address of the i-th element in the first Vector
+			adr = adr - len;
+			Converter.converterI2S(adr, MAR);
+			
+			//write the 
+			writeMem(MBR, LEN_WORD, MAR);
+			
+			//point to the (i+1)-th element in the first Vector
+			adr = adr +3;
+			Converter.converterI2S(adr, MAR);
+		}
+		
+		return 0;
+	}
+	public int ic_vsub()
+	{
+		readReg(valR, LEN_WORD, REG_TYPE.GPR);
+		int len = 3*Converter.conveterS2I(valR, valR.length);
+		if(I[0] == '0') {
+			for(int i =0; i < LEN_ADDR; i++){
+				MAR[i] = EA[i];
+			}
+		} else {
+			readMem(MAR, LEN_ADDR, EA);
+		}
+		for(int i = 0; i < len; i++) {
+			//read the first operand, the i-th element in the first Vector
+			readMem(MBR, LEN_WORD, MAR);
+			for(int k =0; k < LEN_WORD; k++){
+				OP1[k] = MBR[k];
+			}
+			
+			//calculate the address of the i-th element in the second Vector
+			int adr = Converter.conveterS2I(MAR, LEN_ADDR);
+			adr = adr + len;
+			Converter.converterI2S(adr, MAR);
+			
+			//read the second operand, the i-th element in the second Vector
+			readMem(MBR, LEN_WORD, MAR);
+			for(int k =0; k < LEN_WORD; k++){
+				OP2[k] = MBR[k];
+			}
+			
+			//add the op1 and op2, and store them to MBR
+			cpu.subtraction(OP1, OP2, MBR);
+			
+			//calculate the address of the i-th element in the first Vector
+			adr = adr - len;
+			Converter.converterI2S(adr, MAR);
+			
+			//write the 
+			writeMem(MBR, LEN_WORD, MAR);
+			
+			//point to the (i+1)-th element in the first Vector
+			adr = adr +3;
+			Converter.converterI2S(adr, MAR);
+		}
+		
+		return 0;
+
+	}
+	public int ic_cnvrt()
+	{
+		readReg(valR, valR.length, REG_TYPE.GPR);
+		int f = Converter.conveterS2I(valR, valR.length);
+		
+		if (I[0] == '0')
+		{
+			if(f ==0) {
+				readMem(MBR, MBR.length, EA);
+				int m = (int)Converter.converterS2F(MBR, MBR.length);
+				Converter.converterI2S(m, valR);
+
+				writeReg(valR, LEN_WORD, REG_TYPE.GPR);
+			} else {
+				readMem(MBR, MBR.length, EA);
+				double m = Converter.conveterS2I(MBR, MBR.length);
+				char[] k = Converter.converterF2S(m);
+				for (int j = 0; j < k.length; j++) {
+					FP1[j] = k[j];
+				}
+				rfi[0] ='0';
+				rfi[1] = '0';
+				writeReg(FP1, LEN_FLOATING, REG_TYPE.FR);
+			}
+			
+		}
+		else
+		{
+			if(f == 0) {
+				
+			}else {
+				
+			}
+			readMem(FP1, LEN_FLOATING, EA);
+			writeReg(FP1,LEN_FLOATING, REG_TYPE.FR);
+		}
+		
+		return 0;
+	}
+	
+	/**
+	 * load a floating point number from memory to floating point register
+	 * @return
+	 */
+	public int ic_ldfr()
+	{
+		if (I[0] == '0')
+		{
+			//need editing
+			//read a word of memory at EA into MBR
+			readMem(MBR, LEN_FLOATING, EA);
+			//write MRB into GPR
+			writeReg(MBR, LEN_FLOATING, REG_TYPE.FR);
+		}
+		else
+		{
+			//need editing
+			//read the actual address from memory at EA into MBR
+			readMem(MAR, LEN_ADDR, EA);
+			//read a word from memory at MAR into MBR
+			readMem(MBR, LEN_FLOATING, MAR);
+			writeReg(MBR, LEN_FLOATING, REG_TYPE.FR);
+		}
+		
+		return 0;
+
+	}
+	
+	/**
+	 * store a floating point number from floating point register to memory
+	 */
+	public int ic_stfr()
+	{
+		if (I[0] == '0')
+		{
+			//read floating point register to valR
+			readReg(valR, LEN_FLOATING, REG_TYPE.FR);
+			//store valR to the destination in the Memory
+			writeMem(valR, LEN_FLOATING, EA);
+		}
+		else
+		{
+			//read floating point register to valR
+			readReg(valR, LEN_FLOATING, REG_TYPE.FR);
+			//read the actual address from memory at EA into MBR
+			readMem(MAR, LEN_ADDR, EA);
+			//store valR to the destination in the Memory
+			writeMem(valR, LEN_FLOATING, MAR);
+		}
+		
+		return 0;
+
+	}
+	
 	public int decode() {
 		
 		int n;
@@ -906,7 +1212,8 @@ public class IntegratedCircuit {
 				//add ad to ad2
 				//!!!!!!need revise!!!!!!!!!!
 				cpu.addition(ad, ad2, EA);
-				readMem(EA, EA.length, EA);
+				cpu.readMem(EA, EA.length, EA);
+				//readMem(EA, EA.length, EA);
 //				memory.read(EA, LEN_ADDR, ad2);
 //				for(int i = 0; i < LEN_ADDR; i++) {
 //					EA[i] = ad2[i];
@@ -914,8 +1221,7 @@ public class IntegratedCircuit {
 				
 			}
 		}
-		System.out.print("EA: ");
-		System.out.println(EA);
+		io.printString("EA: " + new String(EA));
 		return 0;
 	}
 	
